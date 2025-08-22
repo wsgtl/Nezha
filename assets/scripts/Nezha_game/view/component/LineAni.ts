@@ -2,6 +2,8 @@ import { _decorator, Component, Node } from 'cc';
 import { GameUtil } from '../../GameUtil_Nezha';
 import { UIUtils } from '../../../Nezha_common/utils/UIUtils';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
+import { ButtonLock } from '../../../Nezha_common/Decorator';
+import { AudioManager } from '../../manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('LineAni')
@@ -25,8 +27,14 @@ export class LineAni extends Component {
         this.content.active = v;
         this.isShow = v;    
     }
+    private time = 0;
     protected update(dt: number): void {
         if (!this.isShow) return;
+        this.time+=dt;
+        if(this.time>=0.1){
+            this.time=0;
+            this.playLineAniEffect();
+        }
         const lineY = dt * 3000;
         const fY = dt * 500;
         const lineBy = 575;
@@ -44,6 +52,10 @@ export class LineAni extends Component {
             }
             UIUtils.setAlpha(v,(300-v.y)/300);
         })
+    }
+    @ButtonLock(0.15)
+    private playLineAniEffect() {
+        AudioManager.playEffect("nenliang");
     }
 }
 

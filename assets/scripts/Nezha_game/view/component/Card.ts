@@ -78,13 +78,13 @@ export class Card extends Component {
     /**发射粒子时卡片动画 */
     shotAni() {
         this.setColor(false);
-        if (this.type == CardType.c12 || this.type == CardType.c14) {
+        // if (this.type == CardType.c12 || this.type == CardType.c14) {
             ActionEffect.scaleBigToSmall(this.icon.node, 1.2, 1, 0.2);
             // tween(this.icon.node)
             // .to(0.1,{scale:v3(1.2,1.2)})
             // .to(0.1,{scale:v3(1,1)})
             // .start();
-        }
+        // }
     }
 }
 

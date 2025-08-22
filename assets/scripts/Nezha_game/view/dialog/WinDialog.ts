@@ -49,7 +49,7 @@ export class WinDialog extends DialogComponent {
         // })
         const ani = ["bigwin_loop", "megawin_loop"];
         this.sk.animation = ani[args.type - 1];
-        ActionEffect.numAddAni(0,args.num,(n:number)=>{this.num.num =n},true,12);
+        ActionEffect.numAddAni(0,args.num,(n:number)=>{if(this.num)this.num.num =n},true,12);
         AudioManager.vibrate(1, 155);
     }
 }

@@ -224,41 +224,43 @@ export class GameView extends ViewComponent {
     private async spinNext() {
         //钱广告弹窗
         let moneyNum = 0;
-        const moneyDialogCards = GameManger.instance.findCards(CardType.c13);
-        if (moneyDialogCards.length > 0) {
+        const moneyDialogCards = GameManger.instance.findCards(CardType.money);
+        if (moneyDialogCards.length >= 3) {
+            await this.board.showCards(moneyDialogCards);
             const num = await this.moneyDialog();
             const last = moneyNum;
             moneyNum += num;
+            
             // this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
             ActionEffect.numAddAni(last,moneyNum,(n:number)=>{this.showWinMoney(n)});
         }
         //自动弹钱
-        const moneyCards = GameManger.instance.findCards(CardType.c12);
-        if (moneyCards.length > 0) {
-            const cashNum = GameStorage.getLimit().cash;
-            let bl = cashNum > 0 ? 2 : 1;
-            await this.board.cardsShot(moneyCards, MoneyManger.instance.getMoneyNode().moneyNode, RewardType.money, cashNum > 0);
-            const num = MoneyManger.instance.getReward(bl);
-            MoneyManger.instance.addMoney(num,false);
-            // this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(num);
-            const last = moneyNum;
-            moneyNum += num;
-            ActionEffect.numAddAni(last,moneyNum,(n:number)=>{this.showWinMoney(n)});
-            // this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
-        }
+        // const moneyCards = GameManger.instance.findCards(CardType.c12);
+        // if (moneyCards.length > 0) {
+        //     const cashNum = GameStorage.getLimit().cash;
+        //     let bl = cashNum > 0 ? 2 : 1;
+        //     await this.board.cardsShot(moneyCards, MoneyManger.instance.getMoneyNode().moneyNode, RewardType.money, cashNum > 0);
+        //     const num = MoneyManger.instance.getReward(bl);
+        //     MoneyManger.instance.addMoney(num,false);
+        //     // this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(num);
+        //     const last = moneyNum;
+        //     moneyNum += num;
+        //     ActionEffect.numAddAni(last,moneyNum,(n:number)=>{this.showWinMoney(n)});
+        //     // this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
+        // }
 
         //宝箱
-        const treasureCards = GameManger.instance.findCards(CardType.c14);
-        if (treasureCards.length > 0) {
-            await this.board.cardsShot(treasureCards, this.treasure.node, RewardType.none);
-            await this.treasure.addProgress(treasureCards.length);
-        }
+        // const treasureCards = GameManger.instance.findCards(CardType.c14);
+        // if (treasureCards.length > 0) {
+        //     await this.board.cardsShot(treasureCards, this.treasure.node, RewardType.none);
+        //     await this.treasure.addProgress(treasureCards.length);
+        // }
 
-        //猴子葫芦
-        const monkeyCards = GameManger.instance.findMonkeyCards();
-        if (monkeyCards.length > 0) {
-            await this.board.cardsShot(monkeyCards, this.hulu.icon, RewardType.none);
-            await this.hulu.addProgress(monkeyCards.length);
+        //金莲
+        const lotusCards = GameManger.instance.findCards(CardType.lotus);
+        if (lotusCards.length > 0) {
+            await this.board.cardsShot(lotusCards, this.hulu.icon, RewardType.none);
+            await this.hulu.addProgress(lotusCards.length);
         }
         const isFreeSpin = this.isFreeSpin();
         //连线判定

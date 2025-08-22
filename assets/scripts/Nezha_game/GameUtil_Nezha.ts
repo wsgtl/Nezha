@@ -32,9 +32,9 @@ export enum CardType {
    c9,//x4
    c10,//x5
    wild,
-   c12,//自动弹钱
-   c13,//钱弹窗
-   c14,//宝箱
+   lotus,//金莲
+   money,//钱弹窗
+   freeGame,//免费游戏
 }
 
 
@@ -143,6 +143,9 @@ export namespace GameUtil {
    }
    export function getRandomCard() {
       return MathUtil.random(1, 14);
+   }
+   export function getRandomNormalCard() {
+      return MathUtil.random(1, CardType.wild);
    }
 
    /**20条连线 只记录y值*/

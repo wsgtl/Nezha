@@ -32,12 +32,16 @@ export class GameManger {
 
     private curLevel: number = 1;
     private lastLevel: number = 1;
-    private borad: CardType[][] = [];
+    private board: CardType[][] = [];
 
 
     isAni: boolean = false;
     /**必出连线次数 */
     mustLineNum: number = 1;
+    /**金莲卡片必出两次 */
+    mustLotus: number = 10;
+    /**钱卡片必出两次 */
+    mustMoney: number = 10;
 
     public getNewBoard() {
         // this.borad = [
@@ -47,30 +51,31 @@ export class GameManger {
         // ]
         // return this.borad;
         if (GuideManger.isGuide()) {
-            this.borad = [
+            this.board = [
                 [1, 8, 14, 6, 1,],
                 [10, 1, 12, 1, 14,],
                 [10, 9, 1, 9, 7,],
             ]
-            return this.borad;
+            return this.board;
         }
 
-        this.borad = [];
-        if (this.mustLineNum > 0) {
-            return this.mustLineBoard();
+        this.board = [];
+        return this.boardControl();
+        // if (this.mustLineNum > 0) {
+        //     return this.mustLineBoard();
 
-        }
-        return this.normalBoard();
+        // }
+        // return this.normalBoard();
     }
     /**普通随机机台 */
     private normalBoard() {
         for (let i = 0; i < GameUtil.AllRow; i++) {
-            this.borad.push([]);
+            this.board.push([]);
             for (let j = 0; j < GameUtil.AllCol; j++) {
-                this.borad[i][j] = GameUtil.getRandomCard();
+                this.board[i][j] = GameUtil.getRandomCard();
             }
         }
-        return this.borad;
+        return this.board;
     }
     /**必出连线机台 */
     private mustLineBoard() {
@@ -81,9 +86,86 @@ export class GameManger {
         const lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
         const type = MathUtil.random(1, 10);//随机类型
         for (let i = 0; i < lineNum; i++) {
-            this.borad[list[i]][i] = type;
+            this.board[list[i]][i] = type;
         }
-        return this.borad;
+        return this.board;
+    }
+
+    /**机台卡片控制 */
+    private boardControl() {
+        for (let i = 0; i < GameUtil.AllRow; i++) {//先清空卡片数据
+            this.board.push([]);
+            for (let j = 0; j < GameUtil.AllCol; j++) {
+                this.board[i][j] = CardType.none;
+            }
+        }
+
+
+        //连线控制
+        if (this.mustLineNum > 0) {
+            this.mustLineNum--;
+            const list = GameUtil.lines.getRandomItem();
+            // const lineNum = MathUtil.random(3, 5);//随机连线个数
+            const lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
+            const type = MathUtil.random(1, 9);//随机类型
+            for (let i = 0; i < lineNum; i++) {
+                this.board[list[i]][i] = type;
+            }
+
+        }
+        const type = MathUtil.random(0, 3);
+        //金莲控制
+        if (type == 1 || this.mustLotus > 0) {
+            let num1 = MathUtil.random(1, 2);
+            if (this.mustLotus > 0) {
+                this.mustLotus--;
+                num1 = MathUtil.random(2, 4);
+            }
+            this.insertCard(CardType.lotus, num1);
+        }
+        //钱卡片控制
+        if (type == 2 || this.mustMoney > 0) {
+            let num2 = MathUtil.random(1, 4);
+            if (this.mustMoney > 0) {
+                this.mustMoney--;
+                num2 = MathUtil.random(2, 4);
+            }
+            this.insertCard(CardType.money, num2);
+        }
+        //免费转控制
+        if (type == 3||1) {
+            let num3 = MathUtil.random(3, 5);
+            this.insertCard(CardType.freeGame, num3);
+        }
+
+        //随机插入普通卡片
+        for (let i = 0; i < GameUtil.AllRow; i++) {
+            for (let j = 0; j < GameUtil.AllCol; j++) {
+                if (this.board[i][j] == CardType.none) {
+                    this.board[i][j] = GameUtil.getRandomNormalCard();//插入普通卡片
+                }
+            }
+        }
+
+        return this.board;
+    }
+    private insertCard(type: CardType, num: number) {
+        const list: Vec2[] = [];
+        for (let i = 0; i < GameUtil.AllRow; i++) {
+            for (let j = 0; j < GameUtil.AllCol; j++) {
+                if (this.board[i][j] == CardType.none) {
+                    list.push(v2(j, i));//找到空位置
+                }
+            }
+        }
+        list.shuffle();//打乱
+        for (let i = 0; i < num; i++) {
+            const p = list[i];
+            if (p)
+                this.board[p.y][p.x] = type;//插入
+            else 
+                break;
+        }
     }
     private bet: number = GameUtil.BaseBet;
     public setBet(b: number) {
@@ -98,7 +180,7 @@ export class GameManger {
             const arr: number[] = [];
             for (let x = 0; x < GameUtil.AllCol; x++) {
                 const y = v[x];
-                const t = this.borad[y][x];
+                const t = this.board[y][x];
 
                 if (x == 0) {
                     if (t >= CardType.wild) break;//限定可连线类型
@@ -141,7 +223,7 @@ export class GameManger {
     /**找该类型的卡 */
     public findCards(type: CardType): Vec2[] {
         const cardPos: Vec2[] = [];
-        this.borad.forEach((b, y) => {
+        this.board.forEach((b, y) => {
             b.forEach((c, x) => {
                 if (c == type) {
                     cardPos.push(v2(x, y));
@@ -153,7 +235,7 @@ export class GameManger {
     /**找猴子卡 */
     public findMonkeyCards(): Vec2[] {
         const cardPos: Vec2[] = [];
-        this.borad.forEach((b, y) => {
+        this.board.forEach((b, y) => {
             b.forEach((c, x) => {
                 if (c >= CardType.c6 && c <= CardType.c10) {
                     cardPos.push(v2(x, y));
@@ -168,5 +250,20 @@ export class GameManger {
     }
     public cashX2() {
         this.gv.cashX2(true);
+    }
+    /**找到咪牌起始位置 */
+    public findFreeGameStart(){
+        let num = 0;
+        for(let x=0;x<GameUtil.AllCol;x++){
+            for(let y=0;y<GameUtil.AllRow;y++){
+                if(this.board[y][x]==CardType.freeGame){
+                    num++;
+                    if(num>=2){
+                        return x+2;
+                    }
+                }
+            }
+        }
+        return 10;
     }
 }

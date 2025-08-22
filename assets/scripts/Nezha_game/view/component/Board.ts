@@ -63,7 +63,7 @@ export class Board extends Component {
             const duration = 0.07;
             times--;
             const isLast = times == 0;
-            if (isLineAni && times > 2) this.playLineAniEffect();
+            // if (isLineAni && times > 1) this.playLineAniEffect();
             for (let i = 0; i < row; i++) {
                 const c = list.children[i];
                 const pre = row - i - 1;
@@ -82,18 +82,18 @@ export class Board extends Component {
                         c.y = ty;
                     })
                     .to(last * duration, { y: toY })
-                    
+
                     .call(async () => {
                         if (i == 0) {
                             if (times > 0)
                                 await this.spinOne(index, types, times, 0, isLineAni);
                             res();
                         }
-                        if(times==0){//回弹动效
+                        if (times == 0) {//回弹动效
                             tween(c)
-                            .to(.1,{y:toY-40})
-                            .to(.1,{y:toY})
-                            .start();
+                                .to(.1, { y: toY - 40 })
+                                .to(.1, { y: toY })
+                                .start();
                         }
                     })
                     .start();
@@ -109,20 +109,20 @@ export class Board extends Component {
             AudioManager.playEffect("toubi");
             const board = GameManger.instance.getNewBoard();
             let q = 0;
-            const lineAniIndex = Math.random() < 0.4 ? MathUtil.random(2, 5) : 0;
+            // const lineAniIndex = Math.random() < 0.4 ? MathUtil.random(2, 5) : 0;
+            const lineAniIndex = GameManger.instance.findFreeGameStart();
             for (let i = 0; i < GameUtil.AllCol; i++) {
-                const lineAniAdd = (lineAniIndex > 0 && i >= lineAniIndex - 1) ? MathUtil.random(1, 3) : 0;
+                const lineAniAdd = (lineAniIndex > 0 && lineAniIndex <= GameUtil.AllCol && i >= lineAniIndex - 1) ? 2 : 0;
                 q += (i == 0) ? MathUtil.random(3, 5) : MathUtil.random(1, 2);
                 q += lineAniAdd;
                 const wait = 0.1 * i;
-                if (lineAniAdd) {
-                    delay(wait).then(() => {
-                        this.lineAni.node.x = this.ls[lineAniIndex - 1].x;
-                        this.lineAni.show(true);
-                    })
-                }
+
                 this.spinOne(i, [board[0][i], board[1][i], board[2][i]], q, wait, lineAniIndex > 0)
                     .then(() => {
+                        if(lineAniIndex-2==i){//开始咪牌
+                            this.lineAni.node.x = this.ls[lineAniIndex - 1].x;
+                            this.lineAni.show(true);
+                        }
                         if (lineAniAdd) {
                             if (i == 4)
                                 this.lineAni.show(false);
@@ -175,6 +175,18 @@ export class Board extends Component {
         await delay(duration);
         this.setAllCardDark(false);
     }
+    /**单纯展示卡片 */
+    public async showCards(pos: Vec2[]) {
+        this.setAllCardDark(true);
+        const duration: number = 0.7;
+        pos.forEach(v => {
+            const card = this.ls[v.x].children[v.y];
+            card.getComponent(Card).shotAni();
+            // card.getComponent(Card).setColor(false);
+        })
+        await delay(duration);
+        this.setAllCardDark(false);
+    }
     private setAllCardDark(v: boolean) {
         this.ls.forEach((list, x) => {
             list.children.forEach((card, i) => {
@@ -190,15 +202,16 @@ export class Board extends Component {
     }
     /**钱动画 */
     private showMoneyAni() {
-        const moneyCards = GameManger.instance.findCards(CardType.c12);
-        if (moneyCards.length) {
+        const moneyCards = GameManger.instance.findCards(CardType.money);
+        if (moneyCards.length >= 3) {
             this.moneyAni.ani();
         }
     }
-    @ButtonLock(0.15)
-    private playLineAniEffect() {
-        AudioManager.playEffect("nenliang");
-    }
+
+    // @ButtonLock(0.15)
+    // private playLineAniEffect() {
+    //     AudioManager.playEffect("nenliang");
+    // }
 }
 
 

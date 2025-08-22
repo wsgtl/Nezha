@@ -1,12 +1,12 @@
-import './Slot_common/Expand'
+import './Nezha_common/Expand'
 import { _decorator, Component, Node } from 'cc';
-import { ViewManager } from './Slot_game/manager/ViewManger';
-import { GameStorage } from './Slot_game/GameStorage_Slot';
+import { ViewManager } from './Nezha_game/manager/ViewManger';
+import { GameStorage } from './Nezha_game/GameStorage_Nezha';
 import { AudioSource } from 'cc';
-import { AudioManager } from './Slot_game/manager/AudioManager';
-import { i18n } from './Slot_common/i18n/I18nManager';
-import { AudioStorage } from './Slot_common/localStorage/AudioStorage';
-import { LangStorage } from './Slot_common/localStorage/LangStorage';
+import { AudioManager } from './Nezha_game/manager/AudioManager';
+import { i18n } from './Nezha_common/i18n/I18nManager';
+import { AudioStorage } from './Nezha_common/localStorage/AudioStorage';
+import { LangStorage } from './Nezha_common/localStorage/LangStorage';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameLaunch')

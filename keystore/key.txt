@@ -1,0 +1,19 @@
+密钥库别名:  key0
+密码:   llmmkk
+别名密码:    llmmkk
+游戏名：Lucky Monkey Slot
+包名：com.lucky.monkeykingdd
+max SDK key：Apq_bdQOwkidFCL4EQGkNodqrrhfHWM0mBGdrtKnaZWBuB8AP19VkUEi7R9DuVZVcJGsOJri6BRyEh560di33O
+激励广告位ID： d9174ee5898370dd
+插屏广告位ID： 52345987dfcc8775
+
+admob ID:  ca-app-pub-4683280929240833~2405836679
+af key: ixmLNG4rgCaaKki3LPG3Fj
+
+haskkey:  
+
+https://play.google.com/store/apps/details?id=com.lucky.monkeykingdd
+隐私政策网址：https://sites.google.com/view/hjckji989c78hjd86djuicjkxjhvdd/home
+
+//生成output.zip秘钥
+java -jar E:\szhy\keystore/pepk.jar --keystore=key.jks --alias=key0 --output=output.zip --include-cert --rsa-aes-encryption --encryption-key-path=encryption_public_key.pem

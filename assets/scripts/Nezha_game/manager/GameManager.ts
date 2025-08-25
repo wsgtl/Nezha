@@ -39,9 +39,9 @@ export class GameManger {
     /**必出连线次数 */
     mustLineNum: number = 1;
     /**金莲卡片必出两次 */
-    mustLotus: number = 10;
+    mustLotus: number = 0;
     /**钱卡片必出两次 */
-    mustMoney: number = 10;
+    mustMoney: number = 0;
 
     public getNewBoard() {
         // this.borad = [
@@ -133,7 +133,7 @@ export class GameManger {
             this.insertCard(CardType.money, num2);
         }
         //免费转控制
-        if (type == 3||1) {
+        if (type == 3) {
             let num3 = MathUtil.random(3, 5);
             this.insertCard(CardType.freeGame, num3);
         }

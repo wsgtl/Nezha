@@ -28,8 +28,8 @@ export class Hulu extends Component {
         return new Promise<void>(res => {
             const t = GameStorage.getHulu();
             let cur = t + num;
-            if (cur >= GameUtil.HuluNum) {
-                this.showProgress(true, true, GameUtil.HuluNum);
+            if (cur >= GameUtil.LotusNum) {
+                this.showProgress(true, true, GameUtil.LotusNum);
                 GameStorage.setHulu(0);
                 delay(0.2).then(()=>{
                     ViewManager.showLuckyDialog(() => {
@@ -49,7 +49,7 @@ export class Hulu extends Component {
     private showProgress(isAni: boolean, isAll: boolean = false, cur: number = -1) {
         if (cur < 0)
             cur = GameStorage.getHulu();
-        const jd = cur / GameUtil.HuluNum;
+        const jd = cur / GameUtil.LotusNum;
         if (isAni) {
             tween(this.progress)
                 .to(0.2, { fillRange: jd })

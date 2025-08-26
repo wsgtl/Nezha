@@ -35,18 +35,20 @@ export class Card extends Component {
     }
     setType(type: CardType) {
         this.type = type;
-        if(type>=6){
-            this.sk.skeletonData = this.sks[type-6];
-            this.sk.node.active = true;
-            this.icon.node.active = false;
-            this.sk.animation = "c"+type;
-        }else{
-            this.icon.spriteFrame = this.sf[type - 1];
-            this.sk.node.active = false;
-            this.icon.node.active = true;
-        }
+        // if(type>=6){
+        //     this.sk.skeletonData = this.sks[type-6];
+        //     this.sk.node.active = true;
+        //     this.icon.node.active = false;
+        //     this.sk.animation = "c"+type;
+        // }else{
+        //     this.icon.spriteFrame = this.sf[type - 1];
+        //     this.sk.node.active = false;
+        //     this.icon.node.active = true;
+        // }
        
-        
+        this.icon.spriteFrame = this.sf[type - 1];
+        this.sk.node.active = false;
+        this.icon.node.active = true;
        
     }
     showBorder(v: boolean) {

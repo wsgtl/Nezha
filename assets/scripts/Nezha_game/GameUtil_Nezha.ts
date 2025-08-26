@@ -30,7 +30,7 @@ export enum CardType {
    c7,//x2
    c8,//x3
    c9,//x4
-   c10,//x5
+   // c10,//x5
    wild,
    lotus,//金莲
    money,//钱弹窗
@@ -93,13 +93,13 @@ export type LineData = {
 }
 
 export namespace GameUtil {
-   export const CardW: number = 193;//卡牌宽
-   export const CardH: number = 185;//卡牌高
+   export const CardW: number = 204;//卡牌宽
+   export const CardH: number = 195;//卡牌高
    export const AllRow: number = 3;//行数
    export const AllCol: number = 5;//列数
    export const CreateRow: number = 4;//生成的行数
-   export const HuluNum: number = 30;//葫芦收集到多少就触发幸运奖励
-   export const TreasureNum: number = 12;//宝箱收集到多少就触发奖池奖励
+   export const LotusNum: number = 20;//金莲收集到多少就触发幸运奖励
+   export const TreasureNum: number = 10;//宝箱收集到多少就触发奖池奖励
    export const CashNum: number = 1000;//最低提现金额
    export const BaseBet: number = 500;//基础金币赌注
    /**登陆后是否弹签到 */
@@ -122,7 +122,7 @@ export namespace GameUtil {
       [1500, 3000, 7000],//x2
       [2000, 4000, 10000],//x3
       [2500, 5000, 12000],//x4
-      [3000, 6000, 15000],//x5
+      // [3000, 6000, 15000],//x5
    ]
 
    export function getCashNum(bl: number=1) {//获取最低提现金额

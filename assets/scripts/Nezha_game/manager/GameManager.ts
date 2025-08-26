@@ -52,9 +52,9 @@ export class GameManger {
         // return this.borad;
         if (GuideManger.isGuide()) {
             this.board = [
-                [1, 8, 14, 6, 1,],
-                [10, 1, 12, 1, 14,],
-                [10, 9, 1, 9, 7,],
+                [1, 8, 11, 6, 1,],
+                [9, 1, 12, 1, 1,],
+                [4, 9, 1, 9, 7,],
             ]
             return this.board;
         }
@@ -168,9 +168,9 @@ export class GameManger {
         }
     }
     private bet: number = GameUtil.BaseBet;
-    public setBet(b: number) {
-        this.bet = b;
-    }
+    // public setBet(b: number) {
+    //     this.bet = b;
+    // }
     /**获取连线数据 */
     public getLinesData(): LineData {
         const list = GameUtil.lines;
@@ -205,13 +205,13 @@ export class GameManger {
             const n = lineCoin[v.type][v.line.length - 3];
             coinnum += n;
         });
-        if (lines.length) {
-            // let bl = 0.5;
-            // if (this.bet > 1500) bl = 1;
-            // coinnum = Math.ceil(coinnum + this.bet * bl);
-            let bl = this.bet / GameUtil.BaseBet;
-            coinnum = Math.ceil(coinnum * bl);//修改金额为直接乘倍率
-        }
+        // if (lines.length) {
+        //     // let bl = 0.5;
+        //     // if (this.bet > 1500) bl = 1;
+        //     // coinnum = Math.ceil(coinnum + this.bet * bl);
+        //     let bl = this.bet / GameUtil.BaseBet;
+        //     coinnum = Math.ceil(coinnum * bl);//修改金额为直接乘倍率
+        // }
         let winType: WinType = 0;
         if (coinnum >= this.bet * 15) {
             winType = WinType.mega;//狂赢
@@ -237,7 +237,7 @@ export class GameManger {
         const cardPos: Vec2[] = [];
         this.board.forEach((b, y) => {
             b.forEach((c, x) => {
-                if (c >= CardType.c6 && c <= CardType.c10) {
+                if (c >= CardType.c6 && c <= CardType.c9) {
                     cardPos.push(v2(x, y));
                 }
             })

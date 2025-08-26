@@ -42,6 +42,12 @@ const debug = Debugger("GameView")
 export class GameView extends ViewComponent {
     @property(Node)
     content: Node = null;
+    @property(Node)
+    boardContent: Node = null;
+    @property(Node)
+    bg1: Node = null;
+    @property(Node)
+    bg2: Node = null;
     @property(Top)
     top: Top = null;
     @property(Node)
@@ -52,8 +58,6 @@ export class GameView extends ViewComponent {
     treasure: Treasure = null;
     @property(FreeAndCash)
     limit: FreeAndCash = null;
-    @property(Bet)
-    bet: Bet = null;
     @property(Node)
     btnSpin: Node = null;
     @property([SpriteFrame])
@@ -66,8 +70,6 @@ export class GameView extends ViewComponent {
     winCoin: NumFont = null;
     @property(NumFont)
     winMoney: NumFont = null;
-    @property(Node)
-    x2: Node = null;
     @property(Node)
     btnMore: Node = null;
 
@@ -95,21 +97,26 @@ export class GameView extends ViewComponent {
 
     fit() {
         const h = view.getVisibleSize().y;
+        
         const cha = h - 1920;
         const ch = cha / 2;
-        const cy = (ch < 130 ? ch : ch - 130)
+        const cy = (ch < 60 ? ch : ch - 60);
         this.top.node.y = 960 + cy;
-        this.jackpot.y = 690 + cy * 0.8;
+        this.jackpot.y = 650 + cy * 0.6;
         const kbn = this.content.getChildByName("kbn");
-        kbn.y = 370 + ch * 0.55;
+        kbn.y = 520 + ch * 0.55;
         if (ch > 200) {
-            const sc = Math.min(1.2, 1 + ch / 1200);
+            const sc = Math.min(1.2, 1 + ch / 1400);
             kbn.scale = v3(sc, sc);
+            // this.boardContent.y=0+30;
         }
-        this.treasure.node.y = 720 + ch * 1;
-        this.limit.node.y = 720 + ch * 1;
-        this.btnMore.y = 490 + ch * 0.9;
+        // this.treasure.node.y = 720 + ch * 1;
+        this.limit.node.y = 540 + ch * 0.5;
+        this.btnMore.y = 540 + ch *  0.5;
         console.log("h", h);
+
+        const bgSc = Math.max(1,1+cha/1200);
+        this.bg1.scale=v3(1,bgSc);
 
         nextFrame().then(() => {
             const p = UIUtils.transformOtherNodePos2localNode(this.node, this.dialogNode);
@@ -131,7 +138,7 @@ export class GameView extends ViewComponent {
         if (!GuideManger.isGuide()) {
 
         }
-        this.bet.init(GameStorage.getCurLevel());
+      
         // this.showWinCoin(false);
         this.showWinNormal();
         this.setFreeSpin();
@@ -149,34 +156,24 @@ export class GameView extends ViewComponent {
     @ButtonLock(0.3)
     async onSpin() {
         if (this.isAni) return;
-        const bet = this.bet.curBet;
         const freeNum = GameStorage.getLimit().free;
 
         if (freeNum > 0) {//免费转
             GameStorage.setLimitFree(freeNum - 1);
             this.setFreeSpin();
             AudioManager.playEffect("gufen");
-        } else {
-            const coin = GameStorage.getCoin();
-            if (coin < bet) {
-                // ViewManager.showTips("Not enough coins");
-                ViewManager.showTips(i18n.string("str_nec"));
-                ViewManager.showCoinDialog(() => { GameManger.instance.mustLineNum = 1 });
-                return;
-            }
-            CoinManger.instance.addCoin(-bet);
-        }
+        } 
 
+        this.treasure.addProgress(1);
         if (Math.random() < 0.3) {
             GameManger.instance.mustLineNum += 1;//随机给个必连线
         }
         this.isAni = true;
         this.board.setSpinNormal();
 
-        GameManger.instance.setBet(bet);
         // this.showWinCoin(false);
         this.showWinNormal();
-        this.top.addTimes(() => { this.bet.showAddAndSub() });
+        this.top.addTimes(() => {  });
         await this.board.spin();
         await this.spinNext();
     }
@@ -184,7 +181,6 @@ export class GameView extends ViewComponent {
     public setFreeSpin() {
         const num = GameStorage.getLimit().free;
         const v = num > 0;
-        this.bet.setFree(v);
         const n = this.btnSpin.getChildByName("num");
         const str = this.btnSpin.getChildByName("str");
         const spin = this.btnSpin.getChildByName("spin");
@@ -200,17 +196,17 @@ export class GameView extends ViewComponent {
     }
     /**钱x2显示 */
     public async cashX2(isAni: boolean = false) {
-        const cashNum = GameStorage.getLimit().cash;
-        const show = cashNum > 0;
-        if (isAni && show) {
-            ViewManager.showRewardParticle(RewardType.money, this.node, this.x2, () => {
-                this.x2.active = show;
-                ActionEffect.scaleBigToSmall(this.x2, 1.3, 1, 0.3);
-                AudioManager.playEffect("light");
-            })
-        } else {
-            this.x2.active = show;
-        }
+        // const cashNum = GameStorage.getLimit().cash;
+        // const show = cashNum > 0;
+        // if (isAni && show) {
+        //     ViewManager.showRewardParticle(RewardType.money, this.node, this.x2, () => {
+        //         this.x2.active = show;
+        //         ActionEffect.scaleBigToSmall(this.x2, 1.3, 1, 0.3);
+        //         AudioManager.playEffect("light");
+        //     })
+        // } else {
+        //     this.x2.active = show;
+        // }
 
     }
     private spinCashX2() {

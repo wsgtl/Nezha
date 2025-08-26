@@ -54,7 +54,7 @@ export class Treasure extends Component {
         const jd = cur / GameUtil.TreasureNum;
         if (isAni) {
             tween(this.progress)
-                .to(0.2, { fillRange: -jd })
+                .to(0.2, { fillRange: jd })
                 .call(async() => {
                     if (isAll){
                         await delay(0.2);
@@ -64,7 +64,7 @@ export class Treasure extends Component {
                 })
                 .start();
         } else {
-            this.progress.fillRange = -jd;
+            this.progress.fillRange = jd;
         }
 
     }

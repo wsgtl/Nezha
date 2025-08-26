@@ -375,7 +375,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 17
@@ -776,10 +776,6 @@
       },
       {
         "__uuid__": "fa5923e9-9e48-4089-aabd-bd4956315441@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "2c406b3d-0337-48a5-84df-771d21c2b0e7@f9941",
         "__expectedType__": "cc.SpriteFrame"
       }
     ],

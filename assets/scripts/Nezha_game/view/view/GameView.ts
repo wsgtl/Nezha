@@ -27,7 +27,6 @@ import { Board } from '../component/Board';
 import { CoinManger } from '../../manager/CoinManger';
 import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { MoneyManger } from '../../manager/MoneyManger';
-import { FreeAndCash } from '../component/FreeAndCash';
 import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
 import { MoneyAni } from '../component/MoneyAni';
 import { v3 } from 'cc';
@@ -36,6 +35,7 @@ import { i18n } from '../../../Nezha_common/i18n/I18nManager';
 import { NativeFun } from '../../../Nezha_common/native/NativeFun';
 import { EnergyManger } from '../../manager/EnergyManager';
 import { Lotus } from '../component/Lotus';
+import { Limit } from '../component/Limit';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -57,8 +57,8 @@ export class GameView extends ViewComponent {
     dialogNode: Node = null;
     @property(Treasure)
     treasure: Treasure = null;
-    @property(FreeAndCash)
-    limit: FreeAndCash = null;
+    @property(Limit)
+    limit: Limit = null;
     @property(Node)
     btnSpin: Node = null;
     @property([SpriteFrame])
@@ -157,18 +157,18 @@ export class GameView extends ViewComponent {
     @ButtonLock(0.3)
     async onSpin() {
         if (this.isAni) return;
-        const freeNum = GameStorage.getLimit().lotus;
+        // const freeNum = GameStorage.getLimit().lotus;
 
-        if (freeNum > 0) {//免费转
-            GameStorage.setLimitLotus(freeNum - 1);
-            this.setFreeSpin();
-            AudioManager.playEffect("gufen");
-        } else {
-            if (!EnergyManger.subEnergy()) {
-                ViewManager.showEnergyDialog();//没体力显示体力界面
-                return;
-            }
+        // if (freeNum > 0) {//免费转
+        //     GameStorage.setLimitLotus(freeNum - 1);
+        //     this.setFreeSpin();
+        //     AudioManager.playEffect("gufen");
+        // } else {
+        if (!EnergyManger.subEnergy()) {
+            ViewManager.showEnergyDialog();//没体力显示体力界面
+            return;
         }
+        // }
 
         this.treasure.addProgress(1);
         if (Math.random() < 0.3) {
@@ -197,6 +197,7 @@ export class GameView extends ViewComponent {
         // n.getComponent(Sprite).spriteFrame = this.btnSpinNum[num];
     }
     private isFreeSpin() {
+        return false;
         const num = GameStorage.getLimit().lotus;
         return num > 0;
     }

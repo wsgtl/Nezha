@@ -8,8 +8,8 @@ import { ViewManager } from '../../manager/ViewManger';
 import { GameManger } from '../../manager/GameManager';
 const { ccclass, property } = _decorator;
 
-@ccclass('FreeAndCash')
-export class FreeAndCash extends Component {
+@ccclass('Limit')
+export class Limit extends Component {
     @property(Node)
     btn: Node = null;
     @property(NumFont)
@@ -52,9 +52,9 @@ export class FreeAndCash extends Component {
         this.curLimit = cur;
         let show = false;
         const data = GameStorage.getLimit();
-        if ( cur== 1) {//两倍钱奖励5次
+        if ( cur== 1) {//钱标两个
             show = data.cash <= 0;
-        } else if (cur == 2) {//免费5次转轮
+        } else if (cur == 2) {//金莲两个
             show = data.lotus <= 0;
         } else {
             show = false;

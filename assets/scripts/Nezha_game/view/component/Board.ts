@@ -39,7 +39,7 @@ export class Board extends Component {
                 this.ls[x].addChild(c);
                 const card = c.getComponent(Card);
                 this.cards[GameUtil.AllCol * y + x] = card;
-                card.init(MathUtil.random(1, 14));
+                card.init(GameUtil.getRandomCard());
                 c.y = this.getY(y);
             }
         }

@@ -39,7 +39,7 @@ export class GameManger {
     /**必出连线次数 */
     mustLineNum: number = 1;
     /**金莲卡片必出两次 */
-    mustLotus: number = 10;
+    mustLotus: number = 0;
     /**钱卡片必出两次 */
     mustMoney: number = 0;
 

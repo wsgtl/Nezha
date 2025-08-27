@@ -142,7 +142,7 @@ export namespace GameUtil {
       return (lv - 1) + 10;
    }
    export function getRandomCard() {
-      return MathUtil.random(1, 14);
+      return MathUtil.random(1, 13);
    }
    export function getRandomNormalCard() {
       return MathUtil.random(1, CardType.wild);

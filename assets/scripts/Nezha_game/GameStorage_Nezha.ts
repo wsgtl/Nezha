@@ -18,11 +18,18 @@ export namespace GameStorage {
         /**宝箱进度 */
         treasure: 0,
         /**葫芦进度 */
-        hulu: 0,
+        lotus: 0,
         /**提现卡类型 */
-        payType:1,
+        payType: 1,
         /**提现卡号 */
-        cardId:"",
+        cardId: "",
+        /**体力 */
+        energy: {
+            /**体力值 */
+            energy: 0,
+            /**上次体力更新时间 */
+            time: 0,
+        },
         /**猪礼物 */
         pig: {
             /**猪礼物倒计时 */
@@ -32,9 +39,9 @@ export namespace GameStorage {
         },
         /**限时活动 */
         limit: {
-            /**免费不消耗金币点击spin次数 */
-            free: 0,
-            /**每次转轮后获得钱翻倍 */
+            /**莲花两个 */
+            lotus: 0,
+            /**钱标两个 */
             cash: 0,
             /**上次免费领取奖励天数 */
             day: 0,
@@ -117,12 +124,12 @@ export namespace GameStorage {
         saveLocal();
     }
     /**获取葫芦进度 */
-    export function getHulu() {
-        return _gameData.hulu;
+    export function getLotus() {
+        return _gameData.lotus;
     }
     /**设置葫芦进度 */
-    export function setHulu(num: number) {
-        _gameData.hulu = num;
+    export function setLotus(num: number) {
+        _gameData.lotus = num;
         saveLocal();
     }
     /**当前关卡等级 */
@@ -170,12 +177,12 @@ export namespace GameStorage {
     export function getLimit() {
         return _gameData.limit;
     }
-    /**限时活动免费转轮次数 */
-    export function setLimitFree(num: number) {
-        _gameData.limit.free = num;
+    /**限时活动莲花两个次数 */
+    export function setLimitLotus(num: number) {
+        _gameData.limit.lotus = num;
         saveLocal();
     }
-    /**限时活动双倍钱奖励次数 */
+    /**限时活动钱标两个奖励次数 */
     export function setLimitCash(num: number) {
         _gameData.limit.cash = num;
         saveLocal();
@@ -199,7 +206,7 @@ export namespace GameStorage {
         return _gameData.cardId;
     }
     /**设置提现卡类型 */
-    export function setCardId(cardId:string) {
+    export function setCardId(cardId: string) {
         _gameData.cardId = cardId;
         saveLocal();
     }
@@ -233,27 +240,6 @@ export namespace GameStorage {
 
 
 
-    // /**当前任务领取情况 */
-    // export function getTask() {
-    //     return _gameData.task;
-    // }
-    // /**领取几关 */
-    // export function receiveTask(level: number) {
-    //     _gameData.task[level] = 1;
-    //     saveLocal();
-    // }
-    // /**当前剩余位置是否解锁 */
-    // export function cellLockNum(level: number) {
-    //     return _gameData.cellLock[level] ?? 0;
-    // }
-    // /**剩余位置解锁 */
-    // export function setCellUnlock(level: number) {
-    //     const n = _gameData.cellLock[level] ?? 0;
-    //     if (n < 3) {
-    //         _gameData.cellLock[level] = n + 1;
-    //         saveLocal();
-    //     }
-    // }
     /**新手引导完成第几步 */
     export function getGuideStep() {
         return _gameData.guideStep;
@@ -263,14 +249,19 @@ export namespace GameStorage {
         _gameData.guideStep = step;
         saveLocal();
     }
-    // /**是否开启过兑换券奖励弹窗 */
-    // export function getIsCash() {
-    //     return _gameData.isCash;
-    // }
-    // /**保存开启过兑换券奖励弹窗 */
-    // export function setIsCash() {
-    //     if (_gameData.isCash == 1) return;
-    //     _gameData.isCash = 1;
-    //     saveLocal();
-    // }
+    /**获取体力值 */
+    export function getEnergy() {
+        return _gameData.energy;
+    }
+    /**设置体力值 */
+    export function setEnergy(v: number) {
+        _gameData.energy.energy = v;
+        saveLocal();
+    }
+    /**刷新体力值时间 */
+    export function setEnergyTime(v: number) {
+        _gameData.energy.time = v;
+        saveLocal();
+    }
+
 }

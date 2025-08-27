@@ -27,7 +27,6 @@ import { Board } from '../component/Board';
 import { CoinManger } from '../../manager/CoinManger';
 import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { MoneyManger } from '../../manager/MoneyManger';
-import { Hulu } from '../component/Hulu';
 import { FreeAndCash } from '../component/FreeAndCash';
 import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
 import { MoneyAni } from '../component/MoneyAni';
@@ -35,6 +34,8 @@ import { v3 } from 'cc';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { i18n } from '../../../Nezha_common/i18n/I18nManager';
 import { NativeFun } from '../../../Nezha_common/native/NativeFun';
+import { EnergyManger } from '../../manager/EnergyManager';
+import { Lotus } from '../component/Lotus';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -64,8 +65,8 @@ export class GameView extends ViewComponent {
     btnSpinNum: SpriteFrame[] = [];
     @property(Board)
     board: Board = null;
-    @property(Hulu)
-    hulu: Hulu = null;
+    @property(Lotus)
+    lotus: Lotus = null;
     @property(NumFont)
     winCoin: NumFont = null;
     @property(NumFont)
@@ -97,7 +98,7 @@ export class GameView extends ViewComponent {
 
     fit() {
         const h = view.getVisibleSize().y;
-        
+
         const cha = h - 1920;
         const ch = cha / 2;
         const cy = (ch < 60 ? ch : ch - 60);
@@ -112,11 +113,11 @@ export class GameView extends ViewComponent {
         }
         // this.treasure.node.y = 720 + ch * 1;
         this.limit.node.y = 540 + ch * 0.5;
-        this.btnMore.y = 540 + ch *  0.5;
+        this.btnMore.y = 540 + ch * 0.5;
         console.log("h", h);
 
-        const bgSc = Math.max(1,1+cha/1200);
-        this.bg1.scale=v3(1,bgSc);
+        const bgSc = Math.max(1, 1 + cha / 1200);
+        this.bg1.scale = v3(1, bgSc);
 
         nextFrame().then(() => {
             const p = UIUtils.transformOtherNodePos2localNode(this.node, this.dialogNode);
@@ -138,7 +139,7 @@ export class GameView extends ViewComponent {
         if (!GuideManger.isGuide()) {
 
         }
-      
+
         // this.showWinCoin(false);
         this.showWinNormal();
         this.setFreeSpin();
@@ -156,13 +157,18 @@ export class GameView extends ViewComponent {
     @ButtonLock(0.3)
     async onSpin() {
         if (this.isAni) return;
-        const freeNum = GameStorage.getLimit().free;
+        const freeNum = GameStorage.getLimit().lotus;
 
         if (freeNum > 0) {//免费转
-            GameStorage.setLimitFree(freeNum - 1);
+            GameStorage.setLimitLotus(freeNum - 1);
             this.setFreeSpin();
             AudioManager.playEffect("gufen");
-        } 
+        } else {
+            if (!EnergyManger.subEnergy()) {
+                ViewManager.showEnergyDialog();//没体力显示体力界面
+                return;
+            }
+        }
 
         this.treasure.addProgress(1);
         if (Math.random() < 0.3) {
@@ -173,25 +179,25 @@ export class GameView extends ViewComponent {
 
         // this.showWinCoin(false);
         this.showWinNormal();
-        this.top.addTimes(() => {  });
+        this.top.addTimes(() => { });
         await this.board.spin();
         await this.spinNext();
     }
     /**免费spin按钮 */
     public setFreeSpin() {
-        const num = GameStorage.getLimit().free;
-        const v = num > 0;
-        const n = this.btnSpin.getChildByName("num");
-        const str = this.btnSpin.getChildByName("str");
-        const spin = this.btnSpin.getChildByName("spin");
-        n.active = v;
-        spin.active = v;
-        str.active = !v;
+        // const num = GameStorage.getLimit().lotus;
+        // const v = num > 0;
+        // const n = this.btnSpin.getChildByName("num");
+        // const str = this.btnSpin.getChildByName("str");
+        // const spin = this.btnSpin.getChildByName("spin");
+        // n.active = v;
+        // spin.active = v;
+        // str.active = !v;
 
-        n.getComponent(Sprite).spriteFrame = this.btnSpinNum[num];
+        // n.getComponent(Sprite).spriteFrame = this.btnSpinNum[num];
     }
     private isFreeSpin() {
-        const num = GameStorage.getLimit().free;
+        const num = GameStorage.getLimit().lotus;
         return num > 0;
     }
     /**钱x2显示 */
@@ -226,9 +232,9 @@ export class GameView extends ViewComponent {
             const num = await this.moneyDialog();
             const last = moneyNum;
             moneyNum += num;
-            
+
             // this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
-            ActionEffect.numAddAni(last,moneyNum,(n:number)=>{this.showWinMoney(n)});
+            ActionEffect.numAddAni(last, moneyNum, (n: number) => { this.showWinMoney(n) });
         }
         //自动弹钱
         // const moneyCards = GameManger.instance.findCards(CardType.c12);
@@ -251,19 +257,20 @@ export class GameView extends ViewComponent {
         //     await this.board.cardsShot(treasureCards, this.treasure.node, RewardType.none);
         //     await this.treasure.addProgress(treasureCards.length);
         // }
+        await this.treasure.showTreasureDialog();
 
         //金莲
         const lotusCards = GameManger.instance.findCards(CardType.lotus);
         if (lotusCards.length > 0) {
-            await this.board.cardsShot(lotusCards, this.hulu.icon, RewardType.none);
-            await this.hulu.addProgress(lotusCards.length);
+            await this.board.cardsShot(lotusCards, this.lotus.icon, RewardType.none);
+            await this.lotus.addProgress(lotusCards.length);
         }
         const isFreeSpin = this.isFreeSpin();
         //连线判定
         const linedata = GameManger.instance.getLinesData();
         if (linedata.coin > 0) {
-            CoinManger.instance.addCoin(linedata.coin,false);
-            ActionEffect.numAddAni(0,linedata.coin,(n:number)=>{this.showWinCoin(n)},true);
+            CoinManger.instance.addCoin(linedata.coin, false);
+            ActionEffect.numAddAni(0, linedata.coin, (n: number) => { this.showWinCoin(n) }, true);
             this.board.showLineLight(linedata);
             if (linedata.winType > 0 && !isFreeSpin) {
                 ViewManager.showWinDialog(linedata.winType, linedata.coin);
@@ -283,11 +290,11 @@ export class GameView extends ViewComponent {
             })
         })
     }
-    private showWinCoin( num: number = 0) {
+    private showWinCoin(num: number = 0) {
         // this.winCoin.node.parent.active = v;
         this.winCoin.num = num;
     }
-    private showWinMoney(moneyNum:number){
+    private showWinMoney(moneyNum: number) {
         this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
     }
     private showWinNormal() {

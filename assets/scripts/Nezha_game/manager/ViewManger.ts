@@ -268,9 +268,9 @@ export namespace ViewManager {
             }
         })
     }
-    /** 宝箱奖池界面 */
-    export function showTreasureDialog(cb:Function) {
-        prefabs.instantiate("prefabs/dialog/treasureDialog").then((dialog) => {
+    /** 彩金界面 */
+    export function showGoldRewardDialog(cb:Function) {
+        prefabs.instantiate("prefabs/dialog/goldRewardDialog").then((dialog) => {
             if (isVaild(dialog)) {
                 const script = dialog.getComponent(ViewComponent);
                 script.show(upperNode, { cb});
@@ -319,6 +319,15 @@ export namespace ViewManager {
             if (isVaild(dialog)) {
                 const script = dialog.getComponent(ViewComponent);
                 script.show(upperNode, { cb,closeCb});
+            }
+        })
+    }
+    /** 体力值界面 */
+    export function showEnergyDialog() {
+        prefabs.instantiate("prefabs/dialog/energyDialog").then((dialog) => {
+            if (isVaild(dialog)) {
+                const script = dialog.getComponent(ViewComponent);
+                script.show(upperNode, {});
             }
         })
     }

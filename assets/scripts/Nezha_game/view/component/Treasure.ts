@@ -20,7 +20,7 @@ export class Treasure extends Component {
         this.showProgress(false);
         // this.node.on(Node.EventType.TOUCH_START,()=>{
         //     ViewManager.showTreasureDialog(()=>{
-               
+
         //     })
         // })
     }
@@ -29,24 +29,42 @@ export class Treasure extends Component {
         return new Promise<void>(res => {
             const t = GameStorage.getTreasure();
             let cur = t + num;
-            if (cur >= GameUtil.TreasureNum) {
-                this.showProgress(true, true,GameUtil.TreasureNum);
-                GameStorage.setTreasure(0);
-                delay(0.2).then(()=>{
-                ViewManager.showTreasureDialog(()=>{
-                    res();
-                })
-            })
-            } else {
-                GameStorage.setTreasure(cur);
-                this.showProgress(true);
-                res();
-            }
+            // if (cur >= GameUtil.TreasureNum) {
+            //     this.showProgress(true, true,GameUtil.TreasureNum);
+            //     GameStorage.setTreasure(0);
+            //     delay(0.2).then(()=>{
+            //     ViewManager.showTreasureDialog(()=>{
+            //         res();
+            //     })
+            // })
+            // } else {
+            GameStorage.setTreasure(cur);
+            this.showProgress(true);
+            res();
+            // }
             ActionEffect.scaleBigToSmall(this.treasure, 1.2, 1, 0.2);
 
 
         })
 
+    }
+    /**可以展示幸运宝箱界面 */
+    showTreasureDialog() {
+        return new Promise<void>(res => {
+            const cur = GameStorage.getTreasure();
+            if (cur >= GameUtil.TreasureNum) {
+                GameStorage.setTreasure(0);
+                this.showProgress(false);
+                delay(0.2).then(() => {
+                    ViewManager.showLuckyDialog(() => {
+                        res();
+                    })
+                })
+            }else{
+                res();
+            }
+        })
+     
     }
     private showProgress(isAni: boolean, isAll: boolean = false, cur: number = -1) {
         if (cur < 0)
@@ -55,12 +73,12 @@ export class Treasure extends Component {
         if (isAni) {
             tween(this.progress)
                 .to(0.2, { fillRange: jd })
-                .call(async() => {
-                    if (isAll){
+                .call(async () => {
+                    if (isAll) {
                         await delay(0.2);
                         this.progress.fillRange = 0;
                     }
-                       
+
                 })
                 .start();
         } else {

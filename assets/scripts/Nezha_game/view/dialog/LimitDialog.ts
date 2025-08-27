@@ -36,7 +36,7 @@ export class LimitDialog extends DialogComponent {
             if(this.isFree){
                 this.onlimit();
             }else{
-                const t = ["钱两倍","免费5次转"][this.type-1];
+                const t = ["钱两个","莲花两个"][this.type-1];
                 adHelper.showRewardVideo(t+"活动弹窗",()=>{
                     this.onlimit();
                 },ViewManager.adNotReady);
@@ -50,12 +50,12 @@ export class LimitDialog extends DialogComponent {
         AudioManager.playEffect("light");
     }
     private onlimit(){
-        if(this.type==LimitType.cash){//5次双倍
+        if(this.type==LimitType.cash){//钱标两个
             GameStorage.setLimitCash(5);
-            GameManger.instance.cashX2();
-        }else{//5次免费转
-            GameStorage.setLimitFree(5);
-            GameManger.instance.setFreeSpin();
+            GameManger.instance.cash2();
+        }else{//莲花两个
+            GameStorage.setLimitLotus(5);
+            GameManger.instance.lotus2();
         }
         GameStorage.setLimitDay(GameUtil.getCurDay());
         this.closeAni();

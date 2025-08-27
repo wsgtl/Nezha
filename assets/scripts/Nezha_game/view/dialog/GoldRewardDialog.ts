@@ -13,8 +13,8 @@ import { AudioManager } from '../../manager/AudioManager';
 import { ButtonLock } from '../../../Nezha_common/Decorator';
 const { ccclass, property } = _decorator;
 
-@ccclass('TreasureDialog')
-export class TreasureDialog extends ViewComponent {
+@ccclass('GoldRewardDialog')
+export class GoldRewardDialog extends ViewComponent {
     @property([Node])
     jackpots: Node[] = [];
     @property(Node)

@@ -9,10 +9,7 @@ export class Jackpot extends Component {
     sys:NumFont[]=[];
 
     protected onLoad(): void {
-        const symbol = LangStorage.getData().symbol;
-        this.sys.forEach((v,i)=>{
-            v.num = symbol;
-        })
+        
     }
 }
 

@@ -55,7 +55,7 @@ export class FreeAndCash extends Component {
         if ( cur== 1) {//两倍钱奖励5次
             show = data.cash <= 0;
         } else if (cur == 2) {//免费5次转轮
-            show = data.free <= 0;
+            show = data.lotus <= 0;
         } else {
             show = false;
         }

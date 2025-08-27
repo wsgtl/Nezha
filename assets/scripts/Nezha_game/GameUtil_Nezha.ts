@@ -62,7 +62,7 @@ export enum WinType {
 export enum LimitType {
    none = 0,
    cash = 1,
-   free,
+   lotus,
 }
 /**提现卡类型 */
 export enum PayType {

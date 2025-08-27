@@ -39,7 +39,7 @@ export class GameManger {
     /**必出连线次数 */
     mustLineNum: number = 1;
     /**金莲卡片必出两次 */
-    mustLotus: number = 0;
+    mustLotus: number = 10;
     /**钱卡片必出两次 */
     mustMoney: number = 0;
 
@@ -250,6 +250,12 @@ export class GameManger {
     }
     public cashX2() {
         this.gv.cashX2(true);
+    }
+    public cash2(){
+        this.mustMoney=5;
+    }
+    public lotus2(){
+        this.mustLotus=2;
     }
     /**找到咪牌起始位置 */
     public findFreeGameStart(){

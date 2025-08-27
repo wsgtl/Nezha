@@ -73,6 +73,8 @@ export class GameView extends ViewComponent {
     @property(NumFont)
     winMoney: NumFont = null;
     @property(Node)
+    winNode: Node = null;
+    @property(Node)
     btnMore: Node = null;
 
 
@@ -305,16 +307,33 @@ export class GameView extends ViewComponent {
             })
         })
     }
+
     private showWinCoin(num: number = 0) {
+
         // this.winCoin.node.parent.active = v;
         this.winCoin.num = num;
+        this.showWinNodeScale(this.winCoin.node.parent);
     }
     private showWinMoney(moneyNum: number) {
         this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
+        this.showWinNodeScale(this.winMoney.node.parent);
     }
     private showWinNormal() {
+        
+        this.winCoin.node.parent.active = false;
+        this.winMoney.node.parent.active = false;
+        this.winNode.scale = v3(1,1,1);
         this.winCoin.num = 0;
         this.winMoney.num = 0;
+    }
+    private showWinNodeScale(node:Node){
+        this.winNode.active = true;
+        node.active = true;
+        let num = 0;
+        if(this.winCoin.node.parent.active)num++;
+        if(this.winMoney.node.parent.active)num++;
+        const sc = num==1?1.5:1;
+        ActionEffect.scale(this.winNode,0.1,sc,this.winNode.scale.x);
     }
 
     private delay(time: number, node?: Node) {

@@ -272,4 +272,7 @@ export class GameManger {
         }
         return 10;
     }
+    public autoNext(){
+        this.gv.autoNext();
+    }
 }

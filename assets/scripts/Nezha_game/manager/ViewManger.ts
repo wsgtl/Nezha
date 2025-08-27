@@ -251,11 +251,11 @@ export namespace ViewManager {
         })
     }
     /** 赢界面 */
-    export function showWinDialog(type:WinType,num:number) {
+    export function showWinDialog(type:WinType,num:number,cb:Function) {
         prefabs.instantiate("prefabs/dialog/win").then((dialog) => {
             if (isVaild(dialog)) {
                 const script = dialog.getComponent(ViewComponent);
-                script.show(upperNode, { type,num});
+                script.show(upperNode, { type,num,cb});
             }
         })
     }

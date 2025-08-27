@@ -7,6 +7,7 @@ import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
 import { ViewManager } from '../../manager/ViewManger';
 import { tween } from 'cc';
 import { v3 } from 'cc';
+import { GameManger } from '../../manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BtnGift')
@@ -21,7 +22,7 @@ export class BtnGift extends Component {
     start() {
         // this.curTime = GameStorage.getPig().pigTime;
         this.node.on(Button.EventType.CLICK, () => {
-            if(this.curTime>0)return;
+            if(this.curTime>0||GameManger.instance.isAni)return;
             ViewManager.showLuckyGiftDialog(()=>{
                 this.curTime = 120;
             })

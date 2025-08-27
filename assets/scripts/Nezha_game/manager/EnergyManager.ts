@@ -1,5 +1,6 @@
 import { FormatUtil } from "../../Nezha_common/utils/FormatUtil";
 import { GameStorage } from "../GameStorage_Nezha";
+import { GameManger } from "./GameManager";
 
 /**体力管理 */
 export namespace EnergyManger {
@@ -24,6 +25,7 @@ export namespace EnergyManger {
     export function maxEnergy() {
         GameStorage.setEnergy(max);
         showCb?.();
+        GameManger.instance.autoNext();
     }
     /**加体力 */
     export function addEnergy() {

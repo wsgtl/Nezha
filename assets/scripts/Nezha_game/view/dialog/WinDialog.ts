@@ -26,6 +26,7 @@ export class WinDialog extends DialogComponent {
         super.start();
         this.ani();
         this.bg.on(Node.EventType.TOUCH_START, () => {
+            this.closeCb();
             this.node.destroy();
             if (Math.random() < 0.7)
                 adHelper.showInterstitial("大赢界面");
@@ -47,11 +48,13 @@ export class WinDialog extends DialogComponent {
         // this.wins.forEach((v,i)=>{
         //     v.active = i==args.type-1;
         // })
+        this.closeCb = args.cb;
         const ani = ["bigwin_loop", "megawin_loop"];
         this.sk.animation = ani[args.type - 1];
         ActionEffect.numAddAni(0,args.num,(n:number)=>{if(this.num)this.num.num =n},true,12);
         AudioManager.vibrate(1, 155);
     }
+
 }
 
 

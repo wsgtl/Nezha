@@ -16,6 +16,7 @@ export class DialogComponent extends ViewComponent {
     btnClose: Node = null;
 
     isAni: boolean = false;
+    closeCb:Function=null;
     start() {
         this.startAni();
         this.node.on(Node.EventType.TOUCH_START, () => { });
@@ -39,6 +40,7 @@ export class DialogComponent extends ViewComponent {
         this.isAni = true;
         await ActionEffect.fadeOut(this.node, 0.3);
         this.node.destroy();
+        this.closeCb?.();
     }
 
 }

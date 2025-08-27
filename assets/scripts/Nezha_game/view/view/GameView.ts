@@ -12,7 +12,7 @@ import { tween } from 'cc';
 import { Tween } from 'cc';
 import { view } from 'cc';
 import { UIUtils } from '../../../Nezha_common/utils/UIUtils';
-import { CardType, GameUtil, RewardType } from '../../GameUtil_Nezha';
+import { CardType, GameUtil, RewardType, WinType } from '../../GameUtil_Nezha';
 import { nextFrame } from '../../../Nezha_common/utils/TimeUtil';
 import { GameManger } from '../../manager/GameManager';
 import { GuideManger } from '../../manager/GuideManager';
@@ -36,6 +36,7 @@ import { NativeFun } from '../../../Nezha_common/native/NativeFun';
 import { EnergyManger } from '../../manager/EnergyManager';
 import { Lotus } from '../component/Lotus';
 import { Limit } from '../component/Limit';
+import { BtnSpin } from '../component/BtnSpin';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -59,8 +60,8 @@ export class GameView extends ViewComponent {
     treasure: Treasure = null;
     @property(Limit)
     limit: Limit = null;
-    @property(Node)
-    btnSpin: Node = null;
+    @property(BtnSpin)
+    btnSpin: BtnSpin = null;
     @property([SpriteFrame])
     btnSpinNum: SpriteFrame[] = [];
     @property(Board)
@@ -90,7 +91,8 @@ export class GameView extends ViewComponent {
             // ViewManager.showWinDialog(MathUtil.random(1,2),MathUtil.random(100,1000))
             // ViewManager.showJackpotDialog(MathUtil.random(1,3),33.903);
         })
-        this.btnSpin.on(Button.EventType.CLICK, this.onSpin, this);
+        this.btnSpin.init(() => { this.onSpin() });
+        // this.btnSpin.on(Button.EventType.CLICK, this.onSpin, this);
         this.btnMore.on(Button.EventType.CLICK, this.onMore, this);
         // this.btnCash.on(Button.EventType.CLICK, this.onCash, this);
         this.initGuide();
@@ -147,9 +149,10 @@ export class GameView extends ViewComponent {
     }
     private set isAni(v: boolean) {
         GameManger.instance.isAni = v;
+        this.btnSpin.setIsAni(v);
         // UIUtils.setBtnGray(this.btnSpin, v, !v);
-        this.btnSpin.getChildByName("gray").active = v;
-        this.btnSpin.getComponent(Button).interactable = !v;
+        // this.btnSpin.getChildByName("gray").active = v;
+        // this.btnSpin.getComponent(Button).interactable = !v;
     }
     private get isAni() {
         return GameManger.instance.isAni;
@@ -183,6 +186,7 @@ export class GameView extends ViewComponent {
         await this.board.spin();
         await this.spinNext();
     }
+
     /**免费spin按钮 */
     public setFreeSpin() {
         // const num = GameStorage.getLimit().lotus;
@@ -216,13 +220,7 @@ export class GameView extends ViewComponent {
         // }
 
     }
-    private spinCashX2() {
 
-        const cashNum = GameStorage.getLimit().cash;
-        if (cashNum > 0)
-            GameStorage.setLimitCash(cashNum - 1);
-        this.cashX2();
-    }
     /**转轮结束后流程  1钱广告弹窗  2自动弹钱  3宝箱  4猴子葫芦  5连线判定 */
     private async spinNext() {
         //钱广告弹窗
@@ -273,16 +271,32 @@ export class GameView extends ViewComponent {
             CoinManger.instance.addCoin(linedata.coin, false);
             ActionEffect.numAddAni(0, linedata.coin, (n: number) => { this.showWinCoin(n) }, true);
             this.board.showLineLight(linedata);
-            if (linedata.winType > 0 && !isFreeSpin) {
-                ViewManager.showWinDialog(linedata.winType, linedata.coin);
+            if (linedata.winType > 0) {
+                await this.showWinDialog(linedata.winType, linedata.coin);
+            }
+            if (this.btnSpin.isAuto) {
+                await this.delay(2);
             }
         }
         this.guidStpe2();
-        this.isAni = false;
-        if (isFreeSpin) {
+        
+        if (this.btnSpin.isAuto) {
+            await this.delay(1);
+            this.isAni = false;
             this.onSpin();
+        }else{
+            this.isAni = false;
         }
-        this.spinCashX2();
+        // if (isFreeSpin) {
+        //     this.onSpin();
+        // }
+
+    }
+    private showWinDialog(type: WinType, num: number) {
+        return new Promise<void>(res => {
+            ViewManager.showWinDialog(type, num, () => { res() });
+        })
+
     }
     private moneyDialog() {
         return new Promise<number>(res => {
@@ -349,7 +363,7 @@ export class GameView extends ViewComponent {
         })
     }
     private guidStpe1() {
-        this.gm.showSpin(this.btnSpin);
+        this.gm.showSpin(this.btnSpin.node);
     }
 
 
@@ -367,7 +381,12 @@ export class GameView extends ViewComponent {
 
 
 
-
+    public autoNext() {
+        if (this.isAni) return;
+        if (this.btnSpin.isAuto) {
+            this.onSpin();
+        }
+    }
 
 
     private onForeground() {

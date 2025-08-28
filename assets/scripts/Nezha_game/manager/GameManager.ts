@@ -117,7 +117,7 @@ export class GameManger {
             }
 
         }
-        const type = MathUtil.random(0, 3);
+        const type = MathUtil.random(0, 2);
         //金莲控制
         if (type == 1 || this.mustLotus > 0) {
             let num1 = MathUtil.random(1, 2);
@@ -136,10 +136,11 @@ export class GameManger {
             }
             this.insertCard(CardType.money, num2);
         }
-        //免费转控制
-        if (type == 3) {
-            let num3 = MathUtil.random(3, 5);
-            this.insertCard(CardType.freeGame, num3);
+        //免费游戏控制
+        if (Math.random() < 0.5) {
+            let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);
+            let gl = num3 < 3 ? 0.5 : num3 < 5 ? 0.3 : 0.1;
+            this.inserCardOne(CardType.freeGame, num3, gl);
         }
 
         //随机插入普通卡片
@@ -171,6 +172,24 @@ export class GameManger {
                 break;
         }
     }
+    /**一列只插入一个 */
+    private inserCardOne(type: CardType, num: number, gl: number = 0) {
+        for (let i = 0; i < GameUtil.AllCol; i++) {
+            if (num <= 0) return;
+            if (Math.random() < gl) continue;//有一定概率跳过当前列
+            const list: number[] = [];
+            for (let j = 0; j < GameUtil.AllRow; j++) {
+                if (this.board[j][i] == CardType.none) {
+                    list.push(j);//找到空位置
+                }
+            }
+            if (list.length) {
+                const p = list.getRandomItem();
+                this.board[p][i] = type;
+                num--;
+            }
+        }
+    }
     private bet: number = GameUtil.BaseBet;
     // public setBet(b: number) {
     //     this.bet = b;
@@ -196,7 +215,16 @@ export class GameManger {
                     }
                     if ((type != t && t != CardType.wild) || x == GameUtil.AllCol - 1) {
                         if (arr.length >= 3) {
-                            lines.push({ type, line: arr })
+                            let isSame = false;//判断前面是否有相同的线，有就不要
+                            lines.forEach(v => {
+                                if (v.line.length != arr.length) return;
+                                for (let i = 0; i < arr.length; i++) {
+                                    if (v.line[i] != arr[i]) return;
+                                }
+                                isSame = true;
+                                return;
+                            })
+                            !isSame && lines.push({ type, line: arr })
                         }
                         break;
                     }

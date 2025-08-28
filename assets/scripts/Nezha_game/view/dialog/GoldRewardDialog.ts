@@ -39,7 +39,7 @@ export class GoldRewardDialog extends ViewComponent {
     cb: Function;
     private ybArr: Yb[] = [];
     /**固定奖池出现 */
-    private randomJackpot: JakcpotType[] = [1, 2, 2, 3, 3, 0, 0];
+    private randomJackpot: JakcpotType[] = [1, 1, 2, 2, 3, 3, 3];
     // private randomJackpot: JakcpotType[] = [1, 1, 1,2,2,2,3,3,3];
     /**奖池出现数 */
     private jackpotShowNum: number[] = [0, 0, 0, 0];
@@ -50,17 +50,19 @@ export class GoldRewardDialog extends ViewComponent {
     show(parent: Node, args?: any): void {
         super.show(parent);
         this.cb = args.cb;
-        if (Math.random() < 0.5) this.randomJackpot.push(3);
-        this.randomJackpot.shuffle();
+
+
         this.init();
     }
+
     init() {
+        this.initJackpot();
         this.showJackpotShowNum();
         this.showBtn(false);
         this.btnAdd.on(Button.EventType.CLICK, this.onBtnAdd, this);
         this.btnClaim.on(Button.EventType.CLICK, this.onBtnCliam, this);
-        const w = 240;
-        const h = 170;
+        const w = 250;
+        const h = 200;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 4; j++) {
                 const yb = instantiate(this.yb);
@@ -82,6 +84,15 @@ export class GoldRewardDialog extends ViewComponent {
         this.yb.active = false;
         this.showFreeTimes();
         this.showMoney(this.curMoney);
+    }
+    private initJackpot() {
+        
+        for (let i = this.randomJackpot.length; i < 12; i++) {
+            this.randomJackpot[i] = 0;
+        }
+        this.randomJackpot.shuffle();
+        if (Math.random() < 0.4) this.randomJackpot[0] = 2;
+        if (Math.random() < 0.03) this.randomJackpot[0] = 1;//有概率出大奖池
     }
 
     showBtn(v: boolean) {
@@ -130,7 +141,7 @@ export class GoldRewardDialog extends ViewComponent {
                 const last = this.curMoney;
                 this.curMoney += money;
                 ActionEffect.numAddAni(last, this.curMoney, (n: number) => { this.showMoney(n) });
-            },0.5)
+            }, 0.5)
         } else {
             ybcom.show(type);
             this.jackpotShowNum[type]++;
@@ -149,7 +160,7 @@ export class GoldRewardDialog extends ViewComponent {
             delay(0.5).then(() => {
                 this.showJackpotShowNum();
             });
-            ViewManager.showJackpotDialog(type, MoneyManger.instance.getReward(),()=>{this.onBtnCliam()});
+            ViewManager.showJackpotDialog(type, MoneyManger.instance.getReward(), () => { });
         }
     }
     private showJackpotShowNum() {

@@ -111,24 +111,28 @@ export class Board extends Component {
             let q = 0;
             // const lineAniIndex = Math.random() < 0.4 ? MathUtil.random(2, 5) : 0;
             const lineAniIndex = GameManger.instance.findFreeGameStart();
+            const isLineAni = lineAniIndex > 0 && lineAniIndex <= GameUtil.AllCol
             for (let i = 0; i < GameUtil.AllCol; i++) {
-                const lineAniAdd = (lineAniIndex > 0 && lineAniIndex <= GameUtil.AllCol && i >= lineAniIndex - 1) ? 2 : 0;
+                const lineAniAdd = (isLineAni && i >= lineAniIndex - 1) ? 2 : 0;
                 q += (i == 0) ? MathUtil.random(3, 5) : MathUtil.random(1, 2);
                 q += lineAniAdd;
                 const wait = 0.1 * i;
 
                 this.spinOne(i, [board[0][i], board[1][i], board[2][i]], q, wait, lineAniIndex > 0)
                     .then(() => {
-                        if(lineAniIndex-2==i){//开始咪牌
-                            this.lineAni.node.x = this.ls[lineAniIndex - 1].x;
-                            this.lineAni.show(true);
+                        if(isLineAni){
+                            if(lineAniIndex-2==i){//开始咪牌
+                                this.lineAni.node.x = this.ls[lineAniIndex - 1].x;
+                                this.lineAni.show(true);
+                            }
+                            if (lineAniAdd) {
+                                if (i == 4)
+                                    this.lineAni.show(false);
+                                else
+                                    this.lineAni.node.x = this.ls[i + 1].x;
+                            }
                         }
-                        if (lineAniAdd) {
-                            if (i == 4)
-                                this.lineAni.show(false);
-                            else
-                                this.lineAni.node.x = this.ls[i + 1].x;
-                        }
+                       
                         if (i == GameUtil.AllCol - 1) {
                             res();
                         }

@@ -20,11 +20,11 @@ export class Lotus extends Component {
 
     protected onLoad(): void {
         this.showProgress(false);
-        // this.node.on(Node.EventType.TOUCH_START, () => {
-        //     ViewManager.showLuckyDialog(() => {
-
-        //     })
-        // })
+        this.node.on(Node.EventType.TOUCH_START, () => {
+            ViewManager.showGoldRewardDialog(() => {
+                
+            })
+        })
     }
     /**增加金莲进度 */
     addProgress(num: number) {

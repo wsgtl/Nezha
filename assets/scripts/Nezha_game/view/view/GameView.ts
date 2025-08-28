@@ -37,6 +37,7 @@ import { EnergyManger } from '../../manager/EnergyManager';
 import { Lotus } from '../component/Lotus';
 import { Limit } from '../component/Limit';
 import { BtnSpin } from '../component/BtnSpin';
+import { Layout } from 'cc';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -108,12 +109,15 @@ export class GameView extends ViewComponent {
         const cy = (ch < 60 ? ch : ch - 60);
         this.top.node.y = 960 + cy;
         this.jackpot.y = 650 + cy * 0.6;
+        
         const kbn = this.content.getChildByName("kbn");
         kbn.y = 520 + ch * 0.55;
+        this.jackpot.getComponent(Layout).spacingY=20+Math.floor(ch/8);
         if (ch > 200) {
             const sc = Math.min(1.2, 1 + ch / 1400);
             kbn.scale = v3(sc, sc);
             // this.boardContent.y=0+30;
+            
         }
         // this.treasure.node.y = 720 + ch * 1;
         this.limit.node.y = 540 + ch * 0.5;
@@ -309,7 +313,6 @@ export class GameView extends ViewComponent {
     }
 
     private showWinCoin(num: number = 0) {
-
         // this.winCoin.node.parent.active = v;
         this.winCoin.num = num;
         this.showWinNodeScale(this.winCoin.node.parent);
@@ -319,7 +322,6 @@ export class GameView extends ViewComponent {
         this.showWinNodeScale(this.winMoney.node.parent);
     }
     private showWinNormal() {
-        
         this.winCoin.node.parent.active = false;
         this.winMoney.node.parent.active = false;
         this.winNode.scale = v3(1,1,1);
@@ -332,7 +334,7 @@ export class GameView extends ViewComponent {
         let num = 0;
         if(this.winCoin.node.parent.active)num++;
         if(this.winMoney.node.parent.active)num++;
-        const sc = num==1?1.5:1;
+        const sc = num==1?1.5:1;//只有一个就变大显示
         ActionEffect.scale(this.winNode,0.1,sc,this.winNode.scale.x);
     }
 

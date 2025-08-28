@@ -109,6 +109,8 @@ export namespace GameUtil {
    export const CashWithdrawNum: number = 100;
    /**签到金币数 */
    export const SigninCoins: number[] = [100, 200, 300, 400, 500, 600, 1000];
+   /**3~5个免费游戏标可以有几次免费游戏 */
+   export const FreeGameTimes: number[] = [7,9,11];
    /**每个连线卡获得金币数 */
    export const lineCoin: number[][] = [
       [],

@@ -36,8 +36,10 @@ export class JackpotDialog extends DialogComponent {
 
     type: JakcpotType;
     money: number;
+    cb:Function
     show(parent: Node, args?: any) {
         parent.addChild(this.node);
+        this.cb = args.cb;
         this.init(args.type, args.num);
     }
     init(type: JakcpotType, num: number) {
@@ -106,6 +108,7 @@ export class JackpotDialog extends DialogComponent {
     onNothink() {
         this.closeAni();
         adHelper.timesToShowInterstitial();
+        this.cb(); 
     }
 }
 

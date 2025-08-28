@@ -42,6 +42,10 @@ export class GameManger {
     mustLotus: number = 0;
     /**钱卡片必出两次 */
     mustMoney: number = 0;
+    /**免费游戏次数 */
+    freegam: number = 0;
+    /**免费游戏盖在上面的卡片 */
+    private freeGameBoard: CardType[][] = [];
 
     public getNewBoard() {
         // this.borad = [
@@ -163,7 +167,7 @@ export class GameManger {
             const p = list[i];
             if (p)
                 this.board[p.y][p.x] = type;//插入
-            else 
+            else
                 break;
         }
     }
@@ -251,28 +255,41 @@ export class GameManger {
     public cashX2() {
         this.gv.cashX2(true);
     }
-    public cash2(){
-        this.mustMoney=5;
+    public cash2() {
+        this.mustMoney = 5;
     }
-    public lotus2(){
-        this.mustLotus=2;
+    public lotus2() {
+        this.mustLotus = 2;
     }
     /**找到咪牌起始位置 */
-    public findFreeGameStart(){
+    public findFreeGameStart() {
         let num = 0;
-        for(let x=0;x<GameUtil.AllCol;x++){
-            for(let y=0;y<GameUtil.AllRow;y++){
-                if(this.board[y][x]==CardType.freeGame){
+        for (let x = 0; x < GameUtil.AllCol; x++) {
+            for (let y = 0; y < GameUtil.AllRow; y++) {
+                if (this.board[y][x] == CardType.freeGame) {
                     num++;
-                    if(num>=2){
-                        return x+2;
+                    if (num >= 2) {
+                        return x + 2;
                     }
                 }
             }
         }
         return 10;
     }
-    public autoNext(){
+    public autoNext() {
         this.gv.autoNext();
+    }
+    /**计算有几个freegame标，是否开启免费游戏 */
+    public calFreeGame() {
+        const cards = this.findCards(CardType.freeGame);
+        if (cards.length >= 3) {
+            this.freegam = GameUtil.FreeGameTimes[Math.min(2, cards.length - 3)];
+            return true;
+        }
+        return false;
+    }
+    /**是否在免费游戏期间 */
+    public get isFreeGame() {
+        return this.freegam > 0;
     }
 }

@@ -11,6 +11,10 @@ import { delay } from '../../../Nezha_common/utils/TimeUtil';
 import { MoneyManger } from '../../manager/MoneyManger';
 import { AudioManager } from '../../manager/AudioManager';
 import { ButtonLock } from '../../../Nezha_common/Decorator';
+import { NumFont } from '../../../Nezha_common/ui/NumFont';
+import { LangStorage } from '../../../Nezha_common/localStorage/LangStorage';
+import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
+import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 const { ccclass, property } = _decorator;
 
 @ccclass('GoldRewardDialog')
@@ -27,20 +31,26 @@ export class GoldRewardDialog extends ViewComponent {
     ybs: Node = null;
     @property(Node)
     hand: Node = null;
+    @property(NumFont)
+    moneyNode: NumFont = null;
+    @property(NumFont)
+    freeTimes: NumFont = null;
 
     cb: Function;
     private ybArr: Yb[] = [];
     /**固定奖池出现 */
-    private randomJackpot: JakcpotType[] = [1, 1, 2, 2, 3, 3, 3];
+    private randomJackpot: JakcpotType[] = [1, 2, 2, 3, 3, 0, 0];
     // private randomJackpot: JakcpotType[] = [1, 1, 1,2,2,2,3,3,3];
     /**奖池出现数 */
     private jackpotShowNum: number[] = [0, 0, 0, 0];
     private isInit: boolean = true;
-    /**第一次弹窗后可以点击的次数 */
-    private canClickNum: number = 0;
+    private curMoney: number = 0;
+    /**免费次数 */
+    private canClickNum: number = 9;
     show(parent: Node, args?: any): void {
         super.show(parent);
         this.cb = args.cb;
+        if (Math.random() < 0.5) this.randomJackpot.push(3);
         this.randomJackpot.shuffle();
         this.init();
     }
@@ -70,6 +80,8 @@ export class GoldRewardDialog extends ViewComponent {
             }
         }
         this.yb.active = false;
+        this.showFreeTimes();
+        this.showMoney(this.curMoney);
     }
 
     showBtn(v: boolean) {
@@ -77,7 +89,7 @@ export class GoldRewardDialog extends ViewComponent {
         this.btnClaim.active = v;
     }
     onBtnAdd() {
-        adHelper.showRewardVideo("宝箱弹窗多开两个按钮",() => {
+        adHelper.showRewardVideo("宝箱弹窗多开两个按钮", () => {
             this.canClickNum += 2;
             this.showAllAd(false);
         }, ViewManager.adNotReady);
@@ -96,23 +108,37 @@ export class GoldRewardDialog extends ViewComponent {
     clickYb(ybcom: Yb) {
         this.hand.active = false;
         AudioManager.playEffect("yb");
-        if (!this.isInit) {
-            this.canClickNum--;
-            if (this.canClickNum <= 0) {
-                this.showAllAd(true);//显示要点击广告
-            }
+        // if (!this.isInit) {
+        this.canClickNum--;
+        if (this.canClickNum <= 0) {
+            this.showAllAd(true);//显示要点击广告
         }
+        // }
+        this.showFreeTimes();
         let type: JakcpotType = JakcpotType.mini;
         if (this.randomJackpot.length) {
             type = this.randomJackpot.pop();
         } else {
             const m = Math.random()
-            type = m < 0.03 ? JakcpotType.grand : (m < 0.2 ? JakcpotType.major : JakcpotType.mini);//有概率出中奖池和大奖池
+            type = m < 0.03 ? JakcpotType.grand : (m < 0.3 ? JakcpotType.major : (m < 0.6 ? 0 : JakcpotType.mini));//有概率出中奖池和大奖池
         }
-        ybcom.show(type);
-        this.jackpotShowNum[type]++;
-        // this.showJackpotShowNum();
-        this.flyAni(ybcom.node,type);
+        if (type == 0) {
+            const money = MoneyManger.instance.getReward(0.5);
+            ybcom.show(type, money);
+            MoneyManger.instance.addMoney(money, true);
+            ViewManager.showRewardParticle(RewardType.money, ybcom.node, this.moneyNode.node, () => {
+                const last = this.curMoney;
+                this.curMoney += money;
+                ActionEffect.numAddAni(last, this.curMoney, (n: number) => { this.showMoney(n) });
+            },0.5)
+        } else {
+            ybcom.show(type);
+            this.jackpotShowNum[type]++;
+            // this.showJackpotShowNum();
+            this.flyAni(ybcom.node, type);
+        }
+
+
         if (this.jackpotShowNum[type] >= 3) {
             if (this.isInit) {
                 this.showAllAd(true);//显示要点击广告
@@ -123,7 +149,7 @@ export class GoldRewardDialog extends ViewComponent {
             delay(0.5).then(() => {
                 this.showJackpotShowNum();
             });
-            ViewManager.showJackpotDialog(type, MoneyManger.instance.getReward());
+            ViewManager.showJackpotDialog(type, MoneyManger.instance.getReward(),()=>{this.onBtnCliam()});
         }
     }
     private showJackpotShowNum() {
@@ -137,11 +163,19 @@ export class GoldRewardDialog extends ViewComponent {
         })
     }
     /**动画 */
-    private flyAni(from:Node,type:JakcpotType){
+    private flyAni(from: Node, type: JakcpotType) {
         const num = this.jackpotShowNum[type];
-        const p = this.jackpots[type-1];
-        const dot = p.getChildByName("dots").getChildByName("d"+num);
-        ViewManager.showRewardParticle(RewardType.none,from,dot,()=>{this.showJackpotShowNum();},0.3);
+        const p = this.jackpots[type - 1];
+        const dot = p.getChildByName("dots").getChildByName("d" + num);
+        ViewManager.showRewardParticle(RewardType.none, from, dot, () => { this.showJackpotShowNum(); }, 0.3);
+    }
+    private showFreeTimes() {
+        this.freeTimes.num = this.canClickNum;
+    }
+    private showMoney(num: number) {
+        const n = FormatUtil.toXXDXX(num, 2, false);
+        const str = LangStorage.getData().symbol + " " + n;
+        this.moneyNode.num = str;
     }
 }
 

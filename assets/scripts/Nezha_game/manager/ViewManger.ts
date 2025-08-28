@@ -196,11 +196,11 @@ export namespace ViewManager {
         })
     }
     /** 奖池界面 */
-    export function showJackpotDialog(type:JakcpotType,num:number) {
+    export function showJackpotDialog(type:JakcpotType,num:number,cb:Function) {
         prefabs.instantiate("prefabs/dialog/jackpotDialog").then((dialog) => {
             if (isVaild(dialog)) {
                 const script = dialog.getComponent(ViewComponent);
-                script.show(upperNode,{type,num});
+                script.show(upperNode,{type,num,cb});
             }
         })
     }

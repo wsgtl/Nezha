@@ -320,22 +320,7 @@ export class GameManger {
         })
         return cardPos;
     }
-    /**找猴子卡 */
-    // public findMonkeyCards(): Vec2[] {
-    //     const cardPos: Vec2[] = [];
-    //     this.board.forEach((b, y) => {
-    //         b.forEach((c, x) => {
-    //             if (c >= CardType.c6 && c <= CardType.c9) {
-    //                 cardPos.push(v2(x, y));
-    //             }
-    //         })
-    //     })
-    //     return cardPos;
-    // }
-    public setFreeSpin() {
-        this.gv.setFreeSpin();
-        this.gv.onSpin();
-    }
+
 
     public cash2() {
         this.mustMoney = 5;

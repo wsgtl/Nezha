@@ -8,6 +8,7 @@ import { i18n } from './Nezha_common/i18n/I18nManager';
 import { AudioStorage } from './Nezha_common/localStorage/AudioStorage';
 import { LangStorage } from './Nezha_common/localStorage/LangStorage';
 import { EnergyManger } from './Nezha_game/manager/EnergyManager';
+import { JackpotManger } from './Nezha_game/manager/JackpotManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameLaunch')
@@ -39,6 +40,7 @@ export class GameLaunch extends Component {
         LangStorage.init();
         AudioManager.setBgmNode(this.bgmNode);
         AudioStorage.init();
+        JackpotManger.init();
         EnergyManger.calEnergy();
         i18n.loadLang();//加载多语言
 

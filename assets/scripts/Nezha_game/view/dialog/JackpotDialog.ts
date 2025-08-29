@@ -17,6 +17,7 @@ import { adHelper } from '../../../Nezha_common/native/AdHelper';
 import { ViewManager } from '../../manager/ViewManger';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { UIUtils } from '../../../Nezha_common/utils/UIUtils';
+import { CoinManger } from '../../manager/CoinManger';
 const { ccclass, property } = _decorator;
 
 @ccclass('JackpotDialog')
@@ -35,7 +36,7 @@ export class JackpotDialog extends DialogComponent {
     jackpots: Node[] = [];
 
     type: JakcpotType;
-    money: number;
+    coinNum: number;
     cb:Function
     show(parent: Node, args?: any) {
         parent.addChild(this.node);
@@ -43,14 +44,15 @@ export class JackpotDialog extends DialogComponent {
         this.init(args.type, args.num);
     }
     init(type: JakcpotType, num: number) {
-        const data = LangStorage.getData();
+        // const data = LangStorage.getData();
         this.type = type;
-        this.money = num;
+        this.coinNum = num;
         this.jackpots.forEach((v, i) => {
             v.active = i + 1 == type;
         })
         this.num.aligning = 1;
-        this.num.num = data.symbol + FormatUtil.toXXDXX(num, 6);
+        // this.num.num = data.symbol + FormatUtil.toXXDXX(num, 6);
+        this.num.num = FormatUtil.toXXDXX(num,0,false);
         this.btnClaim.on(Button.EventType.CLICK, this.onClaim, this);
         this.btnNt.on(Button.EventType.CLICK, this.onNothink, this);
         this.ani();
@@ -100,7 +102,8 @@ export class JackpotDialog extends DialogComponent {
     onClaim() {
         const jack = ["grand", "major", "mini"][this.type - 1];
         adHelper.showRewardVideo(jack + "奖池领取", () => {
-            MoneyManger.instance.addMoney(this.money);
+            // MoneyManger.instance.addMoney(this.money);
+            CoinManger.instance.addCoin(this.coinNum);
             this.closeAni();
         }, ViewManager.adNotReady);
 

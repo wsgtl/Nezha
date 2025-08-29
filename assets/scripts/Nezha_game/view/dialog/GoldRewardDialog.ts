@@ -15,6 +15,7 @@ import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { LangStorage } from '../../../Nezha_common/localStorage/LangStorage';
 import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
+import { JackpotManger } from '../../manager/JackpotManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GoldRewardDialog')
@@ -40,7 +41,7 @@ export class GoldRewardDialog extends ViewComponent {
     private ybArr: Yb[] = [];
     /**固定奖池出现 */
     private randomJackpot: JakcpotType[] = [1, 1, 2, 2, 3, 3, 3];
-    // private randomJackpot: JakcpotType[] = [1, 1, 1,2,2,2,3,3,3];
+    // private randomJackpot: JakcpotType[] = [1, 1, 1,2,3];
     /**奖池出现数 */
     private jackpotShowNum: number[] = [0, 0, 0, 0];
     private isInit: boolean = true;
@@ -161,7 +162,8 @@ export class GoldRewardDialog extends ViewComponent {
             delay(0.5).then(() => {
                 this.showJackpotShowNum();
             });
-            ViewManager.showJackpotDialog(type, MoneyManger.instance.getReward(), () => { });
+            // ViewManager.showJackpotDialog(type, MoneyManger.instance.getReward(), () => { });
+            ViewManager.showJackpotDialog(type, JackpotManger.getData()[type-1], () => { });
         }
     }
     private showJackpotShowNum() {

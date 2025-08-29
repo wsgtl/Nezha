@@ -25,6 +25,8 @@ export class Board extends Component {
     cardPrefab: Prefab = null;
     @property([Node])
     ls: Node[] = [];
+    @property(Node)
+    upBoard: Node = null;
     @property(MoneyAni)
     moneyAni: MoneyAni = null;
     @property(LineAni)
@@ -49,6 +51,9 @@ export class Board extends Component {
     }
     private getY(i: number) {
         return -(i - 1) * GameUtil.CardH;
+    }
+    private getX(i: number) {
+        return (i - 2) * GameUtil.CardW;
     }
     /**转一列 */
     private spinOne(index: number, types: CardType[], times: number, wait: number, isLineAni: boolean = false) {
@@ -120,8 +125,8 @@ export class Board extends Component {
 
                 this.spinOne(i, [board[0][i], board[1][i], board[2][i]], q, wait, lineAniIndex > 0)
                     .then(() => {
-                        if(isLineAni){
-                            if(lineAniIndex-2==i){//开始咪牌
+                        if (isLineAni) {
+                            if (lineAniIndex - 2 == i) {//开始咪牌
                                 this.lineAni.node.x = this.ls[lineAniIndex - 1].x;
                                 this.lineAni.show(true);
                             }
@@ -132,7 +137,7 @@ export class Board extends Component {
                                     this.lineAni.node.x = this.ls[i + 1].x;
                             }
                         }
-                       
+
                         if (i == GameUtil.AllCol - 1) {
                             res();
                         }
@@ -216,6 +221,22 @@ export class Board extends Component {
     // private playLineAniEffect() {
     //     AudioManager.playEffect("nenliang");
     // }
+
+    /**生成置顶wild */
+    public createUpWild(wilds: Vec2[]) {
+        wilds.forEach((v) => {
+            const c = instantiate(this.cardPrefab);
+            this.upBoard.addChild(c);
+            const card = c.getComponent(Card);
+            card.init(CardType.wild);
+            c.y = this.getY(v.y);
+            c.x = this.getX(v.x);
+        })
+    }
+    /**清除置顶wild */
+    public clearUpWild() {
+        this.upBoard.destroyAllChildren();
+    }
 }
 
 

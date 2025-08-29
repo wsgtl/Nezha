@@ -46,7 +46,7 @@ export class GoldRewardDialog extends ViewComponent {
     private isInit: boolean = true;
     private curMoney: number = 0;
     /**免费次数 */
-    private canClickNum: number = 9;
+    private canClickNum: number = 8;
     show(parent: Node, args?: any): void {
         super.show(parent);
         this.cb = args.cb;
@@ -101,8 +101,9 @@ export class GoldRewardDialog extends ViewComponent {
     }
     onBtnAdd() {
         adHelper.showRewardVideo("宝箱弹窗多开两个按钮", () => {
-            this.canClickNum += 2;
+            this.canClickNum += Math.min(2,this.randomJackpot.length);
             this.showAllAd(false);
+            this.showFreeTimes();
         }, ViewManager.adNotReady);
     }
     onBtnCliam() {
@@ -152,7 +153,7 @@ export class GoldRewardDialog extends ViewComponent {
 
         if (this.jackpotShowNum[type] >= 3) {
             if (this.isInit) {
-                this.showAllAd(true);//显示要点击广告
+                // this.showAllAd(true);//显示要点击广告
                 this.isInit = false;
                 this.showBtn(true);
             }

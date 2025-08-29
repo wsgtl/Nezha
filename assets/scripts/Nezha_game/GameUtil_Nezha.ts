@@ -102,6 +102,7 @@ export namespace GameUtil {
    export const TreasureNum: number = 10;//宝箱收集到多少就触发奖池奖励
    export const CashNum: number = 1000;//最低提现金额
    export const BaseBet: number = 500;//基础金币赌注
+   export const MaxWildNum: number = 5;//免费游戏最多的wild
    /**登陆后是否弹签到 */
    export const Daily = { isShow: false };
 

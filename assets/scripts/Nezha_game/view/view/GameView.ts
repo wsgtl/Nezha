@@ -38,6 +38,8 @@ import { Lotus } from '../component/Lotus';
 import { Limit } from '../component/Limit';
 import { BtnSpin } from '../component/BtnSpin';
 import { Layout } from 'cc';
+import { Vec2 } from 'cc';
+import { WinNum } from '../component/WinNum';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -69,12 +71,12 @@ export class GameView extends ViewComponent {
     board: Board = null;
     @property(Lotus)
     lotus: Lotus = null;
-    @property(NumFont)
-    winCoin: NumFont = null;
-    @property(NumFont)
-    winMoney: NumFont = null;
-    @property(Node)
-    winNode: Node = null;
+    // @property(NumFont)
+    // winCoin: NumFont = null;
+    // @property(NumFont)
+    // winMoney: NumFont = null;
+    @property(WinNum)
+    winNode: WinNum = null;
     @property(Node)
     btnMore: Node = null;
 
@@ -109,15 +111,15 @@ export class GameView extends ViewComponent {
         const cy = (ch < 60 ? ch : ch - 60);
         this.top.node.y = 960 + cy;
         this.jackpot.y = 650 + cy * 0.6;
-        
+
         const kbn = this.content.getChildByName("kbn");
         kbn.y = 520 + ch * 0.55;
-        this.jackpot.getComponent(Layout).spacingY=20+Math.floor(ch/8);
+        this.jackpot.getComponent(Layout).spacingY = 20 + Math.floor(ch / 8);
         if (ch > 200) {
             const sc = Math.min(1.2, 1 + ch / 1400);
             kbn.scale = v3(sc, sc);
             // this.boardContent.y=0+30;
-            
+
         }
         // this.treasure.node.y = 720 + ch * 1;
         this.limit.node.y = 540 + ch * 0.5;
@@ -149,9 +151,8 @@ export class GameView extends ViewComponent {
         }
 
         // this.showWinCoin(false);
-        this.showWinNormal();
+        this.winNode.showWinNormal();
         this.setFreeSpin();
-        this.cashX2();
     }
     private set isAni(v: boolean) {
         GameManger.instance.isAni = v;
@@ -187,12 +188,43 @@ export class GameView extends ViewComponent {
         this.board.setSpinNormal();
 
         // this.showWinCoin(false);
-        this.showWinNormal();
+        this.winNode.showWinNormal();
         this.top.addTimes(() => { });
         await this.board.spin();
         await this.spinNext();
     }
+    /**免费游戏转轮 */
+    async freeGameSpin() {
+        this.isAni = true;
+        this.board.setSpinNormal();
+        await this.board.spin();
+        const wilds = GameManger.instance.upWild();
+        this.board.createUpWild(wilds);
+        await this.spinNext(true);
+        GameManger.instance.freegame--;
+        if (GameManger.instance.isFreeGame) {
+            this.freeGameSpin();
+        } else {
+            this.endFreeGame();
+        }
+    }
+    /**开始免费游戏 */
+    async startFreeGame() {
+        GameManger.instance.initFreeGame();
+        //免费游戏开始弹窗
 
+        //免费游戏过场动画
+
+        this.winNode.showWinNormal();
+        //开车免费游戏转轮
+        this.freeGameSpin();
+    }
+    /**结束免费游戏 */
+    async endFreeGame() {
+        this.isAni = false;
+        this.board.clearUpWild();
+    }
+    
     /**免费spin按钮 */
     public setFreeSpin() {
         // const num = GameStorage.getLimit().lotus;
@@ -206,40 +238,23 @@ export class GameView extends ViewComponent {
 
         // n.getComponent(Sprite).spriteFrame = this.btnSpinNum[num];
     }
-    private isFreeSpin() {
-        return false;
-        const num = GameStorage.getLimit().lotus;
-        return num > 0;
-    }
-    /**钱x2显示 */
-    public async cashX2(isAni: boolean = false) {
-        // const cashNum = GameStorage.getLimit().cash;
-        // const show = cashNum > 0;
-        // if (isAni && show) {
-        //     ViewManager.showRewardParticle(RewardType.money, this.node, this.x2, () => {
-        //         this.x2.active = show;
-        //         ActionEffect.scaleBigToSmall(this.x2, 1.3, 1, 0.3);
-        //         AudioManager.playEffect("light");
-        //     })
-        // } else {
-        //     this.x2.active = show;
-        // }
 
-    }
+
 
     /**转轮结束后流程  1钱广告弹窗  2自动弹钱  3宝箱  4猴子葫芦  5连线判定 */
-    private async spinNext() {
+    private async spinNext(isFreeGame: boolean = false) {
         //钱广告弹窗
         let moneyNum = 0;
         const moneyDialogCards = GameManger.instance.findCards(CardType.money);
         if (moneyDialogCards.length >= 3) {
             await this.board.showCards(moneyDialogCards);
             const num = await this.moneyDialog();
-            const last = moneyNum;
-            moneyNum += num;
+            // const last = moneyNum;
+            // moneyNum += num;
 
             // this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
-            ActionEffect.numAddAni(last, moneyNum, (n: number) => { this.showWinMoney(n) });
+            this.winNode.addWinMoney(num);
+            // ActionEffect.numAddAni(last, moneyNum, (n: number) => { this.winNode.addWinMoney(n) });
         }
         //自动弹钱
         // const moneyCards = GameManger.instance.findCards(CardType.c12);
@@ -270,32 +285,36 @@ export class GameView extends ViewComponent {
             await this.board.cardsShot(lotusCards, this.lotus.icon, RewardType.none);
             await this.lotus.addProgress(lotusCards.length);
         }
-        const isFreeSpin = this.isFreeSpin();
+
         //连线判定
         const linedata = GameManger.instance.getLinesData();
         if (linedata.coin > 0) {
             CoinManger.instance.addCoin(linedata.coin, false);
-            ActionEffect.numAddAni(0, linedata.coin, (n: number) => { this.showWinCoin(n) }, true);
+            this.winNode.addWinCoin(linedata.coin);
+            // ActionEffect.numAddAni(0, linedata.coin, (n: number) => { this.winNode.addWinCoin(n) }, true);
             this.board.showLineLight(linedata);
             if (linedata.winType > 0) {
                 await this.showWinDialog(linedata.winType, linedata.coin);
             }
-            if (this.btnSpin.isAuto) {
+            if (this.btnSpin.isAuto || isFreeGame) {
                 await this.delay(2);
             }
         }
         this.guidStpe2();
-        
-        if (this.btnSpin.isAuto) {
-            await this.delay(1);
-            this.isAni = false;
-            this.onSpin();
-        }else{
-            this.isAni = false;
+        if (!isFreeGame) {
+            if (this.btnSpin.isAuto) {
+                await this.delay(1);
+                this.isAni = false;
+                this.onSpin();
+            } else {
+                this.isAni = false;
+            }
+            if (GameManger.instance.calFreeGame()) {
+                this.startFreeGame();
+            }
         }
-        // if (isFreeSpin) {
-        //     this.onSpin();
-        // }
+
+
 
     }
     private showWinDialog(type: WinType, num: number) {
@@ -312,31 +331,31 @@ export class GameView extends ViewComponent {
         })
     }
 
-    private showWinCoin(num: number = 0) {
-        // this.winCoin.node.parent.active = v;
-        this.winCoin.num = num;
-        this.showWinNodeScale(this.winCoin.node.parent);
-    }
-    private showWinMoney(moneyNum: number) {
-        this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
-        this.showWinNodeScale(this.winMoney.node.parent);
-    }
-    private showWinNormal() {
-        this.winCoin.node.parent.active = false;
-        this.winMoney.node.parent.active = false;
-        this.winNode.scale = v3(1,1,1);
-        this.winCoin.num = 0;
-        this.winMoney.num = 0;
-    }
-    private showWinNodeScale(node:Node){
-        this.winNode.active = true;
-        node.active = true;
-        let num = 0;
-        if(this.winCoin.node.parent.active)num++;
-        if(this.winMoney.node.parent.active)num++;
-        const sc = num==1?1.5:1;//只有一个就变大显示
-        ActionEffect.scale(this.winNode,0.1,sc,this.winNode.scale.x);
-    }
+    // private showWinCoin(num: number = 0) {
+    //     // this.winCoin.node.parent.active = v;
+    //     this.winCoin.num = num;
+    //     this.showWinNodeScale(this.winCoin.node.parent);
+    // }
+    // private showWinMoney(moneyNum: number) {
+    //     this.winMoney.num = "+" + FormatUtil.toXXDXXxsd(moneyNum);
+    //     this.showWinNodeScale(this.winMoney.node.parent);
+    // }
+    // private showWinNormal() {
+    //     this.winCoin.node.parent.active = false;
+    //     this.winMoney.node.parent.active = false;
+    //     this.winNode.scale = v3(1, 1, 1);
+    //     this.winCoin.num = 0;
+    //     this.winMoney.num = 0;
+    // }
+    // private showWinNodeScale(node: Node) {
+    //     this.winNode.active = true;
+    //     node.active = true;
+    //     let num = 0;
+    //     if (this.winCoin.node.parent.active) num++;
+    //     if (this.winMoney.node.parent.active) num++;
+    //     const sc = num == 1 ? 1.5 : 1;//只有一个就变大显示
+    //     ActionEffect.scale(this.winNode, 0.1, sc, this.winNode.scale.x);
+    // }
 
     private delay(time: number, node?: Node) {
         return new Promise<void>(resolve => {

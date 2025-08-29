@@ -33,7 +33,8 @@ export class GameManger {
     private curLevel: number = 1;
     private lastLevel: number = 1;
     private board: CardType[][] = [];
-
+    /**免费游戏盖在上面的卡片 */
+    private freeGameBoard: CardType[][] = [];
 
     isAni: boolean = false;
     /**必出连线次数 */
@@ -43,9 +44,8 @@ export class GameManger {
     /**钱卡片必出两次 */
     mustMoney: number = 0;
     /**免费游戏次数 */
-    freegam: number = 0;
-    /**免费游戏盖在上面的卡片 */
-    private freeGameBoard: CardType[][] = [];
+    freegame: number = 0;
+
 
     public getNewBoard() {
         // this.borad = [
@@ -62,14 +62,14 @@ export class GameManger {
             ]
             return this.board;
         }
+        // this.board = [];
+        if (this.isFreeGame) {
+            return this.freeGameBoardControl();
+        }
 
-        this.board = [];
+
         return this.boardControl();
-        // if (this.mustLineNum > 0) {
-        //     return this.mustLineBoard();
 
-        // }
-        // return this.normalBoard();
     }
     /**普通随机机台 */
     private normalBoard() {
@@ -83,40 +83,47 @@ export class GameManger {
     }
     /**必出连线机台 */
     private mustLineBoard() {
-        this.mustLineNum--;
         const list = GameUtil.lines.getRandomItem();
-        this.normalBoard();
         // const lineNum = MathUtil.random(3, 5);//随机连线个数
         const lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
-        const type = MathUtil.random(1, 10);//随机类型
+        const type = MathUtil.random(1, 9);//随机类型
         for (let i = 0; i < lineNum; i++) {
             this.board[list[i]][i] = type;
         }
-        return this.board;
     }
+    private clearCards(board: CardType[][] = this.board) {
+        for (let i = 0; i < GameUtil.AllRow; i++) {//先清空卡片数据
+            board[i] = [];
+            for (let j = 0; j < GameUtil.AllCol; j++) {
+                board[i][j] = CardType.none;
+            }
+        }
+    }
+    /**随机插入普通卡片 */
+    private randomInsertCards(hasWild: boolean = true) {
+        const max = hasWild ? CardType.wild : CardType.wild - 1;
+        for (let i = 0; i < GameUtil.AllRow; i++) {
+            for (let j = 0; j < GameUtil.AllCol; j++) {
+                if (this.board[i][j] == CardType.none) {
+                    // this.board[i][j] = GameUtil.getRandomNormalCard();//插入普通卡片
+                    this.board[i][j] = MathUtil.random(1, max);;//插入普通卡片
+                }
+            }
+        }
+    }
+
 
     /**机台卡片控制 */
     private boardControl() {
-        for (let i = 0; i < GameUtil.AllRow; i++) {//先清空卡片数据
-            this.board.push([]);
-            for (let j = 0; j < GameUtil.AllCol; j++) {
-                this.board[i][j] = CardType.none;
-            }
-        }
+        this.clearCards();//先清空卡片数据
 
 
         //连线控制
         if (this.mustLineNum > 0) {
             this.mustLineNum--;
-            const list = GameUtil.lines.getRandomItem();
-            // const lineNum = MathUtil.random(3, 5);//随机连线个数
-            const lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
-            const type = MathUtil.random(1, 9);//随机类型
-            for (let i = 0; i < lineNum; i++) {
-                this.board[list[i]][i] = type;
-            }
-
+            this.mustLineBoard();
         }
+
         const type = MathUtil.random(0, 2);
         //金莲控制
         if (type == 1 || this.mustLotus > 0) {
@@ -142,18 +149,67 @@ export class GameManger {
             let gl = num3 < 3 ? 0.5 : num3 < 5 ? 0.3 : 0.1;
             this.inserCardOne(CardType.freeGame, num3, gl);
         }
+        // this.inserCardOne(CardType.freeGame, 3, 0);
 
         //随机插入普通卡片
-        for (let i = 0; i < GameUtil.AllRow; i++) {
-            for (let j = 0; j < GameUtil.AllCol; j++) {
-                if (this.board[i][j] == CardType.none) {
-                    this.board[i][j] = GameUtil.getRandomNormalCard();//插入普通卡片
-                }
-            }
-        }
+        this.randomInsertCards();
 
         return this.board;
     }
+
+    /**初始化免费游戏相关参数 */
+    public initFreeGame() {
+        this.clearCards(this.freeGameBoard);
+    }
+    /**免费游戏机台控制 */
+    private freeGameBoardControl() {
+        this.clearCards();//先清空卡片数据
+
+        //连线控制
+        this.mustLineBoard();
+
+        //金莲控制
+        this.insertCard(CardType.lotus, MathUtil.random(0, 2));
+
+        //钱卡片控制
+        this.insertCard(CardType.money, MathUtil.random(1, 4));
+
+        //随机插入普通卡片
+        this.randomInsertCards(false);
+
+        const cards = this.findCards(CardType.wild, this.freeGameBoard);
+        if (MathUtil.randomBool() && cards.length < GameUtil.MaxWildNum) {
+            const max = Math.min(3, GameUtil.MaxWildNum - cards.length);
+            const num = MathUtil.random(1, max);//控制wild数量
+            for (let i = 0; i < num; i++) {
+                const x = MathUtil.random(1, 4);
+                const y = MathUtil.random(0, 2);
+                this.board[y][x] = CardType.wild;//插入wild 
+            }
+        }
+
+        
+        return this.board;
+    }
+    /**将wild置顶暂存，用以计算连线 */
+    public upWild():Vec2[]{
+        const pos:Vec2[]=[];
+        for (let i = 0; i < GameUtil.AllRow; i++) {
+            for (let j = 0; j < GameUtil.AllCol; j++) {
+                if (this.board[i][j] == CardType.wild) {
+                    this.freeGameBoard[i][j] = CardType.wild;
+                    pos.push(v2(j,i));
+                    continue;
+                }
+                if (this.freeGameBoard[i][j] == CardType.wild) {
+                    this.board[i][j] = CardType.wild;
+                    continue;
+                }
+            }
+        }
+        return pos;
+    }
+
     private insertCard(type: CardType, num: number) {
         const list: Vec2[] = [];
         for (let i = 0; i < GameUtil.AllRow; i++) {
@@ -253,9 +309,9 @@ export class GameManger {
         return { lines: lines, winType, coin: coinnum };
     }
     /**找该类型的卡 */
-    public findCards(type: CardType): Vec2[] {
+    public findCards(type: CardType, board: CardType[][] = this.board): Vec2[] {
         const cardPos: Vec2[] = [];
-        this.board.forEach((b, y) => {
+        board.forEach((b, y) => {
             b.forEach((c, x) => {
                 if (c == type) {
                     cardPos.push(v2(x, y));
@@ -265,24 +321,22 @@ export class GameManger {
         return cardPos;
     }
     /**找猴子卡 */
-    public findMonkeyCards(): Vec2[] {
-        const cardPos: Vec2[] = [];
-        this.board.forEach((b, y) => {
-            b.forEach((c, x) => {
-                if (c >= CardType.c6 && c <= CardType.c9) {
-                    cardPos.push(v2(x, y));
-                }
-            })
-        })
-        return cardPos;
-    }
+    // public findMonkeyCards(): Vec2[] {
+    //     const cardPos: Vec2[] = [];
+    //     this.board.forEach((b, y) => {
+    //         b.forEach((c, x) => {
+    //             if (c >= CardType.c6 && c <= CardType.c9) {
+    //                 cardPos.push(v2(x, y));
+    //             }
+    //         })
+    //     })
+    //     return cardPos;
+    // }
     public setFreeSpin() {
         this.gv.setFreeSpin();
         this.gv.onSpin();
     }
-    public cashX2() {
-        this.gv.cashX2(true);
-    }
+
     public cash2() {
         this.mustMoney = 5;
     }
@@ -311,13 +365,13 @@ export class GameManger {
     public calFreeGame() {
         const cards = this.findCards(CardType.freeGame);
         if (cards.length >= 3) {
-            this.freegam = GameUtil.FreeGameTimes[Math.min(2, cards.length - 3)];
+            this.freegame = GameUtil.FreeGameTimes[Math.min(2, cards.length - 3)];
             return true;
         }
         return false;
     }
     /**是否在免费游戏期间 */
     public get isFreeGame() {
-        return this.freegam > 0;
+        return this.freegame > 0;
     }
 }

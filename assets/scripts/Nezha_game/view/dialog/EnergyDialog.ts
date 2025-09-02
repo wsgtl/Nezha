@@ -5,6 +5,8 @@ import { adHelper } from '../../../Nezha_common/native/AdHelper';
 import { ViewManager } from '../../manager/ViewManger';
 import { AudioManager } from '../../manager/AudioManager';
 import { EnergyManger } from '../../manager/EnergyManager';
+import { GameStorage } from '../../GameStorage_Nezha';
+import { RewardType } from '../../GameUtil_Nezha';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnergyDialog')
@@ -19,9 +21,16 @@ export class EnergyDialog extends DialogComponent {
         this.cb = args.cb;
 
         this.btnGet.on(Button.EventType.CLICK, () => {
+            if(GameStorage.getEnergy().energy >=EnergyManger.max){
+                ViewManager.showTips("The energy is full.");
+                return;
+            }
             adHelper.showRewardVideo("加体力窗口", () => {
+                
+                ViewManager.showRewardParticle(RewardType.energy,this.node,EnergyManger.getEnergyNode(),()=>{
+                    EnergyManger.maxEnergy();
+                })            
                 this.closeAni();
-                EnergyManger.maxEnergy();
             }, ViewManager.adNotReady);
         }
 

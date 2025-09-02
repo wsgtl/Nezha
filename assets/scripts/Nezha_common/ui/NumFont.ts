@@ -55,6 +55,8 @@ export class NumFont extends Layout {
 
     @property({ type: Number, tooltip: '空格宽度' })
     public blankWidth: number = 10;
+    @property({ type: Number, tooltip: '缩放比例' })
+    public sc: number = 1;
 
 
     updateNum() {
@@ -72,10 +74,15 @@ export class NumFont extends Layout {
             sprite.spriteFrame = this.spriteAtlas.getSpriteFrame(item);
             sprite.sizeMode = Sprite.SizeMode.TRIMMED;
 
-            if(item=="_"||item==","){//.和,默认在下面
+            if (item == "_" || item == ",") {//.和,默认在下面
                 node.getComponent(UITransform).anchorPoint = v2(0.5, 0);
                 const h = UIUtils.getHeight(this.node);
                 node.y = h / 2 * (this._aligning == Aligning.bottom ? -1 : 1);
+            }
+            if (this.sc != 1) {
+                // node.getComponent(UITransform).width *= this.sc;
+                // node.getComponent(UITransform).height *= this.sc;
+                UIUtils.setSizeScale(node,this.sc);
             }
 
 

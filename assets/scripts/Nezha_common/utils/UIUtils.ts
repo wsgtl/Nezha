@@ -127,6 +127,11 @@ export namespace UIUtils {
             needComponent(node, UITransform).setContentSize(width, height);
         }
     }
+    /**通过调整宽高设置缩放 */
+    export function setSizeScale(node: Node,sc:number){
+        needComponent(node, UITransform).width *= sc;
+        needComponent(node, UITransform).height *= sc;
+    }
 
     /**
      * 设置透明度

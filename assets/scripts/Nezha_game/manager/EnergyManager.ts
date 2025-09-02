@@ -1,6 +1,7 @@
 import { FormatUtil } from "../../Nezha_common/utils/FormatUtil";
 import { GameStorage } from "../GameStorage_Nezha";
 import { GameManger } from "./GameManager";
+import { Node } from 'cc';
 
 /**体力管理 */
 export namespace EnergyManger {
@@ -8,7 +9,15 @@ export namespace EnergyManger {
     export const duration: number = 180;
     /**体力值上线 */
     export const max: number = 30;
-    let showCb:Function
+    let showCb:Function;
+    let energyNode:Node =null;
+    export function setEnergyNode(n:Node){
+        energyNode = n;
+    }
+    export function getEnergyNode(){
+        return energyNode;
+    }
+
     export function setShowCb(cb:Function){
         showCb = cb;
     }
@@ -63,7 +72,7 @@ export namespace EnergyManger {
         if (e.energy < max) {
             const cur = getCurSecond();
             t = duration - (cur - e.time);
-            if (t == 0) {
+            if (t <= 0) {
                 GameStorage.setEnergy(e.energy + 1);//加体力
                 GameStorage.setEnergyTime(cur);
                 showCb?.();

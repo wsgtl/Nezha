@@ -5,6 +5,7 @@ import { ViewManager } from '../../manager/ViewManger';
 import { GameStorage } from '../../GameStorage_Nezha';
 import { EnergyManger } from '../../manager/EnergyManager';
 import { delay } from '../../../Nezha_common/utils/TimeUtil';
+import { GameUtil } from '../../GameUtil_Nezha';
 const { ccclass, property } = _decorator;
 
 @ccclass('Energy')
@@ -24,6 +25,7 @@ export class Energy extends Component {
             this.showNum();
             this.showTime();
         })
+        EnergyManger.setEnergyNode(this.node.getChildByName("energy"));
     }
     private showNum(){
         const n = EnergyManger.getCurEnergyStr();

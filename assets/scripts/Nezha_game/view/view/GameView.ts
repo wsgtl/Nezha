@@ -41,6 +41,8 @@ import { Layout } from 'cc';
 import { Vec2 } from 'cc';
 import { WinNum } from '../component/WinNum';
 import { JackpotManger } from '../../manager/JackpotManager';
+import { BtnGift } from '../component/BtnGift';
+import { Energy } from '../component/Energy';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -76,6 +78,10 @@ export class GameView extends ViewComponent {
     winNode: WinNum = null;
     @property(Node)
     btnMore: Node = null;
+    @property(BtnGift)
+    btnGift: BtnGift = null;
+    @property(Energy)
+    energy: Energy = null;
 
 
     onLoad() {
@@ -125,6 +131,7 @@ export class GameView extends ViewComponent {
 
         const bgSc = Math.max(1, 1 + cha / 1200);
         this.bg1.scale = v3(1, bgSc);
+        this.bg2.scale = v3(1, bgSc);
 
         nextFrame().then(() => {
             const p = UIUtils.transformOtherNodePos2localNode(this.node, this.dialogNode);
@@ -136,6 +143,13 @@ export class GameView extends ViewComponent {
         parent.addChild(this.node);
         this.init(args.isShowWin);
         JackpotManger.startLoop(this.node);
+       
+        this.coinani();
+    }
+    private async coinani(){
+        // for(let i=0;i<30;i++){
+        //     await ActionEffect.playAni(this.coins,14,0.015,true)
+        // }
     }
 
 
@@ -149,6 +163,7 @@ export class GameView extends ViewComponent {
 
         // this.showWinCoin(false);
         this.winNode.showWinNormal();
+        this.showBg(1);
     }
     private set isAni(v: boolean) {
         GameManger.instance.isAni = v;
@@ -197,7 +212,7 @@ export class GameView extends ViewComponent {
         const wilds = GameManger.instance.upWild();
         this.board.createUpWild(wilds);
         await this.spinNext(true);
-        GameManger.instance.freegame--;
+        GameManger.instance.freegameTimes--;
         if (GameManger.instance.isFreeGame) {
             this.freeGameSpin();
         } else {
@@ -206,11 +221,15 @@ export class GameView extends ViewComponent {
     }
     /**开始免费游戏 */
     async startFreeGame() {
+        this.btnSpin.setFreeGame(true);
         GameManger.instance.initFreeGame();
         //免费游戏开始弹窗
+        await this.freeGameStart();
 
         //免费游戏过场动画
 
+
+        this.showBg(2);
         this.winNode.showWinNormal();
         //开车免费游戏转轮
         this.freeGameSpin();
@@ -219,8 +238,36 @@ export class GameView extends ViewComponent {
     async endFreeGame() {
         this.isAni = false;
         this.board.clearUpWild();
+        this.showBg(1);
+        this.btnSpin.setFreeGame(false);
+        this.board.setSpinNormal();
+        await this.freeGameEnd();
+        if(this.btnSpin.isAuto){
+            this.onSpin();
+        }
     }
-    
+    private showBg(i: number) {
+        this.bg1.active = i == 1;
+        this.bg2.active = i == 2;
+        this.treasure.node.active = i==1;
+        this.energy.node.active = i==1;
+        this.btnGift.node.active = i==1;
+    }
+    private freeGameStart(){
+        return new Promise<void>(res=>{
+            ViewManager.showFreeGameStartDialog(GameManger.instance.freegameTimes,()=>{
+                res();
+            })
+        })
+    }
+    private freeGameEnd(){
+        return new Promise<void>(res=>{
+            ViewManager.showFreeGameEndDialog(this.winNode.coinNum,this.winNode.moneyNum,()=>{
+                res();
+            })
+        })
+    }
+
 
 
 
@@ -280,20 +327,21 @@ export class GameView extends ViewComponent {
                 await this.showWinDialog(linedata.winType, linedata.coin);
             }
             if (this.btnSpin.isAuto || isFreeGame) {
-                await this.delay(2);
+                await this.delay(1);
             }
         }
         this.guidStpe2();
         if (!isFreeGame) {
-            if (this.btnSpin.isAuto) {
-                await this.delay(1);
-                this.isAni = false;
-                this.onSpin();
-            } else {
-                this.isAni = false;
-            }
             if (GameManger.instance.calFreeGame()) {
                 this.startFreeGame();
+            } else {
+                if (this.btnSpin.isAuto) {
+                    await this.delay(1);
+                    this.isAni = false;
+                    this.onSpin();
+                } else {
+                    this.isAni = false;
+                }
             }
         }
 

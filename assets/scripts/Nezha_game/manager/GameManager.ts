@@ -44,7 +44,7 @@ export class GameManger {
     /**钱卡片必出两次 */
     mustMoney: number = 0;
     /**免费游戏次数 */
-    freegame: number = 0;
+    freegameTimes: number = 0;
 
 
     public getNewBoard() {
@@ -144,12 +144,12 @@ export class GameManger {
             this.insertCard(CardType.money, num2);
         }
         //免费游戏控制
-        if (Math.random() < 0.5) {
-            let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);
-            let gl = num3 < 3 ? 0.5 : num3 < 5 ? 0.3 : 0.1;
-            this.inserCardOne(CardType.freeGame, num3, gl);
-        }
-        // this.inserCardOne(CardType.freeGame, 3, 0);
+        // if (Math.random() < 0.5) {
+        //     let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);
+        //     let gl = num3 < 3 ? 0.5 : num3 < 5 ? 0.3 : 0.1;
+        //     this.inserCardOne(CardType.freeGame, num3, gl);
+        // }
+        this.inserCardOne(CardType.freeGame, 3, 0);
 
         //随机插入普通卡片
         this.randomInsertCards();
@@ -350,13 +350,13 @@ export class GameManger {
     public calFreeGame() {
         const cards = this.findCards(CardType.freeGame);
         if (cards.length >= 3) {
-            this.freegame = GameUtil.FreeGameTimes[Math.min(2, cards.length - 3)];
+            this.freegameTimes = GameUtil.FreeGameTimes[Math.min(2, cards.length - 3)];
             return true;
         }
         return false;
     }
     /**是否在免费游戏期间 */
     public get isFreeGame() {
-        return this.freegame > 0;
+        return this.freegameTimes > 0;
     }
 }

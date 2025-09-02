@@ -1,14 +1,14 @@
 密钥库别名:  key0
 密码:   llmmkk
 别名密码:    llmmkk
-游戏名：Lucky Monkey Slot
-包名：com.lucky.monkeykingdd
-max SDK key：Apq_bdQOwkidFCL4EQGkNodqrrhfHWM0mBGdrtKnaZWBuB8AP19VkUEi7R9DuVZVcJGsOJri6BRyEh560di33O
-激励广告位ID： d9174ee5898370dd
-插屏广告位ID： 52345987dfcc8775
+游戏名：Jackpot Nezha Slots
+包名：com.jackpot.nezhaslotsqq
+max SDK key：
+激励广告位ID： 
+插屏广告位ID： 
 
-admob ID:  ca-app-pub-4683280929240833~2405836679
-af key: ixmLNG4rgCaaKki3LPG3Fj
+admob ID:  
+af key: 
 
 haskkey:  
 

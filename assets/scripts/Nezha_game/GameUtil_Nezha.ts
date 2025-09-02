@@ -43,7 +43,7 @@ export enum RewardType {
    none = 0,
    money = 1,//现金
    coin,//金币
-   cash,//兑换卡
+   energy,//体力
 }
 /**奖池类型 */
 export enum JakcpotType {
@@ -111,7 +111,7 @@ export namespace GameUtil {
    /**签到金币数 */
    export const SigninCoins: number[] = [100, 200, 300, 400, 500, 600, 1000];
    /**3~5个免费游戏标可以有几次免费游戏 */
-   export const FreeGameTimes: number[] = [7,9,11];
+   export const FreeGameTimes: number[] = [2,9,11];
    /**每个连线卡获得金币数 */
    export const lineCoin: number[][] = [
       [],

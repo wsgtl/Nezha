@@ -15,7 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.lucky.monkeykingdd.R;
+import com.jackpot.nezhaslotsqq.R;
 
 
 public class WebviewActivity extends AppCompatActivity {

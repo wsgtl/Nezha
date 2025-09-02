@@ -331,6 +331,24 @@ export namespace ViewManager {
             }
         })
     }
+    /** 免费游戏开始界面 */
+    export function showFreeGameStartDialog(num:number,cb:Function) {
+        prefabs.instantiate("prefabs/dialog/freeGameStart").then((dialog) => {
+            if (isVaild(dialog)) {
+                const script = dialog.getComponent(ViewComponent);
+                script.show(upperNode, {num,cb});
+            }
+        })
+    }
+    /** 免费游戏结算界面 */
+    export function showFreeGameEndDialog(coin:number,money:number,cb:Function) {
+        prefabs.instantiate("prefabs/dialog/freeGameEnd").then((dialog) => {
+            if (isVaild(dialog)) {
+                const script = dialog.getComponent(ViewComponent);
+                script.show(upperNode, {coin,money,cb});
+            }
+        })
+    }
 
     /**广告没准备好 */
     export const adNotReady = () => {

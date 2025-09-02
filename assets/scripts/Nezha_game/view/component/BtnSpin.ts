@@ -21,9 +21,10 @@ export class BtnSpin extends Component {
 
 
     private isAni: boolean = false;
-    /** 当前按钮状态 0：spin   1：自动转动stop  2：免费游戏不可点击状态*/
+    /** 当前按钮状态 0：spin   1：自动转动stop */
     private status: number = 0;
     private spinCb:Function;
+    private isFreeGame:boolean = false;
     init(spinCb:Function){
         this.spinCb = spinCb;
     }
@@ -58,6 +59,19 @@ export class BtnSpin extends Component {
         this.spin.active = false;
         this.stop.active = true;
     }
+    setFreeGame(isFreeGame:boolean){
+        this.isFreeGame = isFreeGame;
+        if(isFreeGame){
+            this.setGray();
+        }else{
+            if(this.isAuto)
+                this.setAuto();
+            else 
+                this.setSpin();
+        }
+       
+        
+    }
     setIsAni(v: boolean) {
         this.isAni = v;
         if (this.isAuto) return;
@@ -71,16 +85,16 @@ export class BtnSpin extends Component {
     private time: number = 0;
 
     private onTouchStart() {
+        if(this.isFreeGame)return;
         if (this.status == 0) {
             this.time = Date.now();
             this.scale(true);
         } else if (this.status == 1) {
             this.scale(true);
-        } else if (this.status == 2) {
-
         }
     }
     private onTouchEnd() {
+        if(this.isFreeGame)return;
         if (this.status == 0) {
             const duration = Date.now() - this.time;
             if (duration > 700) {//长按
@@ -102,9 +116,7 @@ export class BtnSpin extends Component {
             }
             this.sound();
             this.scale(false);
-        } else if (this.status == 2) {
-
-        }
+        } 
     }
     /**是否是自动转 */
     public get isAuto() {

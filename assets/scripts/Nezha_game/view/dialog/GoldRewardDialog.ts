@@ -59,7 +59,7 @@ export class GoldRewardDialog extends ViewComponent {
     init() {
         this.initJackpot();
         this.showJackpotShowNum();
-        this.showBtn(false);
+        // this.showBtn(false);
         this.btnAdd.on(Button.EventType.CLICK, this.onBtnAdd, this);
         this.btnClaim.on(Button.EventType.CLICK, this.onBtnCliam, this);
         const w = 250;
@@ -97,7 +97,7 @@ export class GoldRewardDialog extends ViewComponent {
     }
 
     showBtn(v: boolean) {
-        this.btnAdd.active = v;
+        // this.btnAdd.active = v;
         this.btnClaim.active = v;
     }
     onBtnAdd() {

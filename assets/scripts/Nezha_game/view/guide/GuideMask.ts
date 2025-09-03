@@ -51,7 +51,7 @@ export class GuideMask extends ViewComponent {
         this.hand.active = true;
         this.hand.position = cc.position;
         this.hand.angle = 140;
-        cc.once(Button.EventType.CLICK, () => {
+        cc.once(Node.EventType.TOUCH_END, () => {
            console.log("spin引导")
            this.ccBack();
            this.showAll(false);

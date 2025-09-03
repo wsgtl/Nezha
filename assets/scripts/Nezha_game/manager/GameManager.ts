@@ -144,12 +144,12 @@ export class GameManger {
             this.insertCard(CardType.money, num2);
         }
         //免费游戏控制
-        // if (Math.random() < 0.5) {
-        //     let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);
-        //     let gl = num3 < 3 ? 0.5 : num3 < 5 ? 0.3 : 0.1;
-        //     this.inserCardOne(CardType.freeGame, num3, gl);
-        // }
-        this.inserCardOne(CardType.freeGame, 3, 0);
+        if (Math.random() < 0.5) {
+            let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);
+            let gl = num3 < 3 ? 0.5 : num3 < 5 ? 0.3 : 0.1;
+            this.inserCardOne(CardType.freeGame, num3, gl);
+        }
+        // this.inserCardOne(CardType.freeGame, 3, 0);//免费游戏必出测试代码
 
         //随机插入普通卡片
         this.randomInsertCards();
@@ -172,7 +172,7 @@ export class GameManger {
         this.insertCard(CardType.lotus, MathUtil.random(0, 2));
 
         //钱卡片控制
-        this.insertCard(CardType.money, MathUtil.random(1, 4));
+        // this.insertCard(CardType.money, MathUtil.random(1, 4));
 
         //随机插入普通卡片
         this.randomInsertCards(false);

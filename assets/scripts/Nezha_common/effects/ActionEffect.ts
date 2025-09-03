@@ -417,10 +417,10 @@ export namespace ActionEffect {
     }
 
     /**旋转 */
-    export function angle(node: Node, angle: number, duration: number) {
+    export function angle(node: Node, angle: number, duration: number,easing?:TweenEasing) {
         return new Promise<void>(res => {
             tween(node)
-                .to(duration, { angle })
+                .to(duration, { angle },{easing})
                 .call(() => { res() })
                 .start();
         })

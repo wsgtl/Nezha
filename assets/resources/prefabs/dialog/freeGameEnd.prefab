@@ -954,7 +954,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 39.287,
+      "y": 0,
       "z": 0
     },
     "_lrot": {
@@ -2327,7 +2327,7 @@
         "__id__": 106
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 146

@@ -19,12 +19,14 @@ export class GameLaunch extends Component {
     upper:Node = null;
     @property(Node)
     lower:Node = null;
+    @property(Node)
+    toper:Node = null;
     @property(AudioSource)
     bgmNode:AudioSource = null;
     private static Instance: GameLaunch = null;
 
     start(): void {
-        ViewManager.setMainSceneNode(this.mainNode,this.upper,this.lower);
+        ViewManager.setMainSceneNode(this.mainNode,this.upper,this.lower,this.toper);
         ViewManager.showLoading();
         // ViewManager.showHome();
     }

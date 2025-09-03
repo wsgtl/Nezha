@@ -1,6 +1,6 @@
 密钥库别名:  key0
-密码:   llmmkk
-别名密码:    llmmkk
+密码:   jjnnss
+别名密码:    jjnnss
 游戏名：Jackpot Nezha Slots
 包名：com.jackpot.nezhaslotsqq
 max SDK key：

@@ -21,7 +21,7 @@ export class Lotus extends Component {
     protected onLoad(): void {
         this.showProgress(false);
         this.node.on(Node.EventType.TOUCH_START, () => {
-            ViewManager.showGoldRewardDialog(() => {
+            ViewManager.showGoldRewardChange(() => {
                 
             })
         })
@@ -35,7 +35,7 @@ export class Lotus extends Component {
                 this.showProgress(true, true, GameUtil.LotusNum);
                 GameStorage.setLotus(0);
                 delay(0.2).then(() => {
-                    ViewManager.showGoldRewardDialog(() => {
+                    ViewManager.showGoldRewardChange(() => {
                         res();
                     })
                 })

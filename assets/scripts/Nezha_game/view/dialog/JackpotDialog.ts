@@ -82,22 +82,22 @@ export class JackpotDialog extends DialogComponent {
         this.createYb();
     }
     async createYb() {
-        if (!isVaild(this.node)) return;
-        const yb = instantiate(this.yb);
-        yb.active = true;
-        yb.y = 1200 + MathUtil.random(0, 100);
-        yb.x = MathUtil.random(-400, 400);
-        const sc = MathUtil.random(10, 20) / 10;
-        yb.scale = v3(sc, sc);
-        yb.angle = MathUtil.random(0, 100);
-        this.ybs.addChild(yb);
-        const angle = MathUtil.randomOne() * MathUtil.random(100, 300);
-        tween(yb)
-            .by(1, { y: -1200, angle: angle })
-            .call(() => { yb.destroy(); })
-            .start();
-        await delay(0.2, this.node);
-        this.createYb();
+        // if (!isVaild(this.node)) return;
+        // const yb = instantiate(this.yb);
+        // yb.active = true;
+        // yb.y = 1200 + MathUtil.random(0, 100);
+        // yb.x = MathUtil.random(-400, 400);
+        // const sc = MathUtil.random(10, 20) / 10;
+        // yb.scale = v3(sc, sc);
+        // yb.angle = MathUtil.random(0, 100);
+        // this.ybs.addChild(yb);
+        // const angle = MathUtil.randomOne() * MathUtil.random(100, 300);
+        // tween(yb)
+        //     .by(1, { y: -1200, angle: angle })
+        //     .call(() => { yb.destroy(); })
+        //     .start();
+        // await delay(0.2, this.node);
+        // this.createYb();
     }
     onClaim() {
         const jack = ["grand", "major", "mini"][this.type - 1];

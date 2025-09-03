@@ -7,7 +7,9 @@ export default class ViewComponent extends Component{
      */
     show(parent:Node,args?:any){
         parent.addChild(this.node);
+        this.showStart(args);
+    }
+    showStart(args?:any){
 
     }
-    
 }

@@ -4,7 +4,7 @@ import ViewComponent from '../../../Nezha_common/ui/ViewComponent';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { tween } from 'cc';
 import { Sprite } from 'cc';
-import { delay } from '../../../Nezha_common/utils/TimeUtil';
+import { delay, tweenPromise } from '../../../Nezha_common/utils/TimeUtil';
 import { ViewManager } from '../../manager/ViewManger';
 import { UIUtils } from '../../../Nezha_common/utils/UIUtils';
 const { ccclass, property } = _decorator;
@@ -38,9 +38,10 @@ export class GoldRewardChange extends ViewComponent {
         ActionEffect.moveTo(this.lotus, 0.3, 0, 100);
         const sp = this.di.getComponent(Sprite);
         sp.fillRange = 0;
-        tween(sp)
-            .to(0.4, { fillRange: 1 })
-            .start();
+        tweenPromise(sp,t=>t.to(0.4, { fillRange: 1 }));
+        // tween(sp)
+        //     .to(0.4, { fillRange: 1 })
+        //     .start();
         delay(0.3, this.node).then(() => {
             ActionEffect.fadeIn(this.light, 0.3);
             ActionEffect.scale(this.light, 0.5, 1.2, 0, "backOut");
@@ -51,9 +52,7 @@ export class GoldRewardChange extends ViewComponent {
         await delay(0.2, this.node);
         ViewManager.showGoldRewardDialog(this.cb);
         this.circle.active = true;
-        // ActionEffect.fadeOut(this.light, 0.2);
         ActionEffect.angle(this.circle, -500, 1,"quadIn");
-        // await ActionEffect.angle(this.circle, -3000, 3);
         ActionEffect.scale(this.circle, 1, 3, 0);
         await delay(0.7);
 

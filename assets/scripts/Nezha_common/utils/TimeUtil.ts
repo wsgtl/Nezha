@@ -59,7 +59,21 @@ export function awaitTween(tween: Tween<any>, timeout?: number) {
         }
     });
 }
-
+    /**
+     * 创建并执行一个 Tween 动画，返回 Promise
+     */
+    export function tweenPromise<T>(target: T, tweenBuilder: (tween: Tween<T>) => Tween<T>,onError?: (error: any) => void): Promise<void> {
+        return new Promise((resolve, reject) => {
+            try {
+                tweenBuilder(tween(target))
+                    .call(resolve)
+                    .start();
+            } catch (error) {
+                onError?.(error);
+                reject(error);
+            }
+        });
+    }
 /**
  * 直到条件句柄返回为ture时
  * 如果不传间隔参数，则默认每隔一帧调用一次

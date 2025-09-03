@@ -16,6 +16,7 @@ import { LangStorage } from '../../../Nezha_common/localStorage/LangStorage';
 import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { JackpotManger } from '../../manager/JackpotManager';
+import { view } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('GoldRewardDialog')
@@ -32,6 +33,8 @@ export class GoldRewardDialog extends ViewComponent {
     ybs: Node = null;
     @property(Node)
     hand: Node = null;
+    @property(Node)
+    top: Node = null;
     @property(NumFont)
     moneyNode: NumFont = null;
     @property(NumFont)
@@ -85,6 +88,9 @@ export class GoldRewardDialog extends ViewComponent {
         this.yb.active = false;
         this.showFreeTimes();
         this.showMoney(this.curMoney);
+
+        const cha = (view.getVisibleSize().y-1920)/2;
+        this.top.y=820+cha*0.7;
     }
     private initJackpot() {
         

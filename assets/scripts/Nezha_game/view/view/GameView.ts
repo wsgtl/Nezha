@@ -143,10 +143,10 @@ export class GameView extends ViewComponent {
         parent.addChild(this.node);
         this.init(args.isShowWin);
         JackpotManger.startLoop(this.node);
-       
+
         this.coinani();
     }
-    private async coinani(){
+    private async coinani() {
         // for(let i=0;i<30;i++){
         //     await ActionEffect.playAni(this.coins,14,0.015,true)
         // }
@@ -226,11 +226,11 @@ export class GameView extends ViewComponent {
         //免费游戏开始弹窗
         await this.freeGameStart();
 
+        // this.showBg(2);
+        // this.winNode.showWinNormal();
         //免费游戏过场动画
+        await  this.freeGameChange();
 
-
-        this.showBg(2);
-        this.winNode.showWinNormal();
         //开车免费游戏转轮
         this.freeGameSpin();
     }
@@ -242,27 +242,40 @@ export class GameView extends ViewComponent {
         this.btnSpin.setFreeGame(false);
         this.board.setSpinNormal();
         await this.freeGameEnd();
-        if(this.btnSpin.isAuto){
+        if (this.btnSpin.isAuto) {
             this.onSpin();
         }
     }
     private showBg(i: number) {
         this.bg1.active = i == 1;
         this.bg2.active = i == 2;
-        this.treasure.node.active = i==1;
-        this.energy.node.active = i==1;
-        this.btnGift.node.active = i==1;
+        this.treasure.node.active = i == 1;
+        this.energy.node.active = i == 1;
+        this.btnGift.node.active = i == 1;
     }
-    private freeGameStart(){
-        return new Promise<void>(res=>{
-            ViewManager.showFreeGameStartDialog(GameManger.instance.freegameTimes,()=>{
+    private freeGameStart() {
+        return new Promise<void>(res => {
+            //免费游戏开始弹窗
+            ViewManager.showFreeGameStartDialog(GameManger.instance.freegameTimes, () => {
                 res();
             })
         })
     }
-    private freeGameEnd(){
-        return new Promise<void>(res=>{
-            ViewManager.showFreeGameEndDialog(this.winNode.coinNum,this.winNode.moneyNum,()=>{
+    private freeGameChange() {
+        return new Promise<void>(res => {
+                //免费游戏过场动画
+                ViewManager.showFreeGameChange(() => {
+                    res();
+                },()=>{
+                    //切换场景
+                    this.showBg(2);
+                    this.winNode.showWinNormal();
+                })
+        })
+    }
+    private freeGameEnd() {
+        return new Promise<void>(res => {
+            ViewManager.showFreeGameEndDialog(this.winNode.coinNum, this.winNode.moneyNum, () => {
                 res();
             })
         })

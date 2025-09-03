@@ -5,6 +5,7 @@ import BezierCurve from './BezierCurve';
 import { Sprite } from 'cc';
 import { TweenEasing } from 'cc';
 import { math } from 'cc';
+import { __private } from 'cc';
 
 export namespace ActionEffect {
 
@@ -417,24 +418,25 @@ export namespace ActionEffect {
     }
 
     /**旋转 */
-    export function angle(node: Node, angle: number, duration: number,easing?:TweenEasing) {
+    export function angle(node: Node, angle: number, duration: number, easing?: TweenEasing) {
         return new Promise<void>(res => {
             tween(node)
-                .to(duration, { angle },{easing})
+                .to(duration, { angle }, { easing })
                 .call(() => { res() })
                 .start();
         })
     }
     /**数字增加动画 */
-    export async function numAddAni(start: number, end: number, show: Function,isInt: boolean = false,all:number = 5) {
+    export async function numAddAni(start: number, end: number, show: Function, isInt: boolean = false, all: number = 5) {
         const item = (end - start) / all;
         for (let i = 1; i <= all; i++) {
             let cur = i == all ? end : start + i * item;
             if (isInt) cur = Math.floor(cur);
             show(cur);
-            if(i!=all){
+            if (i != all) {
                 await delay(0.05);
             }
         }
     }
+
 }

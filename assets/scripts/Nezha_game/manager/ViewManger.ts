@@ -360,6 +360,15 @@ export namespace ViewManager {
             }
         })
     }
+    /** 免费游戏转场 */
+    export function showFreeGameChange(cb:Function,chagneCb:Function) {
+        prefabs.instantiate("prefabs/dialog/freeGameChange").then((dialog) => {
+            if (isVaild(dialog)) {
+                const script = dialog.getComponent(ViewComponent);
+                script.show(upperNode, {cb,chagneCb});
+            }
+        })
+    }
 
     /**广告没准备好 */
     export const adNotReady = () => {

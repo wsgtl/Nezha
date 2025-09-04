@@ -13,10 +13,10 @@ import { Animation } from 'cc';
 import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { v3 } from 'cc';
 import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
-import { CircleSpin } from '../component/CircleSpin';
 import { AudioManager } from '../../manager/AudioManager';
 import { LangStorage } from '../../../Nezha_common/localStorage/LangStorage';
 import { i18n } from '../../../Nezha_common/i18n/I18nManager';
+import { CircleSpin } from '../aniComponent/CircleSpin';
 const { ccclass, property } = _decorator;
 
 @ccclass('LuckyDialog')

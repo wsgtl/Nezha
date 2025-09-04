@@ -18,20 +18,13 @@ import { GameManger } from '../../manager/GameManager';
 import { GuideManger } from '../../manager/GuideManager';
 import { GuideMask } from '../guide/GuideMask';
 import { Treasure } from '../component/Treasure';
-import { Bet } from '../component/Bet';
 import { Button } from 'cc';
-import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 import { Top } from '../component/Top';
 import { ButtonLock } from '../../../Nezha_common/Decorator';
 import { Board } from '../component/Board';
 import { CoinManger } from '../../manager/CoinManger';
-import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { MoneyManger } from '../../manager/MoneyManger';
-import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
-import { MoneyAni } from '../component/MoneyAni';
 import { v3 } from 'cc';
-import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
-import { i18n } from '../../../Nezha_common/i18n/I18nManager';
 import { NativeFun } from '../../../Nezha_common/native/NativeFun';
 import { EnergyManger } from '../../manager/EnergyManager';
 import { Lotus } from '../component/Lotus';
@@ -144,12 +137,6 @@ export class GameView extends ViewComponent {
         this.init(args.isShowWin);
         JackpotManger.startLoop(this.node);
 
-        this.coinani();
-    }
-    private async coinani() {
-        // for(let i=0;i<30;i++){
-        //     await ActionEffect.playAni(this.coins,14,0.015,true)
-        // }
     }
 
 

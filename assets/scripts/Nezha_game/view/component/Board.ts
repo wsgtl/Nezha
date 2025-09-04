@@ -12,11 +12,11 @@ import { delay } from '../../../Nezha_common/utils/TimeUtil';
 import { Vec2 } from 'cc';
 import { ViewManager } from '../../manager/ViewManger';
 import { AudioManager } from '../../manager/AudioManager';
-import { MoneyAni } from './MoneyAni';
-import { LineAni } from './LineAni';
 import { Button } from 'cc';
 import { ButtonLock } from '../../../Nezha_common/Decorator';
 import { GameStorage } from '../../GameStorage_Nezha';
+import { LineAni } from '../aniComponent/LineAni';
+import { MoneyAni } from '../aniComponent/MoneyAni';
 const { ccclass, property } = _decorator;
 
 @ccclass('Board')

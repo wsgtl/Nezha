@@ -143,6 +143,7 @@ export class GameManger {
             }
             this.insertCard(CardType.money, num2);
         }
+        // this.insertCard(CardType.money, 4);
         //免费游戏控制
         if (Math.random() < 0.5) {
             let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);

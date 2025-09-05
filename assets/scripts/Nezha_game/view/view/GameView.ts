@@ -36,6 +36,7 @@ import { WinNum } from '../component/WinNum';
 import { JackpotManger } from '../../manager/JackpotManager';
 import { BtnGift } from '../component/BtnGift';
 import { Energy } from '../component/Energy';
+import { NumFont } from '../../../Nezha_common/ui/NumFont';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -73,6 +74,8 @@ export class GameView extends ViewComponent {
     btnGift: BtnGift = null;
     @property(Energy)
     energy: Energy = null;
+    @property(Node)
+    freeGameNode: Node = null;
 
 
     onLoad() {
@@ -185,6 +188,7 @@ export class GameView extends ViewComponent {
     }
     /**免费游戏转轮 */
     async freeGameSpin() {
+        this.showFreeGameTimes();
         this.isAni = true;
         this.board.setSpinNormal();
         await this.board.spin();
@@ -210,9 +214,10 @@ export class GameView extends ViewComponent {
             //切换场景
             this.showBg(2);
             this.winNode.showWinNormal();
+            this.showFreeGameTimes();
         });
 
-        //开车免费游戏转轮
+        //开始免费游戏转轮
         this.freeGameSpin();
     }
     /**结束免费游戏 */
@@ -232,12 +237,18 @@ export class GameView extends ViewComponent {
             this.onSpin();
         }
     }
+    private showFreeGameTimes(){
+        this.freeGameNode.getChildByName("num").getComponent(NumFont).num = GameManger.instance.freegameTimes;
+    }
     private showBg(i: number) {
         this.bg1.active = i == 1;
         this.bg2.active = i == 2;
-        this.treasure.node.active = i == 1;
+        // this.treasure.node.active = i == 1;
+        // this.treasure.node.y = i==1?260:160;
         this.energy.node.active = i == 1;
-        this.btnGift.node.active = i == 1;
+        // this.btnGift.node.active = i == 1;
+        this.freeGameNode.active = i == 2;
+        this.btnSpin.node.active = i==1;
     }
     private freeGameStart() {
         return new Promise<void>(res => {

@@ -36,7 +36,7 @@ export namespace AudioManager {
     }
    /**震动
      * @param duration 震动时间,毫秒
-     * @param amplitude 震动幅度
+     * @param amplitude 震动幅度 1~255
      */
     export function vibrate(duration: number, amplitude: number = -1) {
         if (!AudioManager.getIsShock()) return;

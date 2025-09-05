@@ -15,7 +15,7 @@ export class CoinAni extends Component {
     }
 
     private readonly all = 13;
-    private readonly oneTime = 0.03;
+    private readonly oneTime = 0.02;
     private index: number = 1;
     private t: number = 0;
     private curTime: number = this.oneTime;

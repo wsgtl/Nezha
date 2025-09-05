@@ -9,6 +9,7 @@ import { Vec3 } from 'cc';
 import { Money } from '../component/Money';
 import { Button } from 'cc';
 import { GuideManger } from '../../manager/GuideManager';
+import { BtnSpin } from '../component/BtnSpin';
 const { ccclass, property } = _decorator;
 
 @ccclass('GuideMask')
@@ -51,11 +52,16 @@ export class GuideMask extends ViewComponent {
         this.hand.active = true;
         this.hand.position = cc.position;
         this.hand.angle = 140;
-        cc.once(Node.EventType.TOUCH_END, () => {
-           console.log("spin引导")
-           this.ccBack();
-           this.showAll(false);
-        })
+        cc.getComponent(BtnSpin).guideCb = () => {
+            console.log("spin引导")
+            this.ccBack();
+            this.showAll(false);
+         }
+        // cc.once(Node.EventType.TOUCH_END, () => {
+        //    console.log("spin引导")
+        //    this.ccBack();
+        //    this.showAll(false);
+        // })
     }
     ccBack() {
         if (isVaild(this.cc) && isVaild(this.ccParent)) {

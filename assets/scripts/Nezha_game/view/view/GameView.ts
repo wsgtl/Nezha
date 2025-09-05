@@ -44,8 +44,6 @@ export class GameView extends ViewComponent {
     @property(Node)
     content: Node = null;
     @property(Node)
-    boardContent: Node = null;
-    @property(Node)
     bg1: Node = null;
     @property(Node)
     bg2: Node = null;
@@ -165,18 +163,12 @@ export class GameView extends ViewComponent {
     @ButtonLock(0.3)
     async onSpin() {
         if (this.isAni) return;
-        // const freeNum = GameStorage.getLimit().lotus;
 
-        // if (freeNum > 0) {//免费转
-        //     GameStorage.setLimitLotus(freeNum - 1);
-        //     this.setFreeSpin();
-        //     AudioManager.playEffect("gufen");
-        // } else {
         if (!EnergyManger.subEnergy()) {
             ViewManager.showEnergyDialog();//没体力显示体力界面
             return;
         }
-        // }
+
 
         this.treasure.addProgress(1);
         if (Math.random() < 0.3) {
@@ -213,10 +205,12 @@ export class GameView extends ViewComponent {
         //免费游戏开始弹窗
         await this.freeGameStart();
 
-        // this.showBg(2);
-        // this.winNode.showWinNormal();
         //免费游戏过场动画
-        await  this.freeGameChange();
+        await this.freeGameChange(() => {
+            //切换场景
+            this.showBg(2);
+            this.winNode.showWinNormal();
+        });
 
         //开车免费游戏转轮
         this.freeGameSpin();
@@ -224,11 +218,16 @@ export class GameView extends ViewComponent {
     /**结束免费游戏 */
     async endFreeGame() {
         this.isAni = false;
-        this.board.clearUpWild();
-        this.showBg(1);
-        this.btnSpin.setFreeGame(false);
-        this.board.setSpinNormal();
+
         await this.freeGameEnd();
+        //免费游戏过场动画
+        await this.freeGameChange(() => {
+            //切换场景
+            this.board.clearUpWild();
+            this.showBg(1);
+            this.btnSpin.setFreeGame(false);
+            this.board.setSpinNormal();
+        });
         if (this.btnSpin.isAuto) {
             this.onSpin();
         }
@@ -248,16 +247,12 @@ export class GameView extends ViewComponent {
             })
         })
     }
-    private freeGameChange() {
+    private freeGameChange(changeCb: Function) {
         return new Promise<void>(res => {
-                //免费游戏过场动画
-                ViewManager.showFreeGameChange(() => {
-                    res();
-                },()=>{
-                    //切换场景
-                    this.showBg(2);
-                    this.winNode.showWinNormal();
-                })
+            //免费游戏过场动画
+            ViewManager.showFreeGameChange(() => {
+                res();
+            }, changeCb);
         })
     }
     private freeGameEnd() {
@@ -324,6 +319,7 @@ export class GameView extends ViewComponent {
             // ActionEffect.numAddAni(0, linedata.coin, (n: number) => { this.winNode.addWinCoin(n) }, true);
             this.board.showLineLight(linedata);
             if (linedata.winType > 0) {
+                await this.board.shock();
                 await this.showWinDialog(linedata.winType, linedata.coin);
             }
             if (this.btnSpin.isAuto || isFreeGame) {

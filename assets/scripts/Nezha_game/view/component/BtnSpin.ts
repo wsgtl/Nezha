@@ -94,6 +94,13 @@ export class BtnSpin extends Component {
         }
     }
     private onTouchEnd() {
+        if(this.guideCb){//新手引导
+            this.guideCb?.();
+            this.spinCb();
+            this.guideCb = null;
+            this.scale(false);
+            return;
+        }
         if(this.isFreeGame)return;
         if (this.status == 0) {
             const duration = Date.now() - this.time;
@@ -132,6 +139,7 @@ export class BtnSpin extends Component {
         .to(0.1,{scale:v3(sc,sc,1)})
         .start();
     }
+    public guideCb:Function;
 }
 
 

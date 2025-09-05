@@ -8,7 +8,7 @@ import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 import { v2 } from 'cc';
 import { tween } from 'cc';
 import { GameManger } from '../../manager/GameManager';
-import { delay } from '../../../Nezha_common/utils/TimeUtil';
+import { delay, tweenPromise } from '../../../Nezha_common/utils/TimeUtil';
 import { Vec2 } from 'cc';
 import { ViewManager } from '../../manager/ViewManger';
 import { AudioManager } from '../../manager/AudioManager';
@@ -17,6 +17,7 @@ import { ButtonLock } from '../../../Nezha_common/Decorator';
 import { GameStorage } from '../../GameStorage_Nezha';
 import { LineAni } from '../aniComponent/LineAni';
 import { MoneyAni } from '../aniComponent/MoneyAni';
+import { v3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Board')
@@ -31,9 +32,12 @@ export class Board extends Component {
     moneyAni: MoneyAni = null;
     @property(LineAni)
     lineAni: LineAni = null;
+    @property(Node)
+    boardContent: Node = null;
 
 
     private cards: Card[] = [];
+    private basePos:Vec2;
     private init() {
         for (let x = 0; x < GameUtil.AllCol; x++) {
             for (let y = 0; y < GameUtil.CreateRow; y++) {
@@ -47,6 +51,7 @@ export class Board extends Component {
         }
     }
     protected onLoad(): void {
+        this.basePos = this.boardContent.pos2.clone();
         this.init();
     }
     private getY(i: number) {
@@ -236,6 +241,31 @@ export class Board extends Component {
     /**清除置顶wild */
     public clearUpWild() {
         this.upBoard.destroyAllChildren();
+    }
+    /**震动动画 */
+    public async shock(){
+        AudioManager.vibrate(1, 255);
+        const bx = this.basePos.x;
+        const by = this.basePos.y;
+        const time = 0.08;
+        const tx = 5;
+        const ty = 20;
+        await tweenPromise(this.boardContent,t=>t
+            .to(time,{position:v3(bx+tx,by+ty)})
+            .to(time,{position:v3(bx+tx*2,by)})
+            .to(time,{position:v3(bx+tx,by+ty)})
+            .to(time,{position:v3(bx,by)})
+
+            .to(time,{position:v3(bx+tx,by+ty)})
+            .to(time,{position:v3(bx+tx*2,by)})
+            .to(time,{position:v3(bx+tx,by+ty)})
+            .to(time,{position:v3(bx,by)})
+
+            .to(time,{position:v3(bx+tx,by+ty)})
+            .to(time,{position:v3(bx+tx*2,by)})
+            .to(time,{position:v3(bx+tx,by+ty)})
+            .to(time,{position:v3(bx,by)})
+        )
     }
 }
 

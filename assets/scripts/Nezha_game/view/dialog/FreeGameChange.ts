@@ -43,6 +43,7 @@ export class FreeGameChange extends ViewComponent {
         ActionEffect.fadeOut(this.line,0.1);
         ActionEffect.moveTo(this.left,d2,-bx,0);
         await ActionEffect.moveTo(this.right,d2,bx,0);
+        this.node.destroy();
         this.cb();
     }
 }

@@ -170,17 +170,22 @@ public class AppActivity extends CocosActivity {
     }
     public void vibrate(String args){
         Log.e("震动", args);
+//        VibrationUtils.triggerVibration(this);
         try {
             JSONObject json = new JSONObject(args);
             int duration = json.getInt("duration");
             int amplitude = json.getInt("amplitude");
             if(amplitude>=0){//振幅控制
-                VibrationUtils.vibrateWithAmplitude(this, duration,amplitude);
+                Log.e("震动", "1");
+//                VibrationUtils.vibrateWithAmplitude(this, duration,amplitude);
+                VibrationUtils.vibrateWithAmplitude(this, 1000,255);
             }else{
+                Log.e("震动", "2");
                 VibrationUtils.vibrate(this, duration);
             }
 
         } catch (JSONException e) {
+            Log.e("震动", "3");
             e.printStackTrace();
         }
     }

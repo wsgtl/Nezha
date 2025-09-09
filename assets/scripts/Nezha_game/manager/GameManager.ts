@@ -57,8 +57,8 @@ export class GameManger {
         if (GuideManger.isGuide()) {
             this.board = [
                 [1, 8, 11, 6, 1,],
-                [9, 1, 12, 1, 1,],
-                [4, 9, 1, 9, 7,],
+                [9, 1, 12, 1, 12,],
+                [4, 12, 1, 9, 7,],
             ]
             return this.board;
         }
@@ -86,7 +86,7 @@ export class GameManger {
         const list = GameUtil.lines.getRandomItem();
         // const lineNum = MathUtil.random(3, 5);//随机连线个数
         const lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
-        const type = Math.random()<0.25?MathUtil.random(6,9):MathUtil.random(1, 5);//随机类型,降低主图标出现概率
+        const type = Math.random()<0.15?MathUtil.random(6,9):MathUtil.random(1, 5);//随机类型,降低主图标出现概率
         for (let i = 0; i < lineNum; i++) {
             this.board[list[i]][i] = type;
         }

@@ -2547,7 +2547,7 @@
     "_duration": 0.1,
     "_zoomScale": 1.1,
     "_target": null,
-    "soundType": 0,
+    "soundType": 2,
     "_id": ""
   },
   {
@@ -2743,7 +2743,7 @@
     "_duration": 0.1,
     "_zoomScale": 1.1,
     "_target": null,
-    "soundType": 0,
+    "soundType": 2,
     "_id": ""
   },
   {

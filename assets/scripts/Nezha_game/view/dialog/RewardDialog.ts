@@ -3,7 +3,7 @@ import { DialogComponent } from '../../../Nezha_common/ui/DialogComtnet';
 import { SpriteFrame } from 'cc';
 import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { Sprite } from 'cc';
-import { RewardType } from '../../GameUtil_Nezha';
+import { GameUtil, RewardType } from '../../GameUtil_Nezha';
 import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 import { Button } from 'cc';
 import { adHelper } from '../../../Nezha_common/native/AdHelper';
@@ -49,9 +49,9 @@ export class RewardDialog extends DialogComponent {
 
         // this.showReciveNum(2);
         const data = LangStorage.getData();
-        this.rewardNum = MoneyManger.instance.getReward();
-        this.num.aligning=1;
-        this.num.num = data.symbol+" " + FormatUtil.toXXDXXxsd(this.rewardNum);
+        this.rewardNum = GuideManger.isGuide() ? GameUtil.GuideMoney : MoneyManger.instance.getReward();
+        this.num.aligning = 1;
+        this.num.num = data.symbol + " " + FormatUtil.toXXDXXxsd(this.rewardNum);
         // this.showMoneyNode();
 
         this.btnClaim.once(Button.EventType.CLICK, this.onBtnClaim, this);
@@ -70,7 +70,7 @@ export class RewardDialog extends DialogComponent {
         // }
     }
     onBtnReceive() {
-        adHelper.showRewardVideo("钱奖励弹窗",() => {
+        adHelper.showRewardVideo("钱奖励弹窗", () => {
             this.addReward(this.rewardNum * this.reciveNum);
             this.closeAni();
         }, ViewManager.adNotReady)
@@ -78,9 +78,9 @@ export class RewardDialog extends DialogComponent {
     private addReward(num: number) {
         // ViewManager.showRewardAni(1, num, this.cb);
         const cb = this.cb;
-        ViewManager.showRewardParticle(RewardType.money,this.node,MoneyManger.instance.getMoneyNode().moneyNode,()=>{
+        ViewManager.showRewardParticle(RewardType.money, this.node, MoneyManger.instance.getMoneyNode().moneyNode, () => {
             cb(num);
-            MoneyManger.instance.addMoney(num,false);
+            MoneyManger.instance.addMoney(num, false);
         })
     }
 

@@ -30,14 +30,14 @@ export class Board extends Component {
     ls: Node[] = [];
     @property(Node)
     upBoard: Node = null;
-    @property(MoneyAni)
-    moneyAni: MoneyAni = null;
     @property(sp.Skeleton)
     moneySk: sp.Skeleton = null;
     @property(LineAni)
     lineAni: LineAni = null;
     @property(Node)
     boardContent: Node = null;
+    @property(Node)
+    borders: Node = null;
 
 
     private cards: Card[] = [];
@@ -173,12 +173,24 @@ export class Board extends Component {
         this.showLineLight(data);
     }
     private showLine(line: number[]) {
-        this.ls.forEach((list, x) => {
-            const y = line[x];
-            list.children.forEach((card, i) => {
-                card.getComponent(Card).showBorder(i == y);
-            })
-        })
+        // this.ls.forEach((list, x) => {
+        //     const y = line[x];
+        //     list.children.forEach((card, i) => {
+        //         card.getComponent(Card).showBorder(i == y);
+        //     })
+        // })
+        this.borders.active = line.length>0;
+        for(let i=0;i<5;i++){
+            const b = this.borders.children[i];
+            const y = line[i];
+            if(y>=0){
+                b.active = true;
+                b.y = this.getY(y);
+                b.x = this.getX(i);
+            }else{
+                b.active = false;
+            }
+        }
     }
 
     /**对应卡片发射粒子，其他卡片变暗 */

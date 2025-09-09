@@ -18,7 +18,7 @@ export class MoneyAni extends Component {
     @property([SpriteFrame])
     sf: SpriteFrame[] = [];
     start() {
-        this.node.active = false;
+        // this.node.active = false;
     }
 
     async ani() {

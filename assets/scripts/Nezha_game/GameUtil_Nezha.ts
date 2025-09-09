@@ -117,6 +117,8 @@ export namespace GameUtil {
    export const GrandPro:number=0;
    /**兑换券收集到可提现数量 */
    export const CashWithdrawNum: number = 100;
+   /**新手引导送大额钱 */
+   export const GuideMoney: number = 100;
    /**3~5个免费游戏标可以有几次免费游戏 */
    export const FreeGameTimes: number[] = [7,9,11];
    /**钱提现金额 */

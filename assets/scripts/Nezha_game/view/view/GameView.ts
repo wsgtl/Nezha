@@ -117,7 +117,7 @@ export class GameView extends ViewComponent {
         this.jackpot.y = 650 + cy * 0.6;
 
         // const kbn = this.content.getChildByName("kbn");
-        this.kbn.node.y =440 + ch * 0.45;
+        this.kbn.node.y =440 + ch * 0.3;
         this.jackpot.getComponent(Layout).spacingY = 20 + Math.floor(ch / 8);
         if (ch > 200) {
             const sc = Math.min(1.15, 1 + ch / 1400);
@@ -410,7 +410,7 @@ export class GameView extends ViewComponent {
 
 
     playBgm() {
-        AudioManager.playBgm("bgm", 0.4);
+        AudioManager.playBgm("bgm1", 0.2);
     }
 
 

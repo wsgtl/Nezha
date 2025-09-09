@@ -45,21 +45,4 @@ public class VibrationUtils {
             vibrator.cancel();
         }
     }
-    // 在调用振动前检查并申请权限
-    private static final int REQUEST_CODE_VIBRATE = 1001;
-
-    public static void triggerVibration(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Android 13+ 需要动态申请通知权限
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions((Activity) context,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        REQUEST_CODE_VIBRATE);
-                return;
-            }
-        }
-
-    }
 }

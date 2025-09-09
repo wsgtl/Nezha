@@ -6,6 +6,7 @@ import { Sprite } from 'cc';
 import { TweenEasing } from 'cc';
 import { math } from 'cc';
 import { __private } from 'cc';
+import { sp } from 'cc';
 
 export namespace ActionEffect {
 
@@ -439,4 +440,23 @@ export namespace ActionEffect {
         }
     }
 
+    /**spine动画播放一次后关闭 */
+    export function skAniOnce(sk:sp.Skeleton,name:string,isShow:boolean=false){
+        return new Promise<void>(res=>{
+            sk.node.active = true;
+            sk.setCompleteListener(null);
+            sk.setAnimation(1,name,false);
+            sk.setCompleteListener(()=>{
+                if(!isShow)sk.node.active = false;
+                res();
+            })
+        })
+       
+    }
+    /**spine动画循环播放 */
+    export function skAni(sk:sp.Skeleton,name:string){
+            sk.node.active = true;
+            sk.setCompleteListener(null);
+            sk.setAnimation(1,name,true);      
+    }
 }

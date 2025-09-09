@@ -5,7 +5,7 @@ import { instantiate } from 'cc';
 import { Yb } from '../component/Yb';
 import { v3 } from 'cc';
 import { adHelper } from '../../../Nezha_common/native/AdHelper';
-import { JakcpotType, RewardType } from '../../GameUtil_Nezha';
+import { GameUtil, JakcpotType, RewardType } from '../../GameUtil_Nezha';
 import { ViewManager } from '../../manager/ViewManger';
 import { delay } from '../../../Nezha_common/utils/TimeUtil';
 import { MoneyManger } from '../../manager/MoneyManger';
@@ -139,7 +139,7 @@ export class GoldRewardDialog extends ViewComponent {
             type = this.randomJackpot.pop();
         } else {
             const m = Math.random()
-            type = m < 0.03 ? JakcpotType.grand : (m < 0.3 ? JakcpotType.major : (m < 0.6 ? 0 : JakcpotType.mini));//有概率出中奖池和大奖池
+            type = m < GameUtil.GrandPro ? JakcpotType.grand : (m < GameUtil.MajorPro ? JakcpotType.major : (m < 0.6 ? 0 : JakcpotType.mini));//有概率出中奖池和大奖池
         }
         if (type == 0) {
             const money = MoneyManger.instance.getReward(0.5);

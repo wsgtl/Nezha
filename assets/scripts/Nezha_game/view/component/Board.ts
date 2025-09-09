@@ -18,6 +18,8 @@ import { GameStorage } from '../../GameStorage_Nezha';
 import { LineAni } from '../aniComponent/LineAni';
 import { MoneyAni } from '../aniComponent/MoneyAni';
 import { v3 } from 'cc';
+import { sp } from 'cc';
+import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 const { ccclass, property } = _decorator;
 
 @ccclass('Board')
@@ -30,6 +32,8 @@ export class Board extends Component {
     upBoard: Node = null;
     @property(MoneyAni)
     moneyAni: MoneyAni = null;
+    @property(sp.Skeleton)
+    moneySk: sp.Skeleton = null;
     @property(LineAni)
     lineAni: LineAni = null;
     @property(Node)
@@ -115,7 +119,7 @@ export class Board extends Component {
 
     spin() {
         return new Promise<void>(res => {
-            AudioManager.vibrate(1, 155);
+            // AudioManager.vibrate(1, 155);
             AudioManager.playEffect("toubi");
             const board = GameManger.instance.getNewBoard();
             let q = 0;
@@ -218,7 +222,8 @@ export class Board extends Component {
     private showMoneyAni() {
         const moneyCards = GameManger.instance.findCards(CardType.money);
         if (moneyCards.length >= 3) {
-            this.moneyAni.ani();
+            // this.moneyAni.ani();
+            ActionEffect.skAniOnce(this.moneySk,"zhibi");
         }
     }
 

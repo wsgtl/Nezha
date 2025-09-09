@@ -6,9 +6,9 @@ import { Node } from "cc";
 import { isVaild } from "../../Nezha_common/utils/ViewUtil";
 
 export namespace JackpotManger {
-    const grandBase = 1000000;//大奖池基础值
-    const majorBase = 10000;//中奖池基础值
-    const miniBase = 1000;//小奖池基础值
+    const grandBase = 100000000;//大奖池基础值
+    const majorBase = 3000000;//中奖池基础值
+    const miniBase = 150000;//小奖池基础值
 
     let isStart: boolean = false;
     const registers: NumFont[] = [];

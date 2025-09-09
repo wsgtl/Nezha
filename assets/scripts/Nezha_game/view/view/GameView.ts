@@ -110,10 +110,10 @@ export class GameView extends ViewComponent {
         this.jackpot.y = 650 + cy * 0.6;
 
         const kbn = this.content.getChildByName("kbn");
-        kbn.y = 520 + ch * 0.55;
+        kbn.y =440 + ch * 0.45;
         this.jackpot.getComponent(Layout).spacingY = 20 + Math.floor(ch / 8);
         if (ch > 200) {
-            const sc = Math.min(1.2, 1 + ch / 1400);
+            const sc = Math.min(1.15, 1 + ch / 1400);
             kbn.scale = v3(sc, sc);
             // this.boardContent.y=0+30;
 

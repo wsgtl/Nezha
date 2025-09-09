@@ -7,52 +7,56 @@ import { AudioManager } from '../../manager/AudioManager';
 import { sp } from 'cc';
 import { isVaild } from '../../../Nezha_common/utils/ViewUtil';
 import { adHelper } from '../../../Nezha_common/native/AdHelper';
+import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
+import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('WinDialog')
 export class WinDialog extends DialogComponent {
-    @property(Node)
-    ybs: Node = null;
-    @property(Node)
-    ybd: Node = null;
     @property(NumFont)
     num: NumFont = null;
     @property(sp.Skeleton)
     sk: sp.Skeleton = null;
-    @property([Node])
-    wins: Node[] = [];
+    @property([sp.SkeletonData])
+    skdata: sp.SkeletonData[] = [];
 
     start(): void {
         super.start();
-        this.ani();
+        AudioManager.playEffect("win");
         this.bg.on(Node.EventType.TOUCH_START, () => {
-            this.closeCb();
-            this.node.destroy();
-            if (Math.random() < 0.7)
-                adHelper.showInterstitial("大赢界面");
+            this.closeAni();
         });
     }
-    async ani() {
-        AudioManager.playEffect("win");
-        await ActionEffect.scale(this.ybs, 1.2, 1, 0, "backOut");
-        // ActionEffect.scale(this.ybd,0.5,1,0,"backOut");
-        this.loop();
+    async ani(num:number) {
+        this.num.num = 0;
+       await ActionEffect.skAniOnce(this.sk,"start",true);
+       ActionEffect.skAni(this.sk,"loop");
+       ActionEffect.numAddAni(0,num,(n:number)=>{if(this.num)this.num.num =FormatUtil.toXXDXX(n,0);},true,12);
     }
-    async loop() {
-        if (!isVaild(this.node)) return;
-        await ActionEffect.scaleBigToSmall(this.ybs, 1.03, 1, 1.5);
-        this.loop();
+     /**关闭动画 */
+     async closeAni() {
+        if (this.isAni) return;
+        this.isAni = true;
+        await ActionEffect.skAniOnce(this.sk,"end",true);
+        await ActionEffect.fadeOut(this.node, 0.2);
+        this.node.destroy();
+        this.closeCb?.();
+        if (Math.random() < 0.7)
+            adHelper.showInterstitial("大赢界面");
     }
+
     show(parent: Node, args?: any) {
         parent.addChild(this.node);
-        // this.wins.forEach((v,i)=>{
-        //     v.active = i==args.type-1;
-        // })
         this.closeCb = args.cb;
-        const ani = ["bigwin_loop", "megawin_loop"];
-        this.sk.animation = ani[args.type - 1];
-        ActionEffect.numAddAni(0,args.num,(n:number)=>{if(this.num)this.num.num =n},true,12);
-        AudioManager.vibrate(1, 155);
+        const type = args.type;
+        // const type = MathUtil.random(1,2);
+        this.sk.skeletonData=this.skdata[type-1];  
+       
+        const path = ["root/all/all4/shengli_5/shengli_7","root/all/x_001/x_005/x_030"][type-1];
+        const sockets =[new sp.SpineSocket(path,this.num.node.parent)];
+        // this.sk.sockets.push(new sp.SpineSocket(path,this.num.node));//如果只是push(),就不会更新挂点
+        this.sk.sockets=sockets;//必须整个挂点数组替换才能更新，如果只是push(),就不会更新挂点
+        this.ani(args.num);
     }
 
 }

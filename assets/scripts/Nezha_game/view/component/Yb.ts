@@ -8,6 +8,7 @@ import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { LangStorage } from '../../../Nezha_common/localStorage/LangStorage';
 import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
 import { v3 } from 'cc';
+import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 const { ccclass, property } = _decorator;
 
 @ccclass('Yb')
@@ -60,11 +61,12 @@ export class Yb extends Component {
         this.isAd = v;
     }
     showAni() {
-        this.sk.node.active = true;
-        this.sk.animation = "loop";
-        delay(0.4).then(() => {
-            this.sk.node.active = false;
-        })
+        // this.sk.node.active = true;
+        // this.sk.animation = "loop";
+        // delay(0.4).then(() => {
+        //     this.sk.node.active = false;
+        // })
+        ActionEffect.skAniOnce(this.sk,"zhakai");
     }
 }
 

@@ -85,8 +85,10 @@ export class GameManger {
     private mustLineBoard() {
         const list = GameUtil.lines.getRandomItem();
         // const lineNum = MathUtil.random(3, 5);//随机连线个数
-        const lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
-        const type = Math.random()<0.15?MathUtil.random(6,9):MathUtil.random(1, 5);//随机类型,降低主图标出现概率
+        let lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
+        let type = Math.random()<0.15?MathUtil.random(6,9):MathUtil.random(1, 5);//随机类型,降低主图标出现概率
+        lineNum = 5;
+        type = MathUtil.random(6,9);
         for (let i = 0; i < lineNum; i++) {
             this.board[list[i]][i] = type;
         }
@@ -295,19 +297,9 @@ export class GameManger {
             const n = lineCoin[v.type][v.line.length - 3];
             coinnum += n;
         });
-        // if (lines.length) {
-        //     // let bl = 0.5;
-        //     // if (this.bet > 1500) bl = 1;
-        //     // coinnum = Math.ceil(coinnum + this.bet * bl);
-        //     let bl = this.bet / GameUtil.BaseBet;
-        //     coinnum = Math.ceil(coinnum * bl);//修改金额为直接乘倍率
-        // }
+
         let winType: WinType = 0;
-        // if (coinnum >= this.bet * 15) {
-        //     winType = WinType.mega;//狂赢
-        // } else if (coinnum >= this.bet * 6) {
-        //     winType = WinType.big;//大赢
-        // }
+
         if (coinnum >= GameUtil.MegaWinNum) {
             winType = WinType.mega;//狂赢
         } else if (coinnum >=  GameUtil.BigWinNum) {

@@ -428,14 +428,14 @@ export namespace ActionEffect {
         })
     }
     /**数字增加动画 */
-    export async function numAddAni(start: number, end: number, show: Function, isInt: boolean = false, all: number = 5) {
+    export async function numAddAni(start: number, end: number, show: Function, isInt: boolean = false, all: number = 5,node?:Node) {
         const item = (end - start) / all;
         for (let i = 1; i <= all; i++) {
             let cur = i == all ? end : start + i * item;
             if (isInt) cur = Math.floor(cur);
             show(cur);
             if (i != all) {
-                await delay(0.05);
+                await delay(0.05,node);
             }
         }
     }

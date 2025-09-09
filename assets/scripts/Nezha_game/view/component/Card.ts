@@ -21,8 +21,6 @@ export class Card extends Component {
     sk: sp.Skeleton = null;
     @property([sp.SkeletonData])
     sks: sp.SkeletonData[] = [];
-    @property(Node)
-    border: Node = null;
     @property([SpriteFrame])
     sf: SpriteFrame[] = [];
 
@@ -52,20 +50,20 @@ export class Card extends Component {
        
     }
     showBorder(v: boolean) {
-        this.border.active = v;
+        // this.border.active = v;
     }
     borderAni() {
-        const c: UIOpacity = this.border.getComponent(UIOpacity);
-        const duration = 0.5;
-        const op1 = 100;
-        const op2 = 255;
+        // const c: UIOpacity = this.border.getComponent(UIOpacity);
+        // const duration = 0.5;
+        // const op1 = 100;
+        // const op2 = 255;
 
-        tween(c)
-            .to(duration, { opacity: op1 })
-            .to(duration, { opacity: op2 })
-            .call(() => {
-                this.borderAni();
-            }).start();
+        // tween(c)
+        //     .to(duration, { opacity: op1 })
+        //     .to(duration, { opacity: op2 })
+        //     .call(() => {
+        //         this.borderAni();
+        //     }).start();
     }
     setColor(isDark: boolean) {
         const c = isDark ? 100 : 255;

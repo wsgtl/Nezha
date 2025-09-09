@@ -7,6 +7,7 @@ import { Sprite } from 'cc';
 import { delay, tweenPromise } from '../../../Nezha_common/utils/TimeUtil';
 import { ViewManager } from '../../manager/ViewManger';
 import { UIUtils } from '../../../Nezha_common/utils/UIUtils';
+import { AudioManager } from '../../manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GoldRewardChange')
@@ -29,6 +30,7 @@ export class GoldRewardChange extends ViewComponent {
     }
 
     async ani() {
+        AudioManager.playEffect("goldChange");
         this.circle.active = false;
         UIUtils.setAlpha(this.light,0);
         ActionEffect.fadeIn(this.bg, 0.8);

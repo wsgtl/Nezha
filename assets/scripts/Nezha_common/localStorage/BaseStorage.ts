@@ -5,7 +5,8 @@ export enum ITEM_STORAGE {
     AUDIO = "Nezha_audio",
     EventTracking = "Nezha_event",
     Game = "Nezha_game",
-    JACKPOT = "Nezha_jackpot"
+    JACKPOT = "Nezha_jackpot",
+    WAITWITHDRWW = "Nezha_waitwithdraw"
 }
 
 /**

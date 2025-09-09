@@ -37,6 +37,9 @@ import { JackpotManger } from '../../manager/JackpotManager';
 import { BtnGift } from '../component/BtnGift';
 import { Energy } from '../component/Energy';
 import { NumFont } from '../../../Nezha_common/ui/NumFont';
+import { sp } from 'cc';
+import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
+import { FountainAni } from '../aniComponent/FountainAni';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -76,6 +79,10 @@ export class GameView extends ViewComponent {
     energy: Energy = null;
     @property(Node)
     freeGameNode: Node = null;
+    @property(sp.Skeleton)
+    kbn: sp.Skeleton = null;
+    @property(FountainAni)
+    fountain: FountainAni = null;
 
 
     onLoad() {
@@ -109,12 +116,12 @@ export class GameView extends ViewComponent {
         this.top.node.y = 960 + cy;
         this.jackpot.y = 650 + cy * 0.6;
 
-        const kbn = this.content.getChildByName("kbn");
-        kbn.y =440 + ch * 0.45;
+        // const kbn = this.content.getChildByName("kbn");
+        this.kbn.node.y =440 + ch * 0.45;
         this.jackpot.getComponent(Layout).spacingY = 20 + Math.floor(ch / 8);
         if (ch > 200) {
             const sc = Math.min(1.15, 1 + ch / 1400);
-            kbn.scale = v3(sc, sc);
+            this.kbn.node.scale = v3(sc, sc);
             // this.boardContent.y=0+30;
 
         }
@@ -215,6 +222,8 @@ export class GameView extends ViewComponent {
             this.showBg(2);
             this.winNode.showWinNormal();
             this.showFreeGameTimes();
+            ActionEffect.skAni(this.kbn,"idle2");//切换哪吒动画
+            this.fountain.node.active = true;//金币喷泉动画
         });
 
         //开始免费游戏转轮
@@ -232,6 +241,8 @@ export class GameView extends ViewComponent {
             this.showBg(1);
             this.btnSpin.setFreeGame(false);
             this.board.setSpinNormal();
+            ActionEffect.skAni(this.kbn,"idle1");//切换哪吒动画
+            this.fountain.node.active = true;//金币喷泉动画
         });
         if (this.btnSpin.isAuto) {
             this.onSpin();

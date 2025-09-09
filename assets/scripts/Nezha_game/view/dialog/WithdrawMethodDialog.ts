@@ -30,7 +30,7 @@ export class WithdrawMethodDialog extends DialogComponent {
         })
         this.btnSubmit.on(Button.EventType.CLICK, this.onSubmit, this);
         this.btnClose.on(Button.EventType.CLICK, () => {
-            if (!this.eb.string)
+            // if (!this.eb.string)
                 closeCb&&closeCb();
         });
         const id = GameStorage.getCardId();

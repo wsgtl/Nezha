@@ -134,6 +134,7 @@ export class GameManger {
             }
             this.insertCard(CardType.lotus, num1);
         }
+        // this.insertCard(CardType.lotus, 1);//金莲必出测试代码
         //钱卡片控制
         if (type == 2 || this.mustMoney > 0) {
             let num2 = MathUtil.random(1, 4);
@@ -143,7 +144,7 @@ export class GameManger {
             }
             this.insertCard(CardType.money, num2);
         }
-        // this.insertCard(CardType.money, 4);
+        // this.insertCard(CardType.money, 3);//钱必出测试代码
         //免费游戏控制
         if (Math.random() < 0.5) {
             let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);

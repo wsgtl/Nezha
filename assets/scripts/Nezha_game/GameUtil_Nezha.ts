@@ -91,6 +91,10 @@ export type LineData = {
    winType: WinType,
    coin: number
 }
+export type CoinCashData = {
+   coin: number,
+   money: number,
+}
 
 export namespace GameUtil {
    export const CardW: number = 204;//卡牌宽
@@ -103,15 +107,23 @@ export namespace GameUtil {
    export const CashNum: number = 1000;//最低提现金额
    export const BaseBet: number = 500;//基础金币赌注
    export const MaxWildNum: number = 5;//免费游戏最多的wild
-   /**登陆后是否弹签到 */
-   export const Daily = { isShow: false };
-
+   export const BigWinNum:number=100000;//bigwin
+   export const MegaWinNum:number=300000;//meagwin
+   // export const BigWinNum:number=1000;
+   // export const MegaWinNum:number=3000;
+   /**出中奖池概率 */
+   export const MajorPro:number=0.1;
+   /**出大奖池概率 */
+   export const GrandPro:number=0;
    /**兑换券收集到可提现数量 */
    export const CashWithdrawNum: number = 100;
-   /**签到金币数 */
-   export const SigninCoins: number[] = [100, 200, 300, 400, 500, 600, 1000];
    /**3~5个免费游戏标可以有几次免费游戏 */
    export const FreeGameTimes: number[] = [7,9,11];
+   /**钱提现金额 */
+   export const moneyCash:number[]=[1000,2000,3000,4000,5000];
+   const yi = 100000000;
+   /**金币提现金额 */
+   export const coinCash:CoinCashData[]=[{coin:3*yi,money:1000},{coin:6*yi,money:2000},{coin:9*yi,money:3000},{coin:12*yi,money:4000},{coin:15*yi,money:5000}];
    /**每个连线卡获得金币数 */
    export const lineCoin: number[][] = [
       [],
@@ -140,14 +152,7 @@ export namespace GameUtil {
 
 
    ];
-   export const BigWinNum:number=100000;
-   export const MegaWinNum:number=300000;
-   // export const BigWinNum:number=1000;
-   // export const MegaWinNum:number=3000;
-   /**出中奖池概率 */
-   export const MajorPro:number=0.1;
-   /**出大奖池概率 */
-   export const GrandPro:number=0;
+  
 
    export function getCashNum(bl: number=1) {//获取最低提现金额
       const rate = LangStorage.getData().rate;

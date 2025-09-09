@@ -6,6 +6,7 @@ import { GameUtil } from '../../GameUtil_Nezha';
 import { ViewManager } from '../../manager/ViewManger';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { NumFont } from '../../../Nezha_common/ui/NumFont';
+import { sp } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Lotus')
@@ -14,6 +15,8 @@ export class Lotus extends Component {
     progress: Sprite = null;
     @property(Node)
     icon: Node = null;
+    @property(sp.Skeleton)
+    sk: sp.Skeleton = null;
     @property(NumFont)
     num: NumFont = null;
 
@@ -25,6 +28,10 @@ export class Lotus extends Component {
                 
             })
         })
+        ActionEffect.skAniOnce(this.sk,"",true);
+        this.sk.timeScale=10000;
+        this.sk.setToSetupPose();
+        delay(0.1).then(()=>{this.sk.timeScale=1;})
     }
     /**增加金莲进度 */
     addProgress(num: number) {
@@ -46,6 +53,7 @@ export class Lotus extends Component {
                 res();
             }
             ActionEffect.scaleBigToSmall(this.icon, 1.2, 1, 0.2);
+            ActionEffect.skAniOnce(this.sk,"jingdutiao",true);
         })
 
     }

@@ -84,11 +84,10 @@ export class GameManger {
     /**必出连线机台 */
     private mustLineBoard() {
         const list = GameUtil.lines.getRandomItem();
-        // const lineNum = MathUtil.random(3, 5);//随机连线个数
         let lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
-        let type = Math.random()<0.15?MathUtil.random(6,9):MathUtil.random(1, 5);//随机类型,降低主图标出现概率
-        lineNum = 5;
-        type = MathUtil.random(6,9);
+        let type = Math.random() < 0.15 ? MathUtil.random(6, 9) : MathUtil.random(1, 5);//随机类型,降低主图标出现概率
+        // lineNum = 5;
+        // type = MathUtil.random(6,9);
         for (let i = 0; i < lineNum; i++) {
             this.board[list[i]][i] = type;
         }
@@ -151,7 +150,7 @@ export class GameManger {
         if (Math.random() < 0.5) {
             let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);
             let gl = num3 < 3 ? 0.5 : num3 < 5 ? 0.3 : 0.1;
-            this.inserCardOne(CardType.freeGame, num3, gl);
+            this.insertCardOne(CardType.freeGame, num3, gl);
         }
         // this.inserCardOne(CardType.freeGame, 3, 0);//免费游戏必出测试代码
 
@@ -183,7 +182,7 @@ export class GameManger {
 
         const cards = this.findCards(CardType.wild, this.freeGameBoard);
         if (MathUtil.randomBool() && cards.length < GameUtil.MaxWildNum) {
-            const max = Math.min(3, GameUtil.MaxWildNum - cards.length);
+            const max = Math.min(2, GameUtil.MaxWildNum - cards.length);
             const num = MathUtil.random(1, max);//控制wild数量
             for (let i = 0; i < num; i++) {
                 const x = MathUtil.random(1, 4);
@@ -192,17 +191,17 @@ export class GameManger {
             }
         }
 
-        
+
         return this.board;
     }
     /**将wild置顶暂存，用以计算连线 */
-    public upWild():Vec2[]{
-        const pos:Vec2[]=[];
+    public upWild(): Vec2[] {
+        const pos: Vec2[] = [];
         for (let i = 0; i < GameUtil.AllRow; i++) {
             for (let j = 0; j < GameUtil.AllCol; j++) {
                 if (this.board[i][j] == CardType.wild) {
                     this.freeGameBoard[i][j] = CardType.wild;
-                    pos.push(v2(j,i));
+                    pos.push(v2(j, i));
                     continue;
                 }
                 if (this.freeGameBoard[i][j] == CardType.wild) {
@@ -233,7 +232,7 @@ export class GameManger {
         }
     }
     /**一列只插入一个 */
-    private inserCardOne(type: CardType, num: number, gl: number = 0) {
+    private insertCardOne(type: CardType, num: number, gl: number = 0) {
         for (let i = 0; i < GameUtil.AllCol; i++) {
             if (num <= 0) return;
             if (Math.random() < gl) continue;//有一定概率跳过当前列
@@ -302,7 +301,7 @@ export class GameManger {
 
         if (coinnum >= GameUtil.MegaWinNum) {
             winType = WinType.mega;//狂赢
-        } else if (coinnum >=  GameUtil.BigWinNum) {
+        } else if (coinnum >= GameUtil.BigWinNum) {
             winType = WinType.big;//大赢
         }
         return { lines: lines, winType, coin: coinnum };

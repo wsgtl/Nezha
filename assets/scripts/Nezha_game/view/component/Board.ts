@@ -41,7 +41,7 @@ export class Board extends Component {
 
 
     private cards: Card[] = [];
-    private basePos:Vec2;
+    private basePos: Vec2;
     private init() {
         for (let x = 0; x < GameUtil.AllCol; x++) {
             for (let y = 0; y < GameUtil.CreateRow; y++) {
@@ -135,16 +135,27 @@ export class Board extends Component {
                 this.spinOne(i, [board[0][i], board[1][i], board[2][i]], q, wait, lineAniIndex > 0)
                     .then(() => {
                         if (isLineAni) {
+                            if (this.lineAni.isShow && i < 4) {
+                                if (this.popFreegame(i))
+                                    AudioManager.playEffect("pop");
+                            }
                             if (lineAniIndex - 2 == i) {//开始咪牌
                                 this.lineAni.node.x = this.ls[lineAniIndex - 1].x;
                                 this.lineAni.show(true);
+                                for (let x = 0; x <= i; x++) {
+                                    this.popFreegame(x);
+                                }
+                                AudioManager.playEffect("pop");
                             }
                             if (lineAniAdd) {
-                                if (i == 4)
+                                if (i == 4) {
                                     this.lineAni.show(false);
+                                    this.breatheFreegame();
+                                }
                                 else
                                     this.lineAni.node.x = this.ls[i + 1].x;
                             }
+
                         }
 
                         if (i == GameUtil.AllCol - 1) {
@@ -179,15 +190,15 @@ export class Board extends Component {
         //         card.getComponent(Card).showBorder(i == y);
         //     })
         // })
-        this.borders.active = line.length>0;
-        for(let i=0;i<5;i++){
+        this.borders.active = line.length > 0;
+        for (let i = 0; i < 5; i++) {
             const b = this.borders.children[i];
             const y = line[i];
-            if(y>=0){
+            if (y >= 0) {
                 b.active = true;
                 b.y = this.getY(y);
                 b.x = this.getX(i);
-            }else{
+            } else {
                 b.active = false;
             }
         }
@@ -235,7 +246,7 @@ export class Board extends Component {
         const moneyCards = GameManger.instance.findCards(CardType.money);
         if (moneyCards.length >= 3) {
             // this.moneyAni.ani();
-            ActionEffect.skAniOnce(this.moneySk,"zhibi");
+            ActionEffect.skAniOnce(this.moneySk, "zhibi");
         }
     }
 
@@ -253,6 +264,7 @@ export class Board extends Component {
             card.init(CardType.wild);
             c.y = this.getY(v.y);
             c.x = this.getX(v.x);
+            card.pop(CardType.wild);
         })
     }
     /**清除置顶wild */
@@ -260,29 +272,58 @@ export class Board extends Component {
         this.upBoard.destroyAllChildren();
     }
     /**震动动画 */
-    public async shock(){
+    public async shock() {
         AudioManager.vibrate(1, 255);
         const bx = this.basePos.x;
         const by = this.basePos.y;
         const time = 0.08;
         const tx = 5;
         const ty = 20;
-        await tweenPromise(this.boardContent,t=>t
-            .to(time,{position:v3(bx+tx,by+ty)})
-            .to(time,{position:v3(bx+tx*2,by)})
-            .to(time,{position:v3(bx+tx,by+ty)})
-            .to(time,{position:v3(bx,by)})
+        await tweenPromise(this.boardContent, t => t
+            .to(time, { position: v3(bx + tx, by + ty) })
+            .to(time, { position: v3(bx + tx * 2, by) })
+            .to(time, { position: v3(bx + tx, by + ty) })
+            .to(time, { position: v3(bx, by) })
 
-            .to(time,{position:v3(bx+tx,by+ty)})
-            .to(time,{position:v3(bx+tx*2,by)})
-            .to(time,{position:v3(bx+tx,by+ty)})
-            .to(time,{position:v3(bx,by)})
+            .to(time, { position: v3(bx + tx, by + ty) })
+            .to(time, { position: v3(bx + tx * 2, by) })
+            .to(time, { position: v3(bx + tx, by + ty) })
+            .to(time, { position: v3(bx, by) })
 
-            .to(time,{position:v3(bx+tx,by+ty)})
-            .to(time,{position:v3(bx+tx*2,by)})
-            .to(time,{position:v3(bx+tx,by+ty)})
-            .to(time,{position:v3(bx,by)})
+            .to(time, { position: v3(bx + tx, by + ty) })
+            .to(time, { position: v3(bx + tx * 2, by) })
+            .to(time, { position: v3(bx + tx, by + ty) })
+            .to(time, { position: v3(bx, by) })
         )
+    }
+    /**打铃动画 */
+    public ring() {
+        const fgs = GameManger.instance.findCards(CardType.freeGame);
+        AudioManager.playEffect("ring");
+        const ap: Promise<void>[] = [];
+        fgs.forEach(v => {
+            const c = this.ls[v.x]?.children[v.y]?.getComponent(Card);
+            if (c) {
+                ap.push(c.ring());
+            }
+        })
+        return Promise.any(ap);
+    }
+    /**让一列免费游戏显示弹起 */
+    private popFreegame(x: number) {
+        let num = 0;
+        this.ls[x].children.forEach(v => {
+            if (v.getComponent(Card).pop(CardType.freeGame)) num++;
+        });
+        return num > 0;
+    }
+    /**免费游戏显示呼吸 */
+    private breatheFreegame() {
+        this.ls.forEach(v => {
+            v.children.forEach(v => {
+                v.getComponent(Card).breathe(CardType.freeGame);
+            })
+        })
     }
 }
 

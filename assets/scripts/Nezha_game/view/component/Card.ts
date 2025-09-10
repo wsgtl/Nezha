@@ -43,11 +43,18 @@ export class Card extends Component {
         //     this.sk.node.active = false;
         //     this.icon.node.active = true;
         // }
-       
-        this.icon.spriteFrame = this.sf[type - 1];
-        this.sk.node.active = false;
-        this.icon.node.active = true;
-       
+
+        // this.icon.spriteFrame = this.sf[type - 1];
+        // this.sk.node.active = false;
+        // this.icon.node.active = true;
+
+        this.sk.skeletonData = this.sks[type - 1];
+        this.sk.node.active = true;
+        this.icon.node.active = false;
+        ActionEffect.skAni(this.sk,"breathe");
+        // this.sk.animation = "breathe";
+        // this.sk.animation = "ring";
+
     }
     showBorder(v: boolean) {
         // this.border.active = v;
@@ -79,12 +86,36 @@ export class Card extends Component {
     shotAni() {
         this.setColor(false);
         // if (this.type == CardType.c12 || this.type == CardType.c14) {
-            ActionEffect.scaleBigToSmall(this.icon.node, 1.2, 1, 0.2);
-            // tween(this.icon.node)
-            // .to(0.1,{scale:v3(1.2,1.2)})
-            // .to(0.1,{scale:v3(1,1)})
-            // .start();
+        ActionEffect.scaleBigToSmall(this.icon.node, 1.2, 1, 0.2);
+        // tween(this.icon.node)
+        // .to(0.1,{scale:v3(1.2,1.2)})
+        // .to(0.1,{scale:v3(1,1)})
+        // .start();
         // }
+    }
+    /**打铃 */
+    async ring(){
+        if(this.type==CardType.freeGame){
+            this.sk.findAnimation
+            ActionEffect.skAni(this.sk,"ring");
+            await delay(2);
+            ActionEffect.skAni(this.sk,"breathe");
+        }
+        
+    }
+    /**弹起 */
+    pop(type:CardType){
+        if(this.type==type){
+            ActionEffect.skAni(this.sk,"pop");
+            return true;
+        }
+        return false;
+    }
+    /**弹起 */
+    breathe(type:CardType){
+        if(this.type==type){
+            ActionEffect.skAni(this.sk,"breathe");
+        }
     }
 }
 

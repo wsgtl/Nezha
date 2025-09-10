@@ -213,6 +213,8 @@ export class GameView extends ViewComponent {
     async startFreeGame() {
         this.btnSpin.setFreeGame(true);
         GameManger.instance.initFreeGame();
+        //打铃
+        await this.board.ring();
         //免费游戏开始弹窗
         await this.freeGameStart();
 

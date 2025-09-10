@@ -19,6 +19,12 @@ export class MoneyAni extends Component {
     sf: SpriteFrame[] = [];
     start() {
         // this.node.active = false;
+        const a = this.sk.animation;
+        delay(3).then(()=>{
+            this.sk.setAnimation(1,"ring");
+        })
+       
+        console.log("动画"+a);
     }
 
     async ani() {

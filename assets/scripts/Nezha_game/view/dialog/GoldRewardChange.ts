@@ -30,6 +30,7 @@ export class GoldRewardChange extends ViewComponent {
     }
 
     async ani() {
+        AudioManager.vibrate(0.3,255);
         AudioManager.playEffect("goldChange");
         this.circle.active = false;
         UIUtils.setAlpha(this.light,0);

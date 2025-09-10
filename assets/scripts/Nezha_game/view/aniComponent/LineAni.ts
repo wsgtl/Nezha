@@ -17,7 +17,7 @@ export class LineAni extends Component {
     protected onLoad(): void {
         this.content.active = false;
     }
-    private isShow: boolean = false;
+    public isShow: boolean = false;
     async show(v:boolean) {
         if(!v){
             await ActionEffect.fadeOut(this.content,0.2);

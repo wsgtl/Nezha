@@ -4,6 +4,7 @@ import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { delay } from '../../../Nezha_common/utils/TimeUtil';
 import { view } from 'cc';
 import { UIUtils } from '../../../Nezha_common/utils/UIUtils';
+import { AudioManager } from '../../manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('FreeGameChange')
@@ -32,13 +33,15 @@ export class FreeGameChange extends ViewComponent {
             UIUtils.setHeight(this.right,h);
             UIUtils.setHeight(this.line,h);
         }
-
+        AudioManager.playEffect("closedoor");
         const d1 = 0.3;
         ActionEffect.moveTo(this.left,d1,0,0);
         await ActionEffect.moveTo(this.right,d1,0,0);
         this.line.active = true;
+        AudioManager.vibrate(0.3,155);
         this.chagneCb();
         await delay(0.4);
+        AudioManager.playEffect("opendoor");
         const d2 = 0.4;
         ActionEffect.fadeOut(this.line,0.1);
         ActionEffect.moveTo(this.left,d2,-bx,0);

@@ -47,6 +47,7 @@ export class FreeGameStart extends DialogComponent {
 
     /**开始动画 */
     async startAni() {
+        AudioManager.playEffect("gufen");
         this.isAni = true;
         if (this.bg) ActionEffect.fadeIn(this.bg, 0.3);
         const waitTimes = [0, 0.2, 0.25, 0.3, 0.4, 0.4];//各个动画节点等待出现时机

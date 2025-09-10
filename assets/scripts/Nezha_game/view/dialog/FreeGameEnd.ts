@@ -9,6 +9,7 @@ import { delay, tweenPromise } from '../../../Nezha_common/utils/TimeUtil';
 import { v3 } from 'cc';
 import { Sprite } from 'cc';
 import { isVaild } from '../../../Nezha_common/utils/ViewUtil';
+import { AudioManager } from '../../manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('FreeGameEnd')
@@ -56,6 +57,7 @@ export class FreeGameEnd extends DialogComponent {
     }
     /**开始动画 */
     async startAni() {
+        AudioManager.playEffect("gufen");
         this.isAni = true;
         if (this.bg) ActionEffect.fadeIn(this.bg, 0.3);
         const waitTimes = [0, 0.2, 0.25, 0.3, 0.3, 0.4, 0.4];//各个动画节点等待出现时机

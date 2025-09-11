@@ -19,11 +19,11 @@ export class Limit extends Component {
     private curLimit: LimitType = 1;
     start() {
         this.btn.on(Button.EventType.CLICK, () => {
-            if(GameManger.instance.isAni)return;
+            if (GameManger.instance.isAni) return;
             const cur = this.curLimit;
-            if(cur>0){
-                ViewManager.showLimitDialog(this.curLimit,()=>{
-                    if(cur==this.curLimit){
+            if (cur > 0) {
+                ViewManager.showLimitDialog(this.curLimit, () => {
+                    if (cur == this.curLimit) {
                         this.showCurLimit(false);
                     }
                 });
@@ -42,17 +42,17 @@ export class Limit extends Component {
     }
     /**限时活动循环显示 */
     private async limitLoopShow() {
-        await this.limitShow(0,10);
+        await this.limitShow(0, 5);
         await this.limitShow(1);
-        await this.limitShow(0,10);
+        await this.limitShow(0, 5);
         await this.limitShow(2);
         this.limitLoopShow();
     }
-    private async limitShow(cur:number,time:number=30){
+    private async limitShow(cur: number, time: number = 30) {
         this.curLimit = cur;
         let show = false;
         const data = GameStorage.getLimit();
-        if ( cur== 1) {//钱标两个
+        if (cur == 1) {//钱标两个
             show = data.cash <= 0;
         } else if (cur == 2) {//金莲两个
             show = data.lotus <= 0;
@@ -67,6 +67,7 @@ export class Limit extends Component {
                 await delay(1, this.node);
             }
         } else {
+            if (cur > 0) time = 5;//如果非空，等待短些
             await delay(time, this.node);
         }
     }

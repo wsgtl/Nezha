@@ -6,6 +6,7 @@ import { CoinManger } from '../../manager/CoinManger';
 import { v3 } from 'cc';
 import { GameManger } from '../../manager/GameManager';
 import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
+import { ViewManager } from '../../manager/ViewManger';
 const { ccclass, property } = _decorator;
 
 @ccclass('Coin')
@@ -35,7 +36,8 @@ export class Coin extends Component {
     @ButtonLock(1)
     touch() {
         if (!this.canClick || GameManger.instance.isAni) return;
-        CoinManger.instance.showDialog();
+        // CoinManger.instance.showDialog();
+        ViewManager.showWithdrawDialog(true);
     }
     protected onDestroy(): void {
         // CoinManger.instance.setCoinNode(null);

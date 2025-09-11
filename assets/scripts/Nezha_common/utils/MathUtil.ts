@@ -38,6 +38,10 @@ export namespace MathUtil {
     export function cut(num: number) {
         return ~~num;
     }
+    /**概率 0~1*/
+    export function probability(n: number = 0.5) {
+        return Math.random() <= n;
+    }
 
     /**拷贝，默认深拷贝 */
     export function copy(source, isDeep = true) {

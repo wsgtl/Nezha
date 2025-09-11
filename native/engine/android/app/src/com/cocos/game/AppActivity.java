@@ -172,7 +172,7 @@ public class AppActivity extends CocosActivity {
         Log.e("震动", args);
         try {
             JSONObject json = new JSONObject(args);
-            int duration = json.getInt("duration")*1000;
+            int duration = json.getInt("duration");
             int amplitude = json.getInt("amplitude");
             if(amplitude>=0){//振幅控制
                VibrationUtils.vibrateWithAmplitude(this, duration,amplitude);

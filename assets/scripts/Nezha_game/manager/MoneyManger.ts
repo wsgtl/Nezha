@@ -64,27 +64,18 @@ export class MoneyManger {
         const cur = GameStorage.getMoney();
         const cha = GameUtil.getCashNum() - cur;
         const rate = LangStorage.getData().rate;
-        const fsl1 = 700 * rate;//根据汇率计算
-        const fsl2 = 500 * rate;//根据汇率计算
-        const fsl3 = 250 * rate;//根据汇率计算
+        const fsl1 = 350 * rate;//根据汇率计算
+        const fsl2 = 250 * rate;//根据汇率计算
+        const fsl3 = 130 * rate;//根据汇率计算
         if (cha > fsl1) {//钱越多，赚的钱比例越来越低
-            return Math.floor(cha * MathUtil.random(5, 20) / 10 * bl) / 100;
-        }
-        if (cha > fsl2) {
-            return Math.floor(cha * MathUtil.random(4, 15) / 10 * bl) / 100;
-        }
-        if (cha > fsl3) {
             return Math.floor(cha * MathUtil.random(3, 10) / 10 * bl) / 100;
         }
-        // if (cur < 300) {
-        //     return MathUtil.random(600, 2000) / 100* bl;
-        // }
-        // if (cur < 600) {
-        //     return MathUtil.random(400, 1000) / 100* bl;
-        // }
-        // if (cur < 750) {
-        //     return MathUtil.random(100, 400) / 100* bl;
-        // }
+        if (cha > fsl2) {
+            return Math.floor(cha * MathUtil.random(2, 8) / 10 * bl) / 100;
+        }
+        if (cha > fsl3) {
+            return Math.floor(cha * MathUtil.random(1, 5) / 10 * bl) / 100;
+        }
 
         const max = cha / 200;
         const min = cha / 600;
@@ -97,5 +88,8 @@ export class MoneyManger {
             xsd = 3 - magnitude; // 每小 10 倍，位数 +1
         }
         return parseFloat(num.toFixed(xsd)) * bl;
+    }
+    public rate(money:number){
+        return LangStorage.getData().rate * money;
     }
 }

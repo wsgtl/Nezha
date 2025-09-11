@@ -20,6 +20,8 @@ import { MoneyAni } from '../aniComponent/MoneyAni';
 import { v3 } from 'cc';
 import { sp } from 'cc';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
+import { Color } from 'cc';
+import { UIUtils } from '../../../Nezha_common/utils/UIUtils';
 const { ccclass, property } = _decorator;
 
 @ccclass('Board')
@@ -161,7 +163,8 @@ export class Board extends Component {
                         if (i == GameUtil.AllCol - 1) {
                             res();
                         }
-                        AudioManager.playEffect("stop");
+                        AudioManager.playEffect("stop",i==4?1:0.5);
+                        AudioManager.vibrate(30, i==4?255:60);
                     })
             }
 
@@ -234,6 +237,10 @@ export class Board extends Component {
                 card.getComponent(Card).setColor(v);
             })
         })
+
+        this.borders.children.forEach(b=>{
+            UIUtils.setAlpha(b,v?0:1);
+        })
     }
 
     /**转动后方块成普通形态 */
@@ -243,7 +250,7 @@ export class Board extends Component {
     }
     /**钱动画 */
     private showMoneyAni() {
-        const moneyCards = GameManger.instance.findCards(CardType.money);
+        const moneyCards = GameManger.instance.isFreeGame? GameManger.instance.findCardsFreegame(CardType.money):GameManger.instance.findCards(CardType.money);
         if (moneyCards.length >= 3) {
             // this.moneyAni.ani();
             ActionEffect.skAniOnce(this.moneySk, "zhibi");
@@ -273,7 +280,7 @@ export class Board extends Component {
     }
     /**震动动画 */
     public async shock() {
-        AudioManager.vibrate(1, 255);
+        AudioManager.vibrate(1000, 255);
         const bx = this.basePos.x;
         const by = this.basePos.y;
         const time = 0.08;

@@ -21,6 +21,8 @@ export class Yb extends Component {
     num: NumFont = null;
     @property(sp.Skeleton)
     sk: sp.Skeleton = null;
+    @property(sp.Skeleton)
+    star: sp.Skeleton = null;
     @property([SpriteFrame])
     ws: SpriteFrame[] = [];
     @property([SpriteFrame])
@@ -30,7 +32,7 @@ export class Yb extends Component {
     public isClick: boolean = false;
     public isAd: boolean = false;
     async show(type: JakcpotType, num?: number) {
-        this.showAni();
+        this.showAni(type==JakcpotType.none);
         this.isClick = true;
         this.type = type;
         await delay(0.2);
@@ -41,8 +43,9 @@ export class Yb extends Component {
             this.showNode.getChildByName("str").getComponent(Sprite).spriteFrame = this.strs[type - 1];
         } else {
             this.num.node.active = true;
-            this.num.num = LangStorage.getData().symbol + FormatUtil.toXXDXXxsd(num);
-            if(this.num.num.length>5){
+            num = [0.3,1.1,0.003].getRandomItem();
+            this.num.num = LangStorage.getData().symbol + FormatUtil.toXXDXXxsd(num,false,2);
+            if(this.num.num.length>5){ 
                 const sc = 1 - (this.num.num.length - 5) * 0.1;
                 this.num.node.scale = v3(sc, sc);
             }
@@ -60,13 +63,14 @@ export class Yb extends Component {
         this.sp.active = v;
         this.isAd = v;
     }
-    showAni() {
+    showAni(isShowStar:boolean) {
         // this.sk.node.active = true;
         // this.sk.animation = "loop";
         // delay(0.4).then(() => {
         //     this.sk.node.active = false;
         // })
         ActionEffect.skAniOnce(this.sk,"zhakai");
+        isShowStar&&(this.star.node.active = true);
     }
 }
 

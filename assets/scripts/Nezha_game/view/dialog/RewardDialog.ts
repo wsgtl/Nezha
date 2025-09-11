@@ -49,7 +49,8 @@ export class RewardDialog extends DialogComponent {
 
         // this.showReciveNum(2);
         const data = LangStorage.getData();
-        this.rewardNum = GuideManger.isGuide() ? GameUtil.GuideMoney : MoneyManger.instance.getReward();
+        const isGuide = GuideManger.isGuide() && GameStorage.getMoney() < 5;
+        this.rewardNum = isGuide ? MoneyManger.instance.rate(GameUtil.GuideMoney)  : MoneyManger.instance.getReward();
         this.num.aligning = 1;
         this.num.num = data.symbol + " " + FormatUtil.toXXDXXxsd(this.rewardNum);
         // this.showMoneyNode();

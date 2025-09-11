@@ -20,63 +20,88 @@ export namespace FormatUtil {
         // 将小数点的"."替换为"_"
         return formattedNum.replace('.', '_');
     }
-    /**将数字改为1,000.00这种格式 */
-    export function toXXDXX(num: number, xsd: number = 4, useGrouping: boolean = true): string {
-        if (isNaN(num)) return 'NaN';
-    
-        const isInteger = Number.isInteger(num);
-        let fixedNum = num;
-        
-        // 非整数时，截断到 xsd 位小数
-        if (!isInteger) {
-            const factor = Math.pow(10, xsd);
-            fixedNum = Math.floor(num * factor) / factor;
-        }
-        
-        // 分离整数和小数部分
-        let [integerPart, decimalPart = ''] = fixedNum.toString().split('.');
-        
-        // 处理千分位逗号
-        if (useGrouping) {
-            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-        
-        // 处理小数部分（去掉末尾的 0）
-        if (decimalPart) {
-            decimalPart = decimalPart.replace(/0+$/, ''); // 去掉末尾多余的 0
-            if (decimalPart.length > 0) {
-                return `${integerPart}_${decimalPart}`;
-            }
-        }
-        
-        return integerPart;
-    }
-    // export function toXXDXX(num: number, xsd: number = 4,useGrouping:boolean=true) {
-    //     // 检查是否是整数
+    // /**将数字改为1,000.00这种格式 */
+    // export function toXXDXX(num: number, xsd: number = 4, useGrouping: boolean = true): string {
+    //     if (isNaN(num)) return 'NaN';
+
     //     const isInteger = Number.isInteger(num);
+    //     let fixedNum = num;
 
-    //     if (isInteger) {
-    //         return new Intl.NumberFormat('en-US', {
-    //             maximumFractionDigits: 0,
-    //             minimumFractionDigits: 0,
-    //             useGrouping:useGrouping
-    //         }).format(num);
-    //     } else {
-    //         // 对于非整数，先截断到xsd位小数
+    //     // 非整数时，截断到 xsd 位小数
+    //     if (!isInteger) {
     //         const factor = Math.pow(10, xsd);
-    //         const truncatedNum = Math.floor(num * factor) / factor;
-
-    //         // 然后格式化，确保显示正确的小数位数
-    //         return new Intl.NumberFormat('en-US', {
-    //             maximumFractionDigits: xsd,
-    //             minimumFractionDigits: 0,
-    //             useGrouping:useGrouping
-    //         }).format(truncatedNum).replace('.', '_');
+    //         fixedNum = Math.floor(num * factor) / factor;
     //     }
+
+    //     // 分离整数和小数部分
+    //     let [integerPart, decimalPart = ''] = fixedNum.toString().split('.');
+
+    //     // 处理千分位逗号
+    //     if (useGrouping) {
+    //         integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    //     }
+
+    //     // 处理小数部分（去掉末尾的 0）
+    //     if (decimalPart) {
+    //         decimalPart = decimalPart.replace(/0+$/, ''); // 去掉末尾多余的 0
+    //         if (decimalPart.length > 0) {
+    //             return `${integerPart}_${decimalPart}`;
+    //         }
+    //     }
+
+    //     return integerPart;
     // }
+    /** 将数字转换为指定格式的字符串，如 1000.302 变成 "1,000_302" */
+export function toXXDXX(
+    num: number, 
+    xsd: number = 4, 
+    useGrouping: boolean = true,
+    minDecimalDigits: number = 0 // 新增参数：小数部分最小位数
+): string {
+    if (isNaN(num)) return 'NaN';
+
+    const isInteger = Number.isInteger(num);
+    let fixedNum = num;
+    
+    // 非整数时，截断到 xsd 位小数
+    if (!isInteger) {
+        const factor = Math.pow(10, xsd);
+        fixedNum = Math.floor(num * factor) / factor;
+    }
+    
+    // 分离整数和小数部分
+    let [integerPart, decimalPart = ''] = fixedNum.toString().split('.');
+    
+    // 处理千分位逗号
+    if (useGrouping) {
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    
+    // 处理小数部分
+    if (decimalPart) {
+        // 去掉末尾多余的 0
+        decimalPart = decimalPart.replace(/0+$/, '');
+        
+        // 如果小数位数不足最小位数，则补零
+        if (decimalPart.length < minDecimalDigits) {
+            decimalPart = decimalPart.padEnd(minDecimalDigits, '0');
+        }
+        
+        if (decimalPart.length > 0) {
+            return `${integerPart}_${decimalPart}`;
+        }
+    } else if (minDecimalDigits > 0) {
+        // 如果没有小数部分但要求最小位数，则添加指定数量的小数零
+        const zeros = '0'.repeat(minDecimalDigits);
+        return `${integerPart}_${zeros}`;
+    }
+    
+    return integerPart;
+}
+
     /**将数字改为1,000.00这种格式,并控制小数点数量 */
-    export function toXXDXXxsd(num: number, useGrouping:boolean=true){
+    export function toXXDXXxsd(num: number, useGrouping: boolean = true,minDecimalDigits: number = 0) {
         const xsd = num > 1 ? 2 : (num > 0.01 ? 4 : 6);
-        return FormatUtil.toXXDXX(num, xsd,useGrouping);
-    }   
+        return FormatUtil.toXXDXX(num, xsd, useGrouping, minDecimalDigits);
+    }
 }

@@ -55,7 +55,7 @@ export class FountainAni extends Component {
         this.launch.addChild(ic);
         const fx = MathUtil.randomOne();
         ic.x = fx * MathUtil.random(-50, 200);
-        const long = Math.random() < 0.5 ? 0.5 : 1;
+        const long = MathUtil.probability() ? 0.5 : 1;
         const baseH = this.h * long;
         const end = v3(fx * MathUtil.random(400, 600), baseH - MathUtil.random(600, 900));
         const duration = long + MathUtil.random(5, 7) / 10;

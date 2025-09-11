@@ -45,6 +45,8 @@ export class GameManger {
     mustMoney: number = 0;
     /**免费游戏次数 */
     freegameTimes: number = 0;
+    /**是否已出现免费游戏增加 */
+    isFreegameAdd: boolean = false;
 
 
     public getNewBoard() {
@@ -84,8 +86,8 @@ export class GameManger {
     /**必出连线机台 */
     private mustLineBoard() {
         const list = GameUtil.lines.getRandomItem();
-        let lineNum = Math.random() < 0.1 ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
-        let type = Math.random() < 0.15 ? MathUtil.random(6, 9) : MathUtil.random(1, 5);//随机类型,降低主图标出现概率
+        let lineNum = MathUtil.probability(0.1) ? 5 : MathUtil.random(3, 4);//随机连线个数,出5个概率较低
+        let type = MathUtil.probability(0.15) ? MathUtil.random(6, 9) : MathUtil.random(1, 5);//随机类型,降低主图标出现概率
         // lineNum = 5;
         // type = MathUtil.random(6,9);
         for (let i = 0; i < lineNum; i++) {
@@ -127,8 +129,9 @@ export class GameManger {
 
         const type = MathUtil.random(0, 2);
         //金莲控制
-        if (type == 1 || this.mustLotus > 0) {
-            let num1 = MathUtil.random(1, 2);
+        // if (type == 1 || this.mustLotus > 0) {
+        if (MathUtil.probability(0.5) || this.mustLotus > 0) {
+            let num1 = MathUtil.random(1, 3);
             if (this.mustLotus > 0) {
                 this.mustLotus--;
                 num1 = MathUtil.random(2, 4);
@@ -137,7 +140,8 @@ export class GameManger {
         }
         // this.insertCard(CardType.lotus, 1);//金莲必出测试代码
         //钱卡片控制
-        if (type == 2 || this.mustMoney > 0) {
+        // if (type == 2 || this.mustMoney > 0) {
+        if (MathUtil.probability(0.4) || this.mustMoney > 0) {
             let num2 = MathUtil.random(1, 4);
             if (this.mustMoney > 0) {
                 this.mustMoney--;
@@ -147,12 +151,12 @@ export class GameManger {
         }
         // this.insertCard(CardType.money, 3);//钱必出测试代码
         //免费游戏控制
-        if (Math.random() < 0.5) {
-            let num3 = Math.random() < 0.9 ? MathUtil.random(1, 2) : MathUtil.random(3, 5);
+        if (MathUtil.probability(0.5)) {
+            let num3 = MathUtil.probability(0.85) ? MathUtil.random(1, 2) : MathUtil.random(3, 5);
             let gl = num3 < 3 ? 0.5 : num3 < 5 ? 0.3 : 0.1;
             this.insertCardOne(CardType.freeGame, num3, gl);
         }
-        // this.inserCardOne(CardType.freeGame, 3, 0);//免费游戏必出测试代码
+        // this.insertCardOne(CardType.freeGame, 3, 0);//免费游戏必出测试代码
 
         //随机插入普通卡片
         this.randomInsertCards();
@@ -175,7 +179,7 @@ export class GameManger {
         this.insertCard(CardType.lotus, MathUtil.random(0, 2));
 
         //钱卡片控制
-        // this.insertCard(CardType.money, MathUtil.random(1, 4));
+        this.insertCard(CardType.money, MathUtil.random(0, 3));
 
         //随机插入普通卡片
         this.randomInsertCards(false);
@@ -235,7 +239,7 @@ export class GameManger {
     private insertCardOne(type: CardType, num: number, gl: number = 0) {
         for (let i = 0; i < GameUtil.AllCol; i++) {
             if (num <= 0) return;
-            if (Math.random() < gl) continue;//有一定概率跳过当前列
+            if (MathUtil.probability(gl)) continue;//有一定概率跳过当前列
             const list: number[] = [];
             for (let j = 0; j < GameUtil.AllRow; j++) {
                 if (this.board[j][i] == CardType.none) {
@@ -297,13 +301,14 @@ export class GameManger {
             coinnum += n;
         });
 
-        let winType: WinType = 0;
+        let winType: WinType = GameUtil.winType(coinnum);
 
-        if (coinnum >= GameUtil.MegaWinNum) {
-            winType = WinType.mega;//狂赢
-        } else if (coinnum >= GameUtil.BigWinNum) {
-            winType = WinType.big;//大赢
-        }
+        // if (coinnum >= GameUtil.MegaWinNum) {
+        //     winType = WinType.mega;//狂赢
+        // } else if (coinnum >= GameUtil.BigWinNum) {
+        //     winType = WinType.big;//大赢
+        // }
+
         return { lines: lines, winType, coin: coinnum };
     }
     /**找该类型的卡 */
@@ -312,6 +317,18 @@ export class GameManger {
         board.forEach((b, y) => {
             b.forEach((c, x) => {
                 if (c == type) {
+                    cardPos.push(v2(x, y));
+                }
+            })
+        })
+        return cardPos;
+    }
+    /**在免费中找该类型的卡，去掉wild */
+    public findCardsFreegame(type: CardType): Vec2[] {
+        const cardPos: Vec2[] = [];
+        this.board.forEach((b, y) => {
+            b.forEach((c, x) => {
+                if (c == type && this.freeGameBoard[y][x] != CardType.wild) {
                     cardPos.push(v2(x, y));
                 }
             })
@@ -349,6 +366,7 @@ export class GameManger {
         const cards = this.findCards(CardType.freeGame);
         if (cards.length >= 3) {
             this.freegameTimes = GameUtil.FreeGameTimes[Math.min(2, cards.length - 3)];
+            this.isFreegameAdd = false;
             return true;
         }
         return false;

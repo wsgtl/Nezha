@@ -8,12 +8,13 @@ import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { Sprite } from 'cc';
 import { AudioManager } from '../../manager/AudioManager';
 import { v3 } from 'cc';
+import { NumFont } from '../../../Nezha_common/ui/NumFont';
 const { ccclass, property } = _decorator;
 
 @ccclass('FreeGameStart')
 export class FreeGameStart extends DialogComponent {
-    @property(Node)
-    numNode: Node = null;
+    @property(NumFont)
+    numNode: NumFont = null;
     @property(Node)
     btnStart: Node = null;
     @property(Sprite)
@@ -28,9 +29,10 @@ export class FreeGameStart extends DialogComponent {
 
         this.num = args.num;
         this.cb = args.cb;
-        this.numNode.children.forEach(v => v.active = false);
-        const nn = this.numNode.getChildByName("d" + this.num);
-        if (nn) nn.active = true;
+        // this.numNode.children.forEach(v => v.active = false);
+        // const nn = this.numNode.getChildByName("d" + this.num);
+        this.numNode.num = this.num;
+        // if (nn) nn.active = true;
         this.btnStart.on(Button.EventType.CLICK, this.onStart, this);
 
 

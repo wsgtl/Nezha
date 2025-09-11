@@ -29,6 +29,7 @@ export class EnergyDialog extends DialogComponent {
                 
                 ViewManager.showRewardParticle(RewardType.energy,this.node,EnergyManger.getEnergyNode(),()=>{
                     EnergyManger.maxEnergy();
+                    this.cb?.(); 
                 })            
                 this.closeAni();
             }, ViewManager.adNotReady);
@@ -37,6 +38,7 @@ export class EnergyDialog extends DialogComponent {
         )
         this.btnNt.on(Button.EventType.CLICK, () => {
             this.closeAni();
+            this.cb?.(); 
             adHelper.timesToShowInterstitial();
         })
         AudioManager.playEffect("light");

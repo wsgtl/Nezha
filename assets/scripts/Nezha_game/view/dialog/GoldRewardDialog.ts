@@ -17,6 +17,7 @@ import { FormatUtil } from '../../../Nezha_common/utils/FormatUtil';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { JackpotManger } from '../../manager/JackpotManager';
 import { view } from 'cc';
+import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('GoldRewardDialog')
@@ -98,8 +99,8 @@ export class GoldRewardDialog extends ViewComponent {
             this.randomJackpot[i] = 0;
         }
         this.randomJackpot.shuffle();
-        if (Math.random() < 0.4) this.randomJackpot[0] = 2;
-        if (Math.random() < 0.03) this.randomJackpot[0] = 1;//有概率出大奖池
+        if (MathUtil.probability(0.4)) this.randomJackpot[0] = 2;
+        if (MathUtil.probability(0.03)) this.randomJackpot[0] = 1;//有概率出大奖池
     }
 
     showBtn(v: boolean) {
@@ -126,6 +127,7 @@ export class GoldRewardDialog extends ViewComponent {
     @ButtonLock(0.5)
     clickYb(ybcom: Yb) {
         this.hand.active = false;
+        AudioManager.vibrate(50, 155);
         AudioManager.playEffect("yb");
         // if (!this.isInit) {
         this.canClickNum--;

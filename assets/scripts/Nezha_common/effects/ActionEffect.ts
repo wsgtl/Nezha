@@ -428,35 +428,35 @@ export namespace ActionEffect {
         })
     }
     /**数字增加动画 */
-    export async function numAddAni(start: number, end: number, show: Function, isInt: boolean = false, all: number = 5,node?:Node) {
+    export async function numAddAni(start: number, end: number, show: Function, isInt: boolean = false, all: number = 5, node?: Node) {
         const item = (end - start) / all;
         for (let i = 1; i <= all; i++) {
             let cur = i == all ? end : start + i * item;
             if (isInt) cur = Math.floor(cur);
             show(cur);
             if (i != all) {
-                await delay(0.05,node);
+                await delay(0.05, node);
             }
         }
     }
 
     /**spine动画播放一次后关闭 */
-    export function skAniOnce(sk:sp.Skeleton,name:string,isShow:boolean=false){
-        return new Promise<void>(res=>{
+    export function skAniOnce(sk: sp.Skeleton, name: string, isShow: boolean = false) {
+        return new Promise<void>(res => {
             sk.node.active = true;
             sk.setCompleteListener(null);
-            sk.setAnimation(1,name,false);
-            sk.setCompleteListener(()=>{
-                if(!isShow)sk.node.active = false;
+            sk.setAnimation(1, name, false);
+            sk.setCompleteListener(() => {
+                if (!isShow) sk.node.active = false;
                 res();
             })
         })
-       
+
     }
     /**spine动画循环播放 */
-    export function skAni(sk:sp.Skeleton,name:string){
-            sk.node.active = true;
-            sk.setCompleteListener(null);
-            sk.setAnimation(1,name,true);      
+    export function skAni(sk: sp.Skeleton, name: string) {
+        sk.node.active = true;
+        sk.setCompleteListener(null);
+        sk.setAnimation(1, name, true);
     }
 }

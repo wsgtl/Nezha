@@ -28,7 +28,7 @@ public class AppsFlyer
     private String Tag = "afEvent";
     private Activity mApplication = null;
     /**af的key*/
-    private String AfDevKey = "ixmLNG4rgCaaKki3LPG3Fj";
+    private String AfDevKey = "bczkaJCR5tXG4VETeTA2Ea";
     /**af初始化*/
     public void init(Activity application){
         mApplication = application;

@@ -50,7 +50,7 @@ export class LuckyGiftDialog extends DialogComponent {
             if (this.isFree) {
                 this.startDraw();
             } else {
-                adHelper.showRewardVideo("金猪弹窗",() => { this.startDraw(); },
+                adHelper.showRewardVideo("金猪弹窗", () => { this.startDraw(); },
                     () => {
                         this.isAni = false;
                         ViewManager.adNotReady();
@@ -113,15 +113,17 @@ export class LuckyGiftDialog extends DialogComponent {
         const it = this.items[this.zzIndex];
 
         AudioManager.playEffect("happy");
-        await delay(0.5);
+        await delay(0.7);
         AudioManager.playEffect("coin");
-        await ActionEffect.scaleBigToSmall(it, 1.2, 1, 0.3);
+        await ActionEffect.scaleBigToSmall(it, 1.1, 1, 0.3);
+        await ActionEffect.scaleBigToSmall(it, 1.1, 1, 0.3);
+        await ActionEffect.scaleBigToSmall(it, 1.2, 0, 0.3);
         this.isAni = false;
         this.closeAni();
         const toNode = rd.type == RewardType.coin ? CoinManger.instance.getCoinNode().coinNode : MoneyManger.instance.getMoneyNode().moneyNode;
         GameStorage.setPigDay(GameUtil.getCurDay());//记录天数，保证每天第一次不用看广告可领取
         ViewManager.showRewardParticle(rd.type, it, toNode, () => {
-            rd.type == RewardType.coin ? CoinManger.instance.addCoin(rd.num,false) : MoneyManger.instance.addMoney(rd.num,false);
+            rd.type == RewardType.coin ? CoinManger.instance.addCoin(rd.num, false) : MoneyManger.instance.addMoney(rd.num, false);
         })
         this.cb();
     }

@@ -62,6 +62,7 @@ export class JackpotDialog extends DialogComponent {
     async startAni() {
         UIUtils.setAlpha(this.node,0);
         await delay(0.4);
+        AudioManager.vibrate(400, 155);
         AudioManager.playEffect("happy1");
         UIUtils.setAlpha(this.node,1);
         const time = 0.3;

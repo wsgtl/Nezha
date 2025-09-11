@@ -22,6 +22,7 @@ export class WinDialog extends DialogComponent {
     @property([sp.SkeletonData])
     skdata: sp.SkeletonData[] = [];
 
+    private static lastAniTime: number = 0;
     start(): void {
         super.start();
         AudioManager.playEffect("win");
@@ -42,12 +43,12 @@ export class WinDialog extends DialogComponent {
         ActionEffect.skAni(this.sk, "loop");
 
     }
-    private isStopGf:boolean = false;
+    private isStopGf: boolean = false;
     /**滚分动画 */
     private async numAni() {
         const end = this.coinNum;
         const start = 0;
-        const all = Math.max(20, Math.floor((end / 45555) * 20));
+        const all = MathUtil.mm(Math.floor((end / 125553) * 20), 25, 60);
         const item = (end - start) / all;
         for (let i = 1; i <= all; i++) {
             let cur = i == all ? end : start + i * item;
@@ -55,32 +56,41 @@ export class WinDialog extends DialogComponent {
             this.setNum(cur);
             if (i != all) {
                 await delay(0.05, this.num.node);
-                AudioManager.playEffect("gf1",0.3);
+                AudioManager.playEffect("gf1", 0.3);
             }
 
         }
         AudioManager.playEffect("coin");
-        this.isStopGf = true;
+        // this.isStopGf = true;
+        this.closeAni();
     }
     /**关闭动画 */
     async closeAni() {
         if (this.isAni) return;
         this.isAni = true;
-        if(!this.isStopGf){
+        if (!this.isStopGf) {
             this.setNum(this.coinNum);
             Tween.stopAllByTarget(this.num.node);
             AudioManager.playEffect("coin");
             await delay(1);
         }
 
-        
+
         AudioManager.playEffect("darts");
         await ActionEffect.skAniOnce(this.sk, "end", true);
         await ActionEffect.fadeOut(this.node, 0.2);
         this.node.destroy();
         this.closeCb?.();
-        if (Math.random() < 0.7)
-            adHelper.showInterstitial("大赢界面");
+        if (MathUtil.probability(0.9)) {
+            const cur = Date.now();
+            const t = cur - WinDialog.lastAniTime;
+            if (t > 180 * 1000) {//时间内不会重复弹
+                adHelper.showInterstitial("大赢界面");
+                WinDialog.lastAniTime = cur;
+            }
+
+        }
+
     }
     private setNum(n: number) {
         if (this.num) this.num.num = FormatUtil.toXXDXX(n, 0);

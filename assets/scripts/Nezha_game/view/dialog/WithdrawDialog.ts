@@ -17,10 +17,17 @@ import { Label } from 'cc';
 import { instantiate } from 'cc';
 import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 import { BaseStorageNS, ITEM_STORAGE } from '../../../Nezha_common/localStorage/BaseStorage';
+import { view } from 'cc';
+import { Widget } from 'cc';
+import { ButtonLock } from '../../../Nezha_common/Decorator';
 const { ccclass, property } = _decorator;
 
 @ccclass('WithdrawDialog')
 export class WithdrawDialog extends ViewComponent {
+    @property(Node)
+    top: Node = null;
+    @property(Node)
+    content: Node = null;
     @property([SpriteFrame])
     paySf: SpriteFrame[] = [];
     @property(NumFont)
@@ -54,18 +61,28 @@ export class WithdrawDialog extends ViewComponent {
     private withdrawNums = [GameUtil.getCashNum(), GameUtil.getCashNum(3)];
     show(parent: Node, args?: any): void {
         super.show(parent);
+        this.fit();
         this.btns = [this.btnCash, this.btnCoin, this.btnOrder]
         this.btnBack.on(Button.EventType.CLICK, this.back, this);
         this.btnEdit.on(Button.EventType.CLICK, this.onEdit, this);
-        this.btnCash.on(Button.EventType.CLICK, () => { this.showContent(0) });
-        this.btnCoin.on(Button.EventType.CLICK, () => { this.showContent(1) });
-        this.btnOrder.on(Button.EventType.CLICK, () => { this.showContent(2) });
-        this.showContent(0);
+        this.strEa.parent.on(Node.EventType.TOUCH_START, this.onEdit, this);
+        this.btnCash.getChildByName("btn").on(Button.EventType.CLICK, () => { this.showContent(0) });
+        this.btnCoin.getChildByName("btn").on(Button.EventType.CLICK, () => { this.showContent(1) });
+        this.btnOrder.getChildByName("btn").on(Button.EventType.CLICK, () => { this.showContent(2) });
+        this.showContent(args.isCoin?1:0);
 
         this.init();
     }
+    private fit(){
+        const h = view.getVisibleSize().y;
+        if(h>2100){
+            const cha = 50;
+            this.top.getComponent(Widget).top += cha;
+            this.content.getComponent(Widget).top += cha;
+        }
+    }
     private init() {
-        const symbol = LangStorage.getData().symbol
+        const symbol = LangStorage.getData().symbol;
         const cur = GameStorage.getMoney();
         this.numMoney.num = symbol + " " + FormatUtil.toXXDXX(cur, 2, false);
         GameUtil.moneyCash.forEach((v, i) => {
@@ -74,7 +91,7 @@ export class WithdrawDialog extends ViewComponent {
                 item = instantiate(item);
                 this.moneyCards.addChild(item);
             }
-            item.getChildByName("num").getComponent(NumFont).num = symbol + " " + FormatUtil.toXXDXX(v, 0, false);
+            item.getChildByName("num").getComponent(NumFont).num = symbol + " " + FormatUtil.toXXDXX(MoneyManger.instance.rate(v), 0, false);
         })
 
         const curCoin = GameStorage.getCoin();
@@ -85,7 +102,7 @@ export class WithdrawDialog extends ViewComponent {
                 item = instantiate(item);
                 this.coinCards.addChild(item);
             }
-            item.getChildByName("num").getComponent(NumFont).num = symbol + " " + FormatUtil.toXXDXX(v.money, 0, false);
+            item.getChildByName("num").getComponent(NumFont).num = symbol + " " + FormatUtil.toXXDXX(MoneyManger.instance.rate(v.money), 0, false);
             item.getChildByName("coin").getChildByName("num").getComponent(NumFont).num = FormatUtil.toXXDXX(v.coin, 0, false);
             const btn = item.getChildByName("btn");
             if (v.coin <= curCoin) {
@@ -118,6 +135,7 @@ export class WithdrawDialog extends ViewComponent {
     private back() {
         this.node.destroy();
     }
+    @ButtonLock(0.5)
     private onEdit() {
         this.showMethod();
     }

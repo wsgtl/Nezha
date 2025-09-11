@@ -6,19 +6,21 @@ import { Node } from 'cc';
 /**体力管理 */
 export namespace EnergyManger {
     /**体力刷新秒数 */
-    export const duration: number = 180;
-    /**体力值上线 */
-    export const max: number = 30;
-    let showCb:Function;
-    let energyNode:Node =null;
-    export function setEnergyNode(n:Node){
+    export const duration: number = 120;
+    /**体力值上限 */
+    export const max: number = 50;
+    /**每次加体力值 */
+    export const add: number = 30;
+    let showCb: Function;
+    let energyNode: Node = null;
+    export function setEnergyNode(n: Node) {
         energyNode = n;
     }
-    export function getEnergyNode(){
+    export function getEnergyNode() {
         return energyNode;
     }
 
-    export function setShowCb(cb:Function){
+    export function setShowCb(cb: Function) {
         showCb = cb;
     }
     /**当前计算体力值 */
@@ -32,7 +34,8 @@ export namespace EnergyManger {
     }
     /**加满体力 */
     export function maxEnergy() {
-        GameStorage.setEnergy(max);
+        const e = GameStorage.getEnergy().energy;
+        GameStorage.setEnergy(Math.min(max, e + add));
         showCb?.();
         GameManger.instance.autoNext();
     }

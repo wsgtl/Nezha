@@ -40,6 +40,7 @@ import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { sp } from 'cc';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { FountainAni } from '../aniComponent/FountainAni';
+import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -112,12 +113,12 @@ export class GameView extends ViewComponent {
 
         const cha = h - 1920;
         const ch = cha / 2;
-        const cy = (ch < 60 ? ch : ch - 60);
+        const cy = (ch < 60 ? ch : ch - 80);
         this.top.node.y = 960 + cy;
         this.jackpot.y = 650 + cy * 0.6;
 
         // const kbn = this.content.getChildByName("kbn");
-        this.kbn.node.y =440 + ch * 0.3;
+        this.kbn.node.y = 440 + ch * 0.3;
         this.jackpot.getComponent(Layout).spacingY = 20 + Math.floor(ch / 8);
         if (ch > 200) {
             const sc = Math.min(1.15, 1 + ch / 1400);
@@ -149,7 +150,7 @@ export class GameView extends ViewComponent {
 
 
     async init(isShowWin: boolean) {
-        this.playBgm();
+        this.playBgm(false);
         GameManger.clearInstance();
         GameManger.instance.init(this);
         if (!GuideManger.isGuide()) {
@@ -175,13 +176,17 @@ export class GameView extends ViewComponent {
         if (this.isAni) return;
 
         if (!EnergyManger.subEnergy()) {
-            ViewManager.showEnergyDialog();//没体力显示体力界面
+            ViewManager.showEnergyDialog(()=>{
+                if (!EnergyManger.subEnergy()){
+                    this.btnSpin.setSpin(true);
+                }
+            });//没体力显示体力界面
             return;
         }
 
 
         this.treasure.addProgress(1);
-        if (Math.random() < 0.3) {
+        if (MathUtil.probability(0.3)) {
             GameManger.instance.mustLineNum += 1;//随机给个必连线
         }
         this.isAni = true;
@@ -224,8 +229,9 @@ export class GameView extends ViewComponent {
             this.showBg(2);
             this.winNode.showWinNormal();
             this.showFreeGameTimes();
-            ActionEffect.skAni(this.kbn,"idle2");//切换哪吒动画
+            ActionEffect.skAni(this.kbn, "idle2");//切换哪吒动画
             this.fountain.node.active = true;//金币喷泉动画
+            this.playBgm(true);
         });
 
         //开始免费游戏转轮
@@ -234,7 +240,15 @@ export class GameView extends ViewComponent {
     /**结束免费游戏 */
     async endFreeGame() {
         this.isAni = false;
-
+        if(!GameManger.instance.isFreegameAdd){//只会出现一次免费游戏增加弹窗
+            GameManger.instance.isFreegameAdd = true;
+            await this.freeGameAdd();
+            if(GameManger.instance.freegameTimes>0){//已增加次数就重新进免费游戏
+                this.freeGameSpin();
+                return;
+            }
+        }
+      
         await this.freeGameEnd();
         //免费游戏过场动画
         await this.freeGameChange(() => {
@@ -243,14 +257,16 @@ export class GameView extends ViewComponent {
             this.showBg(1);
             this.btnSpin.setFreeGame(false);
             this.board.setSpinNormal();
-            ActionEffect.skAni(this.kbn,"idle1");//切换哪吒动画
-            this.fountain.node.active = true;//金币喷泉动画
+            ActionEffect.skAni(this.kbn, "idle1");//切换哪吒动画
+            this.fountain.node.active = false;//金币喷泉动画
+            this.playBgm(false);
         });
+        await this.freeGameEndWin();
         if (this.btnSpin.isAuto) {
             this.onSpin();
         }
     }
-    private showFreeGameTimes(){
+    private showFreeGameTimes() {
         this.freeGameNode.getChildByName("num").getComponent(NumFont).num = GameManger.instance.freegameTimes;
     }
     private showBg(i: number) {
@@ -261,7 +277,7 @@ export class GameView extends ViewComponent {
         this.energy.node.active = i == 1;
         // this.btnGift.node.active = i == 1;
         this.freeGameNode.active = i == 2;
-        this.btnSpin.node.active = i==1;
+        this.btnSpin.node.active = i == 1;
     }
     private freeGameStart() {
         return new Promise<void>(res => {
@@ -286,12 +302,45 @@ export class GameView extends ViewComponent {
             })
         })
     }
+    private freeGameAdd() {
+        return new Promise<void>(res => {
+            ViewManager.showFreeGameAddDialog( () => {
+                res();
+            })
+        })
+    }
+    private freeGameEndWin() {
+        return new Promise<void>(res => {
+            const type = GameUtil.winType(this.winNode.coinNum);
+            if(type!=WinType.none ){
+                ViewManager.showWinDialog(type,this.winNode.coinNum,()=>{res();});
+            }else{
+                res();
+            }
+        })
+    }
 
 
 
 
     /**转轮结束后流程  1钱广告弹窗  2自动弹钱  3宝箱  4猴子葫芦  5连线判定 */
     private async spinNext(isFreeGame: boolean = false) {
+        //连线判定
+        const linedata = GameManger.instance.getLinesData();
+        if (linedata.coin > 0) {
+            CoinManger.instance.addCoin(linedata.coin, false);
+            this.winNode.addWinCoin(linedata.coin);
+            // ActionEffect.numAddAni(0, linedata.coin, (n: number) => { this.winNode.addWinCoin(n) }, true);
+            this.board.showLineLight(linedata);
+            if (linedata.winType > 0) {
+                await this.board.shock();
+                await this.showWinDialog(linedata.winType, linedata.coin);
+            }
+            await this.delay(1);
+            // if (this.btnSpin.isAuto || isFreeGame) {
+            //     await this.delay(0.5);
+            // }
+        }
         //钱广告弹窗
         let moneyNum = 0;
         const moneyDialogCards = GameManger.instance.findCards(CardType.money);
@@ -335,21 +384,7 @@ export class GameView extends ViewComponent {
             await this.lotus.addProgress(lotusCards.length);
         }
 
-        //连线判定
-        const linedata = GameManger.instance.getLinesData();
-        if (linedata.coin > 0) {
-            CoinManger.instance.addCoin(linedata.coin, false);
-            this.winNode.addWinCoin(linedata.coin);
-            // ActionEffect.numAddAni(0, linedata.coin, (n: number) => { this.winNode.addWinCoin(n) }, true);
-            this.board.showLineLight(linedata);
-            if (linedata.winType > 0) {
-                await this.board.shock();
-                await this.showWinDialog(linedata.winType, linedata.coin);
-            }
-            if (this.btnSpin.isAuto || isFreeGame) {
-                await this.delay(1);
-            }
-        }
+
         this.guidStpe2();
         if (!isFreeGame) {
             if (GameManger.instance.calFreeGame()) {
@@ -411,8 +446,11 @@ export class GameView extends ViewComponent {
     }
 
 
-    playBgm() {
-        AudioManager.playBgm("bgm1", 0.2);
+    playBgm(isFrrGame:boolean) {
+        if(isFrrGame)
+            AudioManager.playBgm("bgm2", 0.7);
+        else 
+            AudioManager.playBgm("bgm1", 0.3);
     }
 
 

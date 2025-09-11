@@ -44,7 +44,8 @@ export class BtnSpin extends Component {
         this.node.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.node.off(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
     }
-    setSpin() {
+    setSpin(status:boolean=false) {
+        status&&(this.status = 0);
         this.node.getComponent(Sprite).spriteFrame = this.sf[0];
         this.spin.active = true;
         this.stop.active = false;
@@ -92,11 +93,12 @@ export class BtnSpin extends Component {
 
             // this.time = Date.now();
             if (!this.guideCb)
-                delay(2, this.stop).then(() => {
+                delay(1, this.stop).then(() => {
                     this.status = 1;
                     this.spinCb();
                     this.setAuto();
                     this.changeAuto = true;
+                    AudioManager.vibrate(100,100);
                 })
             this.scale(true);
         } else if (this.status == 1) {

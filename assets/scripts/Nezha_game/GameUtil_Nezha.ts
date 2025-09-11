@@ -109,23 +109,25 @@ export namespace GameUtil {
    export const MaxWildNum: number = 5;//免费游戏最多的wild
    export const BigWinNum:number=100000;//bigwin
    export const MegaWinNum:number=300000;//meagwin
-   // export const BigWinNum:number=1000;
-   // export const MegaWinNum:number=3000;
+   // export const BigWinNum: number = 1000;
+   // export const MegaWinNum: number = 3000;
    /**出中奖池概率 */
-   export const MajorPro:number=0.1;
+   export const MajorPro: number = 0.1;
    /**出大奖池概率 */
-   export const GrandPro:number=0;
+   export const GrandPro: number = 0;
    /**兑换券收集到可提现数量 */
    export const CashWithdrawNum: number = 100;
    /**新手引导送大额钱 */
-   export const GuideMoney: number = 100;
+   export const GuideMoney: number = 50;
    /**3~5个免费游戏标可以有几次免费游戏 */
-   export const FreeGameTimes: number[] = [7,9,11];
+   export const FreeGameTimes: number[] = [5, 6, 7];
+   /**看广告增加的免费游戏次数 */
+   export const FreeGameAddTimes: number = 3;
    /**钱提现金额 */
-   export const moneyCash:number[]=[1000,2000,3000,4000,5000];
+   export const moneyCash: number[] = [500, 1000, 1500, 2000, 2500, 3000];
    const yi = 100000000;
    /**金币提现金额 */
-   export const coinCash:CoinCashData[]=[{coin:3*yi,money:1000},{coin:6*yi,money:2000},{coin:9*yi,money:3000},{coin:12*yi,money:4000},{coin:15*yi,money:5000}];
+   export const coinCash: CoinCashData[] = [{ coin: 3 * yi, money: 500 }, { coin: 6 * yi, money: 1000 }, { coin: 9 * yi, money: 1500 }, { coin: 12 * yi, money: 2000 }, { coin: 15 * yi, money: 2500 }, { coin: 18 * yi, money: 3000 }];
    /**每个连线卡获得金币数 */
    export const lineCoin: number[][] = [
       [],
@@ -141,22 +143,22 @@ export namespace GameUtil {
       // [2500, 5000, 12000],//x4
       // // [3000, 6000, 15000],//x5
 
-      [10000,20000,50000],//10
-      [10000,20000,50000],//J
-      [10000,20000,50000],//Q
-      [10000,20000,50000],//K
-      [10000,20000,50000],//A
+      [10000, 20000, 50000],//10
+      [10000, 20000, 50000],//J
+      [10000, 20000, 50000],//Q
+      [10000, 20000, 50000],//K
+      [10000, 20000, 50000],//A
 
-      [20000,100000,200000],//兵
-      [30000,150000,300000],//将
-      [50000,250000,400000],//敖丙
-      [50000,250000,500000],//哪吒
+      [20000, 100000, 200000],//兵
+      [30000, 150000, 300000],//将
+      [50000, 250000, 400000],//敖丙
+      [50000, 250000, 500000],//哪吒
 
 
    ];
-  
 
-   export function getCashNum(bl: number=1) {//获取最低提现金额
+
+   export function getCashNum(bl: number = 1) {//获取最低提现金额
       const rate = LangStorage.getData().rate;
       return Math.floor(rate * CashNum * bl);
    }
@@ -177,6 +179,14 @@ export namespace GameUtil {
    }
    export function getRandomNormalCard() {
       return MathUtil.random(1, CardType.wild);
+   }
+   export function winType(coinnum: number) {
+      if (coinnum >= GameUtil.MegaWinNum) {
+         return WinType.mega;//狂赢
+      } else if (coinnum >= GameUtil.BigWinNum) {
+         return WinType.big;//大赢
+      }
+      return WinType.none;
    }
 
    /**20条连线 只记录y值*/

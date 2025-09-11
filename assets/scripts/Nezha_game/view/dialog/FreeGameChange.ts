@@ -38,7 +38,7 @@ export class FreeGameChange extends ViewComponent {
         ActionEffect.moveTo(this.left,d1,0,0);
         await ActionEffect.moveTo(this.right,d1,0,0);
         this.line.active = true;
-        AudioManager.vibrate(0.3,155);
+        AudioManager.vibrate(300,155);
         this.chagneCb();
         await delay(0.4);
         AudioManager.playEffect("opendoor");

@@ -7,6 +7,7 @@ import { ViewManager } from '../../manager/ViewManger';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { sp } from 'cc';
+import { AudioManager } from '../../manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Lotus')
@@ -23,11 +24,11 @@ export class Lotus extends Component {
 
     protected onLoad(): void {
         this.showProgress(false);
-        this.node.on(Node.EventType.TOUCH_START, () => {
-            ViewManager.showGoldRewardChange(() => {
+        // this.node.on(Node.EventType.TOUCH_START, () => {
+        //     ViewManager.showGoldRewardChange(() => {
                 
-            })
-        })
+        //     })
+        // })
         ActionEffect.skAniOnce(this.sk,"",true);
         this.sk.timeScale=10000;
         this.sk.setToSetupPose();
@@ -54,6 +55,7 @@ export class Lotus extends Component {
             }
             ActionEffect.scaleBigToSmall(this.icon, 1.2, 1, 0.2);
             ActionEffect.skAniOnce(this.sk,"jingdutiao",true);
+            AudioManager.vibrate(100, 155);
         })
 
     }

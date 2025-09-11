@@ -849,6 +849,7 @@
       "__expectedType__": "cc.SpriteAtlas"
     },
     "blankWidth": 10,
+    "sc": 1,
     "_id": ""
   },
   {
@@ -2286,6 +2287,7 @@
       "__expectedType__": "cc.SpriteAtlas"
     },
     "blankWidth": 10,
+    "sc": 1,
     "_id": ""
   },
   {
@@ -4558,6 +4560,7 @@
       "__expectedType__": "cc.SpriteAtlas"
     },
     "blankWidth": 10,
+    "sc": 1,
     "_id": ""
   },
   {
@@ -8353,6 +8356,7 @@
       "__expectedType__": "cc.SpriteAtlas"
     },
     "blankWidth": 10,
+    "sc": 1,
     "_id": ""
   },
   {

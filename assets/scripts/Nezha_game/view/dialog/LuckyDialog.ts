@@ -17,6 +17,7 @@ import { AudioManager } from '../../manager/AudioManager';
 import { LangStorage } from '../../../Nezha_common/localStorage/LangStorage';
 import { i18n } from '../../../Nezha_common/i18n/I18nManager';
 import { CircleSpin } from '../aniComponent/CircleSpin';
+import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('LuckyDialog')
@@ -44,7 +45,7 @@ export class LuckyDialog extends DialogComponent {
     private isAniNow: boolean = false;
     init() {
         for (let i = 0; i < 3; i++) {
-            let type = Math.random() < 0.2 ? RewardType.coin : RewardType.money;
+            let type = MathUtil.probability(0.2) ? RewardType.coin : RewardType.money;
             let num = type == RewardType.coin ? CoinManger.instance.getReward() : MoneyManger.instance.getReward(0.4);
             if (i == 2) {//大奖
                 type = RewardType.money;
@@ -102,6 +103,7 @@ export class LuckyDialog extends DialogComponent {
     }
     private async openReward(index: number) {
         AudioManager.playEffect("kaixiang", 2);
+        AudioManager.vibrate(100,255);
         const data = this.data[index];
         data.isOpen = true;
         if (data.type == RewardType.coin) {

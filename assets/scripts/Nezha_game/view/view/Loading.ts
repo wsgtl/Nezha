@@ -10,6 +10,7 @@ import { GuideManger } from '../../manager/GuideManager';
 import { sys } from 'cc';
 import { game } from 'cc';
 import { Game } from 'cc';
+import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('Loading')
@@ -45,7 +46,7 @@ export class Loading extends ViewComponent {
         this.showProgress();
         adHelper.init();
         game.on(Game.EVENT_SHOW, () => {
-            if (Math.random() < 0.9) return;
+            if (MathUtil.probability(0.9)) return;
             adHelper.showInterstitial("回前台显示插屏广告");
             console.log("回前台显示插屏广告");
         })

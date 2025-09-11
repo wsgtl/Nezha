@@ -289,11 +289,11 @@ export namespace ViewManager {
         })
     }
     /** 提现界面 */
-    export function showWithdrawDialog() {
+    export function showWithdrawDialog(isCoin:boolean = false) {
         prefabs.instantiate("prefabs/dialog/withdrawDialog").then((dialog) => {
             if (isVaild(dialog)) {
                 const script = dialog.getComponent(ViewComponent);
-                script.show(upperNode, { });
+                script.show(upperNode, { isCoin});
             }
         })
     }
@@ -334,11 +334,11 @@ export namespace ViewManager {
         })
     }
     /** 体力值界面 */
-    export function showEnergyDialog() {
+    export function showEnergyDialog(cb:Function) {
         prefabs.instantiate("prefabs/dialog/energyDialog").then((dialog) => {
             if (isVaild(dialog)) {
                 const script = dialog.getComponent(ViewComponent);
-                script.show(upperNode, {});
+                script.show(upperNode, {cb});
             }
         })
     }
@@ -357,6 +357,15 @@ export namespace ViewManager {
             if (isVaild(dialog)) {
                 const script = dialog.getComponent(ViewComponent);
                 script.show(upperNode, {coin,money,cb});
+            }
+        })
+    }
+    /** 免费游戏增加次数界面 */
+    export function showFreeGameAddDialog(cb:Function) {
+        prefabs.instantiate("prefabs/dialog/freeGameAdd").then((dialog) => {
+            if (isVaild(dialog)) {
+                const script = dialog.getComponent(ViewComponent);
+                script.show(upperNode, {cb});
             }
         })
     }

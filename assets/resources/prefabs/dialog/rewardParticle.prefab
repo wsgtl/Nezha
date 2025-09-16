@@ -173,7 +173,7 @@
     "angle": 100,
     "angleVar": 100,
     "startSize": 50,
-    "startSizeVar": 300,
+    "startSizeVar": 400,
     "endSize": 30.31999969482422,
     "endSizeVar": 0,
     "startSpin": 0,
@@ -226,8 +226,8 @@
     "_startColor": {
       "__type__": "cc.Color",
       "r": 255,
-      "g": 255,
-      "b": 255,
+      "g": 249,
+      "b": 111,
       "a": 255
     },
     "_startColorVar": {
@@ -239,9 +239,9 @@
     },
     "_endColor": {
       "__type__": "cc.Color",
-      "r": 185,
-      "g": 79,
-      "b": 79,
+      "r": 223,
+      "g": 220,
+      "b": 192,
       "a": 74
     },
     "_endColorVar": {
@@ -403,6 +403,8 @@
       "__id__": 0
     },
     "fileId": "13lNqFO8FBXoeHyBxgpkWp",
+    "instance": null,
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {

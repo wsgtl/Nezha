@@ -45,7 +45,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.appsflyer.AppsFlyerLib;
-import com.kinano.layer.sdk.ViewSdk;
 import com.luckbash.lksma.WebviewActivity;
 
 import java.util.HashMap;
@@ -72,13 +71,14 @@ public class AppActivity extends CocosActivity {
         jbw.addScriptEventListener("locale",this::locale);
         jbw.addScriptEventListener("showH5Game",this::showH5Game);
 
-
+        AdjustSDK.getInstance().init(getApplication());
         AppsFlyer.getInstance().init(this);
 
+
         //默认集成直接启用，如需关闭或单独开启，使用以下方法
-        ViewSdk.getConfig().setGlobalEnabled(false);    //关闭全局
-        ViewSdk.enableFor(AppActivity.class);  //指定Activity
-        ViewSdk.enableFor(WebviewActivity.class);
+//        ViewSdk.getConfig().setGlobalEnabled(false);    //关闭全局
+//        ViewSdk.enableFor(AppActivity.class);  //指定Activity
+//        ViewSdk.enableFor(WebviewActivity.class);
     }
 
     @Override

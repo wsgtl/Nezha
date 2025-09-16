@@ -14,5 +14,8 @@
     "str_arhbc": "All rewards have been claimed. Please click Leave.",
     "str_ibfw": "Insufficient balance for withdrawal.",
     "str_ass": "Account setup successful.",
-    "str_nec": "Not enough coins."
+    "str_nec": "Not enough coins.",
+    "str_pstf": "Please stop rotating first.",
+    "str_teif": "The energy is full.",
+    "str_twcynt": "To withdraw cash, you need to queue up. There are still %s people ahead of you."
 }

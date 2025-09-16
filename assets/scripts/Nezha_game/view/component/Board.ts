@@ -163,8 +163,9 @@ export class Board extends Component {
                         if (i == GameUtil.AllCol - 1) {
                             res();
                         }
-                        AudioManager.playEffect("stop",i==4?1:0.5);
-                        AudioManager.vibrate(30, i==4?255:60);
+                        const isEnd = i==4
+                        AudioManager.playEffect("stop",isEnd?1:0.5);
+                        AudioManager.vibrate(isEnd?80:30, isEnd?155:60);
                     })
             }
 

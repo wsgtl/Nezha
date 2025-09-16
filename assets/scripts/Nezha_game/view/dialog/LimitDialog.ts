@@ -51,10 +51,10 @@ export class LimitDialog extends DialogComponent {
     }
     private onlimit(){
         if(this.type==LimitType.cash){//钱标两个
-            GameStorage.setLimitCash(5);
+            // GameStorage.setLimitCash(5);
             GameManger.instance.cash2();
         }else{//莲花两个
-            GameStorage.setLimitLotus(5);
+            // GameStorage.setLimitLotus(5);
             GameManger.instance.lotus2();
         }
         GameStorage.setLimitDay(GameUtil.getCurDay());

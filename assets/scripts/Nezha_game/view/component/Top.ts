@@ -11,6 +11,8 @@ import { GameUtil, RewardType } from '../../GameUtil_Nezha';
 import { tween } from 'cc';
 import { GameManger } from '../../manager/GameManager';
 import { AudioManager } from '../../manager/AudioManager';
+import { i18n } from '../../../Nezha_common/i18n/I18nManager';
+import { EventTracking } from '../../../Nezha_common/native/EventTracking';
 const { ccclass, property } = _decorator;
 
 @ccclass('Top')
@@ -47,11 +49,17 @@ export class Top extends Component {
     }
 
     onRule() {
-        if(GameManger.instance.isAni)return;
+        if (GameManger.instance.isAni){
+            ViewManager.showTips(i18n.string("str_pstf"));
+            return;
+        }
         ViewManager.showRuleDialog();
     }
     onSetting() {
-        if(GameManger.instance.isAni)return;
+        if (GameManger.instance.isAni) {
+            ViewManager.showTips(i18n.string("str_pstf"));
+            return;
+        }
         ViewManager.showSettings();
     }
 
@@ -59,8 +67,8 @@ export class Top extends Component {
         this.cb?.();
         this.showBack(false);
     }
-    onLv() {    
-        if(this.isLvAni)return;
+    onLv() {
+        if (this.isLvAni) return;
         this.lvTipAni();
     }
     private cb: Function;
@@ -95,7 +103,7 @@ export class Top extends Component {
 
     }
     /**增加一次 */
-    async addTimes(upCb:Function) {
+    async addTimes(upCb: Function) {
         const lv = GameStorage.getCurLevel();
         const times = GameStorage.getCurLevelTimes();
         const all = GameUtil.getLevelTimes(lv);
@@ -108,38 +116,39 @@ export class Top extends Component {
             //加5000金币
             this.lvUpReward();
             upCb();
+            EventTracking.sendEventLevel(lv+1);
         }
     }
-    private isLvAni:boolean = false;
+    private isLvAni: boolean = false;
     /**等级升级加金币 */
     private lvUpReward() {
         AudioManager.playEffect("next");
         this.isLvAni = true;
         tween(this.lvbg)
-        .to(0.4,{y:-150})
-        .call(()=>{
-            ViewManager.showRewardParticle(RewardType.coin,this.lvbg,CoinManger.instance.getCoinNode().node.getChildByName("coin"),()=>{
-                CoinManger.instance.addCoin(5000, false);
-            },0.4)
-        })
-        .delay(1)
-        .to(0.4,{y:0})
-        .call(()=>{
-            this.isLvAni = false;
-        })
-        .start();    
+            .to(0.4, { y: -150 })
+            .call(() => {
+                ViewManager.showRewardParticle(RewardType.coin, this.lvbg, CoinManger.instance.getCoinNode().node.getChildByName("coin"), () => {
+                    CoinManger.instance.addCoin(5000, false);
+                }, 0.4)
+            })
+            .delay(1)
+            .to(0.4, { y: 0 })
+            .call(() => {
+                this.isLvAni = false;
+            })
+            .start();
     }
     /**等级升级加金币 */
     private lvTipAni() {
         this.isLvAni = true;
         tween(this.lvTips)
-        .to(0.4,{y:-150})
-        .delay(1.5)
-        .to(0.4,{y:0})
-        .call(()=>{
-            this.isLvAni = false;
-        })
-        .start();    
+            .to(0.4, { y: -150 })
+            .delay(1.5)
+            .to(0.4, { y: 0 })
+            .call(() => {
+                this.isLvAni = false;
+            })
+            .start();
     }
 }
 

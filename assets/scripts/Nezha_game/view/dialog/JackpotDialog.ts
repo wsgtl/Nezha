@@ -37,7 +37,7 @@ export class JackpotDialog extends DialogComponent {
 
     type: JakcpotType;
     coinNum: number;
-    cb:Function
+    cb: Function
     show(parent: Node, args?: any) {
         parent.addChild(this.node);
         this.cb = args.cb;
@@ -52,7 +52,8 @@ export class JackpotDialog extends DialogComponent {
         })
         this.num.aligning = 1;
         // this.num.num = data.symbol + FormatUtil.toXXDXX(num, 6);
-        this.num.num = FormatUtil.toXXDXX(num,0,false);
+        // this.num.num = FormatUtil.toXXDXX(num,0,false);
+        ActionEffect.numAddAni(0, num, (n: number) => {if(isVaild(this.node)) this.num.num = FormatUtil.toXXDXX(n, 0, false); }, true, 29, this.node);
         this.btnClaim.on(Button.EventType.CLICK, this.onClaim, this);
         this.btnNt.on(Button.EventType.CLICK, this.onNothink, this);
         this.ani();
@@ -60,11 +61,11 @@ export class JackpotDialog extends DialogComponent {
     }
     /**开始动画 */
     async startAni() {
-        UIUtils.setAlpha(this.node,0);
+        UIUtils.setAlpha(this.node, 0);
         await delay(0.4);
         AudioManager.vibrate(400, 155);
         AudioManager.playEffect("happy1");
-        UIUtils.setAlpha(this.node,1);
+        UIUtils.setAlpha(this.node, 1);
         const time = 0.3;
         if (this.bg) ActionEffect.fadeIn(this.bg, 0.3);
         if (this.content) ActionEffect.scale(this.content, 0.3, 1, 0, "backOut");
@@ -112,7 +113,7 @@ export class JackpotDialog extends DialogComponent {
     onNothink() {
         this.closeAni();
         adHelper.timesToShowInterstitial();
-        this.cb(); 
+        this.cb();
     }
 }
 

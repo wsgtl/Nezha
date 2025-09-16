@@ -56,3 +56,13 @@
 -dontwarn android.hardware.lights.LightsRequest
 -dontwarn android.net.ssl.SSLSockets
 -dontwarn android.os.VibratorManager
+
+
+-keep class org.chromium.** {*;}
+-keep class org.chromium.** { *; }
+-keep class aegon.chrome.** { *; }
+-keep class com.kwai.**{ *; }
+-dontwarn com.kwai.**
+-dontwarn com.kwad.**
+-dontwarn com.ksad.**
+-dontwarn aegon.chrome.**

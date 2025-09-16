@@ -99,8 +99,8 @@ export class GoldRewardDialog extends ViewComponent {
             this.randomJackpot[i] = 0;
         }
         this.randomJackpot.shuffle();
-        if (MathUtil.probability(0.4)) this.randomJackpot[0] = 2;
-        if (MathUtil.probability(0.03)) this.randomJackpot[0] = 1;//有概率出大奖池
+        if (MathUtil.probability(GameUtil.MajorPro)) this.randomJackpot[0] = 2;
+        if (MathUtil.probability(GameUtil.GrandPro)) this.randomJackpot[0] = 1;//有概率出大奖池
     }
 
     showBtn(v: boolean) {
@@ -195,7 +195,7 @@ export class GoldRewardDialog extends ViewComponent {
         this.freeTimes.num = this.canClickNum;
     }
     private showMoney(num: number) {
-        const n = FormatUtil.toXXDXX(num, 2, false);
+        const n = FormatUtil.toXXDXX(num, 2, false,2);
         const str = LangStorage.getData().symbol + " " + n;
         this.moneyNode.num = str;
     }

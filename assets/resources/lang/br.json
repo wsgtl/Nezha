@@ -14,5 +14,8 @@
     "str_arhbc": "Todos os prêmios já foram resgatados. Clique em 'Sair' para continuar.",
     "str_ibfw": "Você não tem saldo suficiente para sacar.",
     "str_ass": "Conta criada com sucesso.",
-    "str_nec": "Moedas insuficientes."
+    "str_nec": "Moedas insuficientes.",
+    "str_pstf": "Por favor, pare de girar primeiro.",
+    "str_teif": "A energia está completa.",
+    "str_twcynt": "Para sacar dinheiro, você precisa entrar na fila. Ainda há %s pessoas na sua frente."
 }

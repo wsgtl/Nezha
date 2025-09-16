@@ -104,7 +104,7 @@ export namespace GameUtil {
    export const CreateRow: number = 4;//生成的行数
    export const LotusNum: number = 20;//金莲收集到多少就触发幸运奖励
    export const TreasureNum: number = 10;//宝箱收集到多少就触发奖池奖励
-   export const CashNum: number = 1000;//最低提现金额
+   // export const CashNum: number = 500;//最低提现金额
    export const BaseBet: number = 500;//基础金币赌注
    export const MaxWildNum: number = 5;//免费游戏最多的wild
    export const BigWinNum:number=100000;//bigwin
@@ -160,7 +160,8 @@ export namespace GameUtil {
 
    export function getCashNum(bl: number = 1) {//获取最低提现金额
       const rate = LangStorage.getData().rate;
-      return Math.floor(rate * CashNum * bl);
+      // return Math.floor(rate * CashNum * bl);
+      return Math.floor(rate * moneyCash[0] * bl);
    }
 
    export function getCurDay() {

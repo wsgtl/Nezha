@@ -43,7 +43,7 @@ export class Yb extends Component {
             this.showNode.getChildByName("str").getComponent(Sprite).spriteFrame = this.strs[type - 1];
         } else {
             this.num.node.active = true;
-            num = [0.3,1.1,0.003].getRandomItem();
+            // num = [0.3,1.1,0.003].getRandomItem();
             this.num.num = LangStorage.getData().symbol + FormatUtil.toXXDXXxsd(num,false,2);
             if(this.num.num.length>5){ 
                 const sc = 1 - (this.num.num.length - 5) * 0.1;

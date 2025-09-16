@@ -103,7 +103,7 @@ export class LuckyDialog extends DialogComponent {
     }
     private async openReward(index: number) {
         AudioManager.playEffect("kaixiang", 2);
-        AudioManager.vibrate(100,255);
+        
         const data = this.data[index];
         data.isOpen = true;
         if (data.type == RewardType.coin) {
@@ -119,8 +119,9 @@ export class LuckyDialog extends DialogComponent {
                 this.showItem(index, true);
                 this.showHand(index, false);
                 item.getChildByName("light").getComponent(CircleSpin).startAni();
-
-                if (index == 2) {//大奖
+                const isBig = index==2;
+                AudioManager.vibrate(isBig?200:120,255);
+                if (isBig) {//大奖
                     this.big.active = true;
                     AudioManager.playEffect("happy");
                     this.bigNum.num = LangStorage.getData().symbol + FormatUtil.toXXDXXxsd(data.num);

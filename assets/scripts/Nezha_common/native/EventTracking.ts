@@ -15,8 +15,13 @@ export namespace EventTracking {
     }
     /**上报通过第几关 */
     export function sendEventLevel(level: number) {
-        const data = { event_type: "level_x", level };
-        sendEvent(data);
+        // const data = { event_type: "level_x", level };
+        // sendEvent(data);
+        console.log("adjustEvent 上报关卡"+level);
+        if (sys.platform === sys.Platform.ANDROID) {
+            native.jsbBridgeWrapper.dispatchEventToNative("trackLevelEvent", level.toString());//adjust上报
+        }
+        
     }
     /**计算钱数量并上报钱值事件 */
     export function sendEventCoin(num: number) {
@@ -52,4 +57,14 @@ export namespace EventTracking {
     }
 
     const CoinEvent = [100, 150, 200, 250, 300, 400, 550, 700, 880, 1000];
+
+
+     /**上报事件 */
+    export function sendEventAdjust(data: Object) {
+        const str = JSON.stringify(data);
+        // console.log("上报",str);
+        if (sys.platform === sys.Platform.ANDROID) {
+            native.jsbBridgeWrapper.dispatchEventToNative("sendEvent", str);
+        }
+    }
 }

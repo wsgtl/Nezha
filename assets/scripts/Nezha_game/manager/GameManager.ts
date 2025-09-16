@@ -38,7 +38,7 @@ export class GameManger {
 
     isAni: boolean = false;
     /**必出连线次数 */
-    mustLineNum: number = 10;
+    mustLineNum: number = 1;
     /**金莲卡片必出两次 */
     mustLotus: number = 0;
     /**钱卡片必出两次 */
@@ -47,6 +47,20 @@ export class GameManger {
     freegameTimes: number = 0;
     /**是否已出现免费游戏增加 */
     isFreegameAdd: boolean = false;
+    // /**金莲卡片必出两次 */
+    // public get mustLotus(): number{
+    //     return GameStorage.getLimit().lotus;
+    // };
+    // public set mustLotus(n:number){
+    //     GameStorage.setLimitLotus(n);
+    // };
+    // /**钱卡片必出两次 */
+    // public get mustMoney(): number{
+    //     return GameStorage.getLimit().cash;
+    // };
+    //  public set mustMoney(n:number){
+    //     GameStorage.setLimitCash(n);
+    // };
 
 
     public getNewBoard() {
@@ -341,7 +355,7 @@ export class GameManger {
         this.mustMoney = 5;
     }
     public lotus2() {
-        this.mustLotus = 2;
+        this.mustLotus = 5;
     }
     /**找到咪牌起始位置 */
     public findFreeGameStart() {

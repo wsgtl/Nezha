@@ -28,11 +28,11 @@
  import java.util.concurrent.TimeUnit;
 
  public class AdMax {
-     private String sdkKey = "Apq_bdQOwkidFCL4EQGkNodqrrhfHWM0mBGdrtKnaZWBuB8AP19VkUEi7R9DuVZVcJGsOJri6BRyEh560di33O";
+     private String sdkKey = "xZiRIeeqQfFw6N0iSdefa651dPMl0OL2TUE3SmDWSmexlpHDUsW4LJLiVkeVXFCeL3KEDwOM43u9pME7utD3uf";
      /**激励视频广告id*/
-     private String videoId = "d9174ee5898370dd";
+     private String videoId = "b02f84af8734b5c8";
      /**插屏广告id*/
-     private String interstitialId = "52345987dfcc8775";
+     private String interstitialId = "e99212d09fef432e";
      private Context _context;
      private Activity _activity;
      private String Tag = "广告";
@@ -191,6 +191,7 @@
                  // Rewarded ad was displayed and user should receive the reward
                  //建议在此回调中下发奖励
                  gameResume();
+                 AdjustSDK.getInstance().handleAdImpression();
                  Log.e(Tag,"广告已经获得奖励了");
                  jbw.dispatchEventToScript("getRewardVideo");
              }
@@ -225,6 +226,7 @@
                         AppsFlyer.getInstance().uploadAdInfoToServer(context,gaid, finalEcpm, model, adPlatform);
                     }
                 });
+
              }
 
              @Override

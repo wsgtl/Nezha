@@ -6,6 +6,7 @@ import { NumFont } from '../../../Nezha_common/ui/NumFont';
 import { LimitType } from '../../GameUtil_Nezha';
 import { ViewManager } from '../../manager/ViewManger';
 import { GameManger } from '../../manager/GameManager';
+import { i18n } from '../../../Nezha_common/i18n/I18nManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Limit')
@@ -19,7 +20,10 @@ export class Limit extends Component {
     private curLimit: LimitType = 1;
     start() {
         this.btn.on(Button.EventType.CLICK, () => {
-            if (GameManger.instance.isAni) return;
+            if (GameManger.instance.isAni){ 
+                ViewManager.showTips(i18n.string("str_pstf"));
+                return;
+            }
             const cur = this.curLimit;
             if (cur > 0) {
                 ViewManager.showLimitDialog(this.curLimit, () => {
@@ -53,9 +57,11 @@ export class Limit extends Component {
         let show = false;
         const data = GameStorage.getLimit();
         if (cur == 1) {//钱标两个
-            show = data.cash <= 0;
+            // show = data.cash <= 0;
+            show = GameManger.instance.mustMoney <= 0;
         } else if (cur == 2) {//金莲两个
-            show = data.lotus <= 0;
+            // show = data.lotus <= 0;
+            show = GameManger.instance.mustLotus <= 0;
         } else {
             show = false;
         }

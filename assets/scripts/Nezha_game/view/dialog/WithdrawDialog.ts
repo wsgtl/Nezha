@@ -146,6 +146,8 @@ export class WithdrawDialog extends ViewComponent {
         this.contents.forEach((v, i) => {
             v.active = i == index;
         })
+        this.numCoin.node.parent.active = index==1;
+        this.numMoney.node.parent.active = index!=1;
     }
     /**排队提现 */
     private waitWithdraw() {
@@ -162,7 +164,7 @@ export class WithdrawDialog extends ViewComponent {
             num = Math.max(MathUtil.random(30, 100), curNum);
         }
         BaseStorageNS.setItem(ITEM_STORAGE.WAITWITHDRWW, JSON.stringify({ num, time: Date.now() }));
-        ViewManager.showTips(`To withdraw cash, you need to queue up. There are still ${num} people ahead of you.`);
+        ViewManager.showTips(i18n.string("str_twcynt",num.toString()));
     }
     private showCardId() {
         const cardId = GameStorage.getCardId();

@@ -7,6 +7,7 @@ import { AudioManager } from '../../manager/AudioManager';
 import { EnergyManger } from '../../manager/EnergyManager';
 import { GameStorage } from '../../GameStorage_Nezha';
 import { RewardType } from '../../GameUtil_Nezha';
+import { i18n } from '../../../Nezha_common/i18n/I18nManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnergyDialog')
@@ -22,7 +23,7 @@ export class EnergyDialog extends DialogComponent {
 
         this.btnGet.on(Button.EventType.CLICK, () => {
             if(GameStorage.getEnergy().energy >=EnergyManger.max){
-                ViewManager.showTips("The energy is full.");
+                ViewManager.showTips(i18n.string("str_teif"));
                 return;
             }
             adHelper.showRewardVideo("加体力窗口", () => {

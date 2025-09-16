@@ -60,12 +60,12 @@ export class AdHelper {
         console.log("显示激励广告1")
         if (sys.platform === sys.Platform.ANDROID) {
             console.log("显示激励广告2")
-            // native.jsbBridgeWrapper.dispatchEventToNative("showRewardVideo","激励广告:"+placement);
-            // this._getRewardVideo = callback;
-            // this._getRewardVideoFail = fail ? fail : callback;
+            native.jsbBridgeWrapper.dispatchEventToNative("showRewardVideo","激励广告:"+placement);
+            this._getRewardVideo = callback;
+            this._getRewardVideoFail = fail ? fail : callback;
 
             // debug.log("激励视频广告失败:" );
-            callback?.();
+            // callback?.();
         } else {//网页端直接回调
             callback?.();
             // fail(1);

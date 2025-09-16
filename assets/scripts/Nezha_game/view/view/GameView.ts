@@ -41,6 +41,7 @@ import { sp } from 'cc';
 import { ActionEffect } from '../../../Nezha_common/effects/ActionEffect';
 import { FountainAni } from '../aniComponent/FountainAni';
 import { MathUtil } from '../../../Nezha_common/utils/MathUtil';
+import { EventTracking } from '../../../Nezha_common/native/EventTracking';
 const { ccclass, property } = _decorator;
 
 const debug = Debugger("GameView")
@@ -123,7 +124,7 @@ export class GameView extends ViewComponent {
         if (ch > 200) {
             const sc = Math.min(1.15, 1 + ch / 1400);
             this.kbn.node.scale = v3(sc, sc);
-            // this.boardContent.y=0+30;
+            // this.boardContent.y=0+30;s
 
         }
         // this.treasure.node.y = 720 + ch * 1;
@@ -134,7 +135,6 @@ export class GameView extends ViewComponent {
         const bgSc = Math.max(1, 1 + cha / 1200);
         this.bg1.scale = v3(1, bgSc);
         this.bg2.scale = v3(1, bgSc);
-
         nextFrame().then(() => {
             const p = UIUtils.transformOtherNodePos2localNode(this.node, this.dialogNode);
             this.dialogNode.position = p;
@@ -200,7 +200,7 @@ export class GameView extends ViewComponent {
     }
     /**免费游戏转轮 */
     async freeGameSpin() {
-        this.showFreeGameTimes();
+        this.showFreeGameTimes(1);
         this.isAni = true;
         this.board.setSpinNormal();
         await this.board.spin();
@@ -244,6 +244,8 @@ export class GameView extends ViewComponent {
             GameManger.instance.isFreegameAdd = true;
             await this.freeGameAdd();
             if(GameManger.instance.freegameTimes>0){//已增加次数就重新进免费游戏
+                this.showFreeGameTimes();
+                await this.delay(0.1);
                 this.freeGameSpin();
                 return;
             }
@@ -266,8 +268,8 @@ export class GameView extends ViewComponent {
             this.onSpin();
         }
     }
-    private showFreeGameTimes() {
-        this.freeGameNode.getChildByName("num").getComponent(NumFont).num = GameManger.instance.freegameTimes;
+    private showFreeGameTimes(i:number=0) {
+        this.freeGameNode.getChildByName("num").getComponent(NumFont).num = GameManger.instance.freegameTimes-i;
     }
     private showBg(i: number) {
         this.bg1.active = i == 1;
@@ -458,6 +460,8 @@ export class GameView extends ViewComponent {
     /**新手引导 */
     private initGuide() {
         if (!GuideManger.isGuide()) return;
+        this.delay(5).then(()=>{EventTracking.sendEventLevel(1);})//第一关上报
+        
         ViewManager.showGuideMask(async (n: Node) => {
             this.gm = n.getComponent(GuideMask);
             this.gm.showMask();
